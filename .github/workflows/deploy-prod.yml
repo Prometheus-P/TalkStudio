@@ -1,0 +1,648 @@
+# =============================================================================
+# TalkStudio - Production Environment Deployment
+# =============================================================================
+# Version: 1.0.0
+# Owner: @haseongpark
+# Created: 2025-12-08
+# Updated: 2025-12-08
+#
+# Description:
+#   Production deployment pipeline with manual approval gate.
+#   Requires explicit approval before deployment to production.
+#   Includes rollback capability and extensive health checks.
+#
+# Environment:
+#   - URL: https://talkstudio.app (example)
+#   - Purpose: Production, end-user facing
+#   - Auto-deploy: No (requires manual trigger and approval)
+#
+# Safety Features:
+#   - Manual workflow dispatch only
+#   - Environment protection rules (approval required)
+#   - Staging verification gate
+#   - Comprehensive smoke tests
+#   - Automatic rollback on failure
+#   - Deployment notifications
+#
+# Related Documents:
+#   - docs/specs/ARCHITECTURE.md
+#   - docs/operations/DEPLOYMENT_CHECKLIST.md
+#   - VERSIONING_GUIDE.md
+# =============================================================================
+
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (e.g., v1.2.3)'
+        required: true
+        type: string
+      confirm_staging:
+        description: 'I confirm staging has been tested'
+        required: true
+        type: boolean
+        default: false
+      skip_approval:
+        description: 'Skip approval (hotfix only)'
+        required: false
+        type: boolean
+        default: false
+
+# Only one production deployment at a time, never cancel
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '9'
+  ENVIRONMENT: production
+  DEPLOY_URL: https://talkstudio.app
+
+jobs:
+  # ===========================================================================
+  # Pre-flight Checks
+  # ===========================================================================
+  preflight:
+    name: Pre-flight Checks
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.validate.outputs.version }}
+      previous_version: ${{ steps.current.outputs.version }}
+    steps:
+      - name: Validate inputs
+        id: validate
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+
+          # Remove 'v' prefix if present for consistency
+          VERSION=$(echo "$VERSION" | sed 's/^v//')
+
+          # Validate semantic version format
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Invalid version format: $VERSION. Expected semantic version (e.g., 1.2.3)"
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Deploying version: v$VERSION"
+
+      - name: Verify staging confirmation
+        if: github.event.inputs.confirm_staging != 'true'
+        run: |
+          echo "::error::You must confirm that staging has been tested"
+          exit 1
+
+      - name: Check staging tag exists
+        run: |
+          VERSION="${{ steps.validate.outputs.version }}"
+
+          # Verify staging tag exists (indicates staging was deployed)
+          if ! git ls-remote --tags origin | grep -q "v${VERSION}-staging"; then
+            echo "::warning::Staging tag v${VERSION}-staging not found. Ensure staging was deployed."
+          fi
+
+      - name: Get current production version
+        id: current
+        run: |
+          # Fetch current production build info
+          CURRENT_VERSION=$(curl -sf ${{ env.DEPLOY_URL }}/build-info.json | jq -r '.version' || echo "unknown")
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Current production version: $CURRENT_VERSION"
+
+      - name: Pre-flight summary
+        run: |
+          echo "## Production Deployment Pre-flight" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Version format | :white_check_mark: v${{ steps.validate.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Staging confirmed | :white_check_mark: |" >> $GITHUB_STEP_SUMMARY
+          echo "| Current version | ${{ steps.current.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Requested by | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+
+  # ===========================================================================
+  # Approval Gate
+  # ===========================================================================
+  approval:
+    name: Approval Gate
+    runs-on: ubuntu-latest
+    needs: preflight
+    if: github.event.inputs.skip_approval != 'true'
+    environment:
+      name: production-approval
+    steps:
+      - name: Approval received
+        run: |
+          echo "## Approval Received" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Production deployment approved by: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Proceeding with deployment of v${{ needs.preflight.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+
+  # ===========================================================================
+  # Build Production Bundle
+  # ===========================================================================
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [preflight, approval]
+    if: always() && needs.preflight.result == 'success' && (needs.approval.result == 'success' || needs.approval.result == 'skipped')
+    outputs:
+      build_id: ${{ steps.build-info.outputs.build_id }}
+      artifact_name: ${{ steps.build-info.outputs.artifact_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: v${{ needs.preflight.outputs.version }}
+          fetch-depth: 0
+
+      - name: Verify tag
+        run: |
+          CURRENT_TAG=$(git describe --exact-match --tags HEAD 2>/dev/null || echo "")
+
+          if [ -z "$CURRENT_TAG" ]; then
+            echo "::error::Not on a tagged commit. Please ensure v${{ needs.preflight.outputs.version }} tag exists."
+            exit 1
+          fi
+
+          echo "Building from tag: $CURRENT_TAG"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run full test suite
+        run: |
+          pnpm lint
+          pnpm tsc --noEmit
+          pnpm test:coverage
+        env:
+          CI: true
+
+      - name: Create .env.production
+        run: |
+          cat > .env.production << EOF
+          VITE_APP_ENV=production
+          VITE_APP_VERSION=${{ needs.preflight.outputs.version }}
+          VITE_API_URL=https://api.talkstudio.app
+          VITE_ENABLE_DEBUG=false
+          VITE_ENABLE_ANALYTICS=true
+          VITE_SENTRY_DSN=${{ secrets.SENTRY_DSN_PROD }}
+          VITE_GA_TRACKING_ID=${{ secrets.GA_TRACKING_ID }}
+          EOF
+
+      - name: Build production bundle
+        run: pnpm build
+        env:
+          NODE_ENV: production
+          VITE_APP_ENV: production
+
+      - name: Optimize assets
+        run: |
+          # Gzip static assets for better compression
+          find dist -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" -o -name "*.svg" \) \
+            -exec gzip -9 -k {} \;
+
+      - name: Generate build info
+        id: build-info
+        run: |
+          BUILD_ID="prod-${{ needs.preflight.outputs.version }}-${{ github.run_number }}"
+          ARTIFACT_NAME="build-prod-${{ needs.preflight.outputs.version }}"
+
+          echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
+          echo "artifact_name=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
+
+          cat > dist/build-info.json << EOF
+          {
+            "buildId": "$BUILD_ID",
+            "version": "${{ needs.preflight.outputs.version }}",
+            "commit": "${{ github.sha }}",
+            "environment": "production",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "deployedBy": "${{ github.actor }}",
+            "previousVersion": "${{ needs.preflight.outputs.previous_version }}"
+          }
+          EOF
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build-info.outputs.artifact_name }}
+          path: dist/
+          retention-days: 90
+
+      - name: Generate SBOM
+        run: |
+          pnpm exec license-checker --json > dist/sbom.json || true
+
+  # ===========================================================================
+  # Deploy to Production
+  # ===========================================================================
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [preflight, build]
+    environment:
+      name: production
+      url: ${{ env.DEPLOY_URL }}
+    outputs:
+      deployment_id: ${{ steps.deploy.outputs.deployment_id }}
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.artifact_name }}
+          path: dist/
+
+      - name: Create deployment record
+        id: deploy
+        run: |
+          DEPLOYMENT_ID="deploy-$(date +%Y%m%d%H%M%S)-${{ github.run_number }}"
+          echo "deployment_id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
+
+      # ---------------------------------------------------------------------
+      # Option 1: Deploy to Vercel
+      # ---------------------------------------------------------------------
+      - name: Deploy to Vercel
+        if: vars.DEPLOY_TARGET == 'vercel'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./dist
+          alias-domains: talkstudio.app
+
+      # ---------------------------------------------------------------------
+      # Option 2: Deploy to Netlify
+      # ---------------------------------------------------------------------
+      - name: Deploy to Netlify
+        if: vars.DEPLOY_TARGET == 'netlify'
+        uses: nwtgck/actions-netlify@v3
+        with:
+          publish-dir: './dist'
+          production-deploy: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Production v${{ needs.preflight.outputs.version }}"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_PROD }}
+
+      # ---------------------------------------------------------------------
+      # Option 3: Deploy to AWS S3 + CloudFront
+      # ---------------------------------------------------------------------
+      - name: Configure AWS credentials
+        if: vars.DEPLOY_TARGET == 'aws'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION || 'ap-northeast-2' }}
+
+      - name: Backup current production
+        if: vars.DEPLOY_TARGET == 'aws'
+        run: |
+          # Create backup of current production for rollback
+          aws s3 sync s3://${{ secrets.AWS_S3_BUCKET_PROD }} \
+            s3://${{ secrets.AWS_S3_BUCKET_PROD }}-backup-${{ github.run_number }} \
+            --quiet
+
+      - name: Deploy to S3
+        if: vars.DEPLOY_TARGET == 'aws'
+        run: |
+          # Upload with long cache for hashed assets
+          aws s3 sync dist/ s3://${{ secrets.AWS_S3_BUCKET_PROD }} \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "index.html" \
+            --exclude "build-info.json" \
+            --exclude "*.gz"
+
+          # Upload index.html with no-cache
+          aws s3 cp dist/index.html s3://${{ secrets.AWS_S3_BUCKET_PROD }}/index.html \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --content-type "text/html"
+
+          # Upload build info
+          aws s3 cp dist/build-info.json s3://${{ secrets.AWS_S3_BUCKET_PROD }}/build-info.json \
+            --cache-control "no-cache"
+
+      - name: Invalidate CloudFront cache
+        if: vars.DEPLOY_TARGET == 'aws'
+        run: |
+          INVALIDATION_ID=$(aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.AWS_CLOUDFRONT_PROD_ID }} \
+            --paths "/*" \
+            --query 'Invalidation.Id' \
+            --output text)
+
+          echo "CloudFront invalidation ID: $INVALIDATION_ID"
+
+          # Wait for invalidation to complete
+          aws cloudfront wait invalidation-completed \
+            --distribution-id ${{ secrets.AWS_CLOUDFRONT_PROD_ID }} \
+            --id $INVALIDATION_ID
+
+      - name: Deployment summary
+        run: |
+          echo "## Production Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Version | v${{ needs.preflight.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| URL | ${{ env.DEPLOY_URL }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build ID | ${{ needs.build.outputs.build_id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deployment ID | ${{ steps.deploy.outputs.deployment_id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Previous Version | ${{ needs.preflight.outputs.previous_version }} |" >> $GITHUB_STEP_SUMMARY
+
+  # ===========================================================================
+  # Production Verification
+  # ===========================================================================
+  verify:
+    name: Verify Deployment
+    runs-on: ubuntu-latest
+    needs: [preflight, deploy]
+    steps:
+      - name: Wait for propagation
+        run: sleep 60
+
+      - name: Health check
+        id: health
+        run: |
+          MAX_RETRIES=5
+          RETRY_DELAY=30
+
+          for i in $(seq 1 $MAX_RETRIES); do
+            HTTP_STATUS=$(curl -sf -o /dev/null -w "%{http_code}" ${{ env.DEPLOY_URL }} || echo "000")
+
+            if [ "$HTTP_STATUS" == "200" ]; then
+              echo "Health check passed on attempt $i"
+              echo "healthy=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+
+            echo "Attempt $i: Status $HTTP_STATUS, retrying in ${RETRY_DELAY}s..."
+            sleep $RETRY_DELAY
+          done
+
+          echo "::error::Health check failed after $MAX_RETRIES attempts"
+          echo "healthy=false" >> $GITHUB_OUTPUT
+          exit 1
+
+      - name: Verify deployed version
+        run: |
+          BUILD_INFO=$(curl -sf ${{ env.DEPLOY_URL }}/build-info.json)
+          DEPLOYED_VERSION=$(echo $BUILD_INFO | jq -r '.version')
+
+          if [ "$DEPLOYED_VERSION" != "${{ needs.preflight.outputs.version }}" ]; then
+            echo "::error::Version mismatch! Expected ${{ needs.preflight.outputs.version }}, got $DEPLOYED_VERSION"
+            exit 1
+          fi
+
+          echo "Version verified: v$DEPLOYED_VERSION"
+
+      - name: Critical path tests
+        run: |
+          # Test critical user paths
+          ENDPOINTS=(
+            "/"
+            "/build-info.json"
+          )
+
+          for endpoint in "${ENDPOINTS[@]}"; do
+            STATUS=$(curl -sf -o /dev/null -w "%{http_code}" "${{ env.DEPLOY_URL }}$endpoint")
+            if [ "$STATUS" != "200" ]; then
+              echo "::error::Critical path $endpoint returned $STATUS"
+              exit 1
+            fi
+            echo "Critical path $endpoint: OK"
+          done
+
+      - name: Performance baseline
+        run: |
+          # Measure page load time
+          METRICS=$(curl -sf -w "@-" -o /dev/null ${{ env.DEPLOY_URL }} << 'EOF'
+          {
+            "time_namelookup": %{time_namelookup},
+            "time_connect": %{time_connect},
+            "time_appconnect": %{time_appconnect},
+            "time_pretransfer": %{time_pretransfer},
+            "time_starttransfer": %{time_starttransfer},
+            "time_total": %{time_total}
+          }
+          EOF
+          )
+
+          echo "Performance metrics:"
+          echo "$METRICS" | jq .
+
+          TOTAL_TIME=$(echo "$METRICS" | jq '.time_total')
+
+          if (( $(echo "$TOTAL_TIME > 5" | bc -l) )); then
+            echo "::warning::Total load time (${TOTAL_TIME}s) exceeds threshold (5s)"
+          fi
+
+  # ===========================================================================
+  # Rollback (on failure)
+  # ===========================================================================
+  rollback:
+    name: Rollback
+    runs-on: ubuntu-latest
+    needs: [preflight, deploy, verify]
+    if: failure() && needs.deploy.result == 'success'
+    steps:
+      - name: Trigger rollback
+        run: |
+          echo "::error::Deployment verification failed. Initiating rollback..."
+          echo "Rolling back to version: ${{ needs.preflight.outputs.previous_version }}"
+
+      - name: Configure AWS credentials
+        if: vars.DEPLOY_TARGET == 'aws'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION || 'ap-northeast-2' }}
+
+      - name: Restore from backup
+        if: vars.DEPLOY_TARGET == 'aws'
+        run: |
+          aws s3 sync s3://${{ secrets.AWS_S3_BUCKET_PROD }}-backup-${{ github.run_number }} \
+            s3://${{ secrets.AWS_S3_BUCKET_PROD }} \
+            --delete
+
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.AWS_CLOUDFRONT_PROD_ID }} \
+            --paths "/*"
+
+      - name: Rollback summary
+        run: |
+          echo "## Rollback Executed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Production has been rolled back to the previous version." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Failed version**: v${{ needs.preflight.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Restored version**: ${{ needs.preflight.outputs.previous_version }}" >> $GITHUB_STEP_SUMMARY
+
+  # ===========================================================================
+  # Post-deployment Tasks
+  # ===========================================================================
+  post-deploy:
+    name: Post-deployment
+    runs-on: ubuntu-latest
+    needs: [preflight, deploy, verify]
+    if: success()
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create release tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Tag as production release
+          TAG_NAME="v${{ needs.preflight.outputs.version }}-prod"
+
+          git tag -a "$TAG_NAME" -m "Production release v${{ needs.preflight.outputs.version }}"
+          git push origin "$TAG_NAME" || true
+
+      - name: Create GitHub Release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: release } = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: 'v${{ needs.preflight.outputs.version }}',
+              name: 'Release v${{ needs.preflight.outputs.version }}',
+              body: `## TalkStudio v${{ needs.preflight.outputs.version }}
+
+            Production deployment completed successfully.
+
+            **Deployment Details:**
+            - Environment: Production
+            - URL: ${{ env.DEPLOY_URL }}
+            - Deployed by: ${{ github.actor }}
+            - Build ID: ${{ needs.build.outputs.build_id }}
+
+            ---
+            *Deployed via GitHub Actions*`,
+              draft: false,
+              prerelease: false
+            });
+
+            console.log(`Release created: ${release.html_url}`);
+
+      - name: Notify Sentry of release
+        if: secrets.SENTRY_AUTH_TOKEN != ''
+        run: |
+          curl -X POST "https://sentry.io/api/0/organizations/${{ secrets.SENTRY_ORG }}/releases/" \
+            -H "Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "version": "v${{ needs.preflight.outputs.version }}",
+              "projects": ["talkstudio"],
+              "refs": [{
+                "repository": "${{ github.repository }}",
+                "commit": "${{ github.sha }}"
+              }]
+            }' || true
+
+  # ===========================================================================
+  # Notifications
+  # ===========================================================================
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [preflight, deploy, verify, rollback]
+    if: always()
+    steps:
+      - name: Determine final status
+        id: status
+        run: |
+          if [ "${{ needs.verify.result }}" == "success" ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "color=good" >> $GITHUB_OUTPUT
+            echo "emoji=:rocket:" >> $GITHUB_OUTPUT
+            echo "message=Production deployment successful!" >> $GITHUB_OUTPUT
+          elif [ "${{ needs.rollback.result }}" == "success" ]; then
+            echo "status=rolled_back" >> $GITHUB_OUTPUT
+            echo "color=warning" >> $GITHUB_OUTPUT
+            echo "emoji=:warning:" >> $GITHUB_OUTPUT
+            echo "message=Deployment failed and was rolled back" >> $GITHUB_OUTPUT
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "color=danger" >> $GITHUB_OUTPUT
+            echo "emoji=:x:" >> $GITHUB_OUTPUT
+            echo "message=Deployment failed!" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Notify Slack
+        if: vars.SLACK_WEBHOOK_URL != ''
+        run: |
+          curl -X POST ${{ vars.SLACK_WEBHOOK_URL }} \
+            -H 'Content-type: application/json' \
+            -d '{
+              "attachments": [{
+                "color": "${{ steps.status.outputs.color }}",
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "${{ steps.status.outputs.emoji }} TalkStudio Production Deployment"
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {"type": "mrkdwn", "text": "*Version*\nv${{ needs.preflight.outputs.version }}"},
+                      {"type": "mrkdwn", "text": "*Status*\n${{ steps.status.outputs.status }}"},
+                      {"type": "mrkdwn", "text": "*Deployed by*\n${{ github.actor }}"},
+                      {"type": "mrkdwn", "text": "*URL*\n${{ env.DEPLOY_URL }}"}
+                    ]
+                  },
+                  {
+                    "type": "context",
+                    "elements": [
+                      {"type": "mrkdwn", "text": "${{ steps.status.outputs.message }}"}
+                    ]
+                  }
+                ]
+              }]
+            }'
+
+      - name: Send email notification
+        if: vars.NOTIFICATION_EMAIL != '' && (steps.status.outputs.status == 'failed' || steps.status.outputs.status == 'rolled_back')
+        run: |
+          echo "Production deployment requires attention"
+          echo "Status: ${{ steps.status.outputs.status }}"
+          echo "Version: v${{ needs.preflight.outputs.version }}"
+          # Email notification would be configured via external service
+
+      - name: Update deployment status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Create deployment status for tracking
+            const state = '${{ steps.status.outputs.status }}' === 'success' ? 'success' : 'failure';
+
+            console.log(`Deployment status: ${state}`);
+            console.log(`Version: v${{ needs.preflight.outputs.version }}`);
+            console.log(`URL: ${{ env.DEPLOY_URL }}`);

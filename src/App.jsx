@@ -1,13 +1,7 @@
 import React from 'react';
 import Sidebar from './components/layout/Sidebar';
 import useChatStore from './store/useChatStore';
-
-// 임시 컴포넌트들 (나중에 파일로 분리)
-const Placeholder = ({ title }) => (
-  <div className="flex-1 flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 m-4 rounded-lg text-gray-400">
-    {title} 영역
-  </div>
-);
+import Chat from './components/Chat';
 
 function App() {
   const { config } = useChatStore();
@@ -23,7 +17,7 @@ function App() {
           <h1 className="text-xl font-bold text-gray-800 tracking-tight">TalkStudio</h1>
           <span className="ml-2 px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded">v0.1</span>
         </header>
-        <Placeholder title="설정 & 메시지 입력" />
+        <Chat />
       </div>
 
       {/* 3. 미리보기 영역 (우측) */}

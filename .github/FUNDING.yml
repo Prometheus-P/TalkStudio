@@ -1,0 +1,37 @@
+# =============================================================================
+# TalkStudio - Funding
+# =============================================================================
+#
+# These are supported funding model platforms
+# Uncomment and configure the platforms you want to enable
+# =============================================================================
+
+# GitHub Sponsors
+github: [haseongpark]
+
+# Patreon
+# patreon: username
+
+# Open Collective
+# open_collective: talkstudio
+
+# Ko-fi
+# ko_fi: username
+
+# Tidelift
+# tidelift: npm/talkstudio
+
+# Community Bridge
+# community_bridge: talkstudio
+
+# Liberapay
+# liberapay: username
+
+# IssueHunt
+# issuehunt: haseongpark/TalkStudio
+
+# Buy Me a Coffee
+# buy_me_a_coffee: username
+
+# Custom funding URLs (up to 4)
+# custom: ['https://example.com/sponsor']
