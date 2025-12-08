@@ -4,7 +4,6 @@
 > 카카오톡, 텔레그램, 인스타그램, 디스코드의 대화 화면을 웹에서 완벽하게 시뮬레이션하고 이미지로 소장하세요.
 
 ![Project Status](https://img.shields.io/badge/Status-In%20Development-orange?style=flat-square)
-![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
 
 ## ✨ 프로젝트 소개 (Introduction)
 
