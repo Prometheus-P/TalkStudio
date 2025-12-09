@@ -1,0 +1,54 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Trigger on version tags like v1.0.0
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    needs: build_and_test # Ensure CI passes before deployment
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Frontend Dependencies
+        run: npm install
+
+      - name: Build Frontend
+        run: npm run build
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+          cache-dependency-path: '**/requirements.txt'
+
+      - name: Install Python Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Deploy to Production (Placeholder)
+        run: |
+          echo "Deploying application to production environment..."
+          # Add your production deployment commands here
+          # These should be more robust and potentially involve blue/green or canary deployments
+          # e.g., rsync -avz --delete . user@prod.example.com:/var/www/talkstudio/production
+          # e.g., aws s3 sync ./build s3://talkstudio-production-bucket --delete
+          # e.g., ssh user@prod.example.com "cd /var/www/talkstudio/production && sudo systemctl restart talkstudio-backend"
+          echo "Deployment to production complete."
+
+      - name: Post-Deployment Verification (Placeholder)
+        run: |
+          echo "Running post-deployment checks (e.g., health checks, smoke tests)"
+          # Example: curl -f https://prod.example.com/health || exit 1

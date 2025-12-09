@@ -1,0 +1,67 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Or your preferred Node.js version
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Frontend Dependencies
+        run: npm install
+
+      - name: Run Frontend Lint
+        run: npm run lint # Make sure this script exists in package.json
+
+      - name: Run Frontend Tests
+        run: npm test -- --coverage # Make sure this script exists in package.json and generates coverage
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # Or your preferred Python version
+          cache: 'pip'
+          cache-dependency-path: '**/requirements.txt'
+
+      - name: Install Python Dependencies
+        run: pip install -r requirements.txt # Assuming a requirements.txt for backend/AI agent
+
+      - name: Run Backend/Agent Lint
+        run: |
+          # Add your backend/agent lint command here (e.g., ruff check .)
+          echo "Running backend/agent lint (placeholder)"
+
+      - name: Run Backend/Agent Tests
+        run: |
+          # Add your backend/agent test command here (e.g., pytest --cov=.)
+          echo "Running backend/agent tests (placeholder)"
+
+      - name: Security Scan (Placeholder)
+        run: |
+          echo "Running security scan (e.g., Snyk, Bandit) - Placeholder"
+          # Example: snyk test --all-projects # Requires Snyk token
+          # Example: bandit -r . -ll -f json -o bandit-report.json
+
+      - name: Upload Test Coverage
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # If using Codecov
+          fail_ci_if_error: true # Optional: Fail CI if coverage upload fails
+          # files: ./coverage.xml # Specify coverage report paths if needed
+
+  # Add deployment jobs here (deploy-*.yml will be separate)
