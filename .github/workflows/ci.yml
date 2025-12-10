@@ -39,7 +39,7 @@ jobs:
         run: npm run lint --prefix frontend # Make sure this script exists in frontend/package.json
 
       - name: Run Frontend Tests
-        run: npm test --prefix frontend -- --coverage # Make sure this script exists in frontend/package.json and generates coverage
+        run: npm test --prefix frontend # Removed -- --coverage
 
       - name: Set up Node.js (Backend)
         uses: actions/setup-node@v4
