@@ -1,5 +1,5 @@
 // frontend/src/pages/ContentManagement.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import GeneratedContentView from '../components/GeneratedContentView.jsx';
 
@@ -10,7 +10,7 @@ const ContentManagement = () => {
   const [error, setError] = useState(null);
   const [filterType, setFilterType] = useState(''); // e.g., 'summary', 'faq_answer'
 
-  const fetchGeneratedContents = async () => {
+  const fetchGeneratedContents = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -25,11 +25,11 @@ const ContentManagement = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterType]); // filterType is a dependency of this memoized function
 
   useEffect(() => {
     fetchGeneratedContents();
-  }, [filterType]); // Refetch when filter changes
+  }, [fetchGeneratedContents]); // Now fetchGeneratedContents is stable or changes only when its dependencies change
 
   const selectedContent = generatedContents.find(
     (content) => content.generatedContentId === selectedContentId
