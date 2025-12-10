@@ -38,3 +38,5 @@ venv/
 # Universal temporary files
 Thumbs.db
 *.tmp
+
+*.png
