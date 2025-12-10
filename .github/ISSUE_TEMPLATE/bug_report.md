@@ -1,71 +1,36 @@
 ---
-name: Bug Report
-about: Create a report to help us improve TalkStudio
-title: '[BUG] '
-labels: bug, triage
+name: 🐛 버그 보고
+about: 예상치 못한 동작이나 오류 보고
+title: '[bug]: '
+labels: ['bug', 'triage']
 assignees: ''
 ---
 
-## Bug Description
+## 버그 설명
+<!-- 발생한 버그에 대해 명확하고 간결하게 설명해주세요. -->
 
-A clear and concise description of what the bug is.
+## 재현 단계
+<!-- 버그를 재현하는 단계별 방법을 제공해주세요. -->
+1. '...'로 이동
+2. '....'를 클릭
+3. '....'에서 스크롤
+4. '....'를 확인
+5. 에러 발생
 
-## Steps to Reproduce
+## 예상되는 동작
+<!-- 버그가 없다면 예상되는 동작은 무엇이었는지 설명해주세요. -->
 
-1. Go to '...'
-2. Click on '...'
-3. Scroll down to '...'
-4. See error
+## 실제 발생한 동작
+<!-- 실제 발생한 동작에 대해 명확하고 간결하게 설명해주세요. -->
 
-## Expected Behavior
+## 스크린샷 (선택 사항)
+<!-- 버그를 이해하는 데 도움이 되는 스크린샷이 있다면 추가해주세요. -->
 
-A clear and concise description of what you expected to happen.
+## 환경
+- OS: [예: macOS Ventura 13.5]
+- 브라우저: [예: Chrome 116.0]
+- Node.js 버전: [예: v18.17.0]
+- 기타 관련 정보:
 
-## Actual Behavior
-
-A clear and concise description of what actually happened.
-
-## Screenshots
-
-If applicable, add screenshots to help explain your problem.
-
-## Environment
-
-- **Browser**: [e.g., Chrome 120, Safari 17, Firefox 121]
-- **OS**: [e.g., macOS 14, Windows 11, Ubuntu 22.04]
-- **Device**: [e.g., Desktop, iPhone 15, Galaxy S24]
-- **Screen Size**: [e.g., 1920x1080, 375x812]
-
-## Theme
-
-Which theme were you using when the bug occurred?
-
-- [ ] Kakao
-- [ ] Telegram
-- [ ] Instagram
-- [ ] Discord
-
-## Console Errors
-
-If there are any errors in the browser console, please paste them here:
-
-```
-// Paste console errors here
-```
-
-## Additional Context
-
-Add any other context about the problem here.
-
-## Possible Solution
-
-If you have any ideas on how to fix this bug, please describe them here.
-
----
-
-**Checklist before submitting:**
-
-- [ ] I have searched for similar issues before creating this one
-- [ ] I have provided all the requested information
-- [ ] I have included screenshots if applicable
-- [ ] I have checked the browser console for errors
+## 추가 코멘트 (선택 사항)
+<!-- 버그에 대한 추가 정보, 컨텍스트 등을 여기에 추가해주세요. -->

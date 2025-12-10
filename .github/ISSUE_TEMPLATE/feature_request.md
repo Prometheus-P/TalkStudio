@@ -1,76 +1,22 @@
 ---
-name: Feature Request
-about: Suggest an idea for TalkStudio
-title: '[FEATURE] '
-labels: enhancement, triage
+name: ✨ 기능 요청
+about: 새로운 아이디어나 기능을 제안합니다.
+title: '[feat]: '
+labels: ['enhancement', 'feature request']
 assignees: ''
 ---
 
-## Feature Summary
+## 기능 요청 설명
+<!-- 어떤 새로운 기능이나 개선 사항을 제안하고 싶으신가요? 명확하고 간결하게 설명해주세요. -->
 
-A clear and concise description of the feature you'd like to see.
+## 문제점
+<!-- 이 기능이 해결하고자 하는 문제나 현재의 한계점은 무엇인가요? -->
 
-## Problem Statement
+## 제안하는 해결책
+<!-- 제안하는 기능이 어떻게 이 문제를 해결할 수 있는지 설명해주세요. -->
 
-Is your feature request related to a problem? Please describe.
+## 대안 (선택 사항)
+<!-- 이 기능 없이 현재 문제를 해결할 수 있는 다른 방법이 있나요? 있다면 설명해주세요. -->
 
-**Example**: I'm always frustrated when [...]
-
-## Proposed Solution
-
-A clear and concise description of what you want to happen.
-
-## Alternative Solutions
-
-Describe any alternative solutions or features you've considered.
-
-## Use Cases
-
-Describe specific use cases for this feature:
-
-1. **Use Case 1**: [Description]
-2. **Use Case 2**: [Description]
-
-## User Story
-
-As a [type of user], I want [goal] so that [benefit].
-
-## Mockups / Examples
-
-If you have any mockups, wireframes, or examples from other apps, please include them here.
-
-## Impact Assessment
-
-### Who would benefit from this feature?
-
-- [ ] All users
-- [ ] Power users
-- [ ] New users
-- [ ] Specific user group: [describe]
-
-### How critical is this feature?
-
-- [ ] Must-have (blocking workflow)
-- [ ] Should-have (significant improvement)
-- [ ] Nice-to-have (minor improvement)
-- [ ] Future consideration
-
-## Technical Considerations
-
-If you have any technical insights or considerations, please share them here.
-
-## Related Features / Issues
-
-Link any related issues or features:
-
-- #issue_number
-- Related to: [description]
-
----
-
-**Checklist before submitting:**
-
-- [ ] I have searched for similar feature requests before creating this one
-- [ ] I have clearly described the problem this feature would solve
-- [ ] I have provided use cases for this feature
-- [ ] I have considered alternative solutions
+## 추가 코멘트 (선택 사항)
+<!-- 기능에 대한 추가 정보나 컨텍스트 등을 여기에 추가해주세요. -->

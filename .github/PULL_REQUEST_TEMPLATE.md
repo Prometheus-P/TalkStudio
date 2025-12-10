@@ -1,118 +1,42 @@
-## Summary
-
-<!-- Provide a brief description of the changes in this PR -->
-
-## Related Issue
-
-<!-- Link to the related issue(s) -->
-Closes #
-
-## Type of Change
-
-<!-- Mark the relevant option with an [x] -->
-
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] Refactoring (no functional changes)
-- [ ] Documentation update
-- [ ] Test update
-- [ ] CI/CD update
-- [ ] Other (please describe):
-
-## Changes Made
-
-<!-- List the specific changes made in this PR -->
-
--
--
--
-
-## Screenshots / Videos
-
-<!-- If applicable, add screenshots or videos to help explain your changes -->
-
-| Before | After |
-|--------|-------|
-| screenshot | screenshot |
-
-## Testing
-
-### Test Coverage
-
-- [ ] Unit tests added/updated
-- [ ] Integration tests added/updated
-- [ ] E2E tests added/updated
-- [ ] Manual testing completed
-
-### Test Instructions
-
-<!-- Describe how reviewers can test your changes -->
-
-1.
-2.
-3.
-
-### Tested Browsers
-
-- [ ] Chrome
-- [ ] Firefox
-- [ ] Safari
-- [ ] Edge
-
-### Tested Themes
-
-- [ ] Kakao
-- [ ] Telegram
-- [ ] Instagram
-- [ ] Discord
-
-## Checklist
-
-<!-- Mark completed items with an [x] -->
-
-### Code Quality
-- [ ] My code follows the project's coding style
-- [ ] I have performed a self-review of my code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] My changes generate no new warnings or errors
-
-### Testing
-- [ ] I have added tests that prove my fix is effective or my feature works
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] Test coverage is maintained or improved
-
-### Documentation
-- [ ] I have updated the documentation accordingly
-- [ ] I have updated the CHANGELOG.md (if applicable)
-
-### Dependencies
-- [ ] I have checked that no new vulnerabilities are introduced
-- [ ] Any new dependencies are justified and documented
-
-## Performance Impact
-
-<!-- Describe any performance implications of your changes -->
-
-- [ ] No performance impact
-- [ ] Performance improved
-- [ ] Performance may be affected (please explain):
-
-## Deployment Notes
-
-<!-- Any special instructions for deployment? -->
-
-- [ ] No special deployment steps required
-- [ ] Special steps required (please describe):
-
-## Additional Notes
-
-<!-- Any additional information that reviewers should know -->
-
+---
+name: 🚀 기능/개선 Pull Request
+about: 새로운 기능 추가 또는 기존 기능 개선을 위한 PR
+title: '[feat]: '
+labels: ['feature', 'enhancement', 'in review']
+assignees: ''
 ---
 
-**Reviewer Guidelines:**
-- Review the code for correctness, maintainability, and performance
-- Verify tests are comprehensive and pass
-- Check that the PR description is accurate
-- Test the changes locally if possible
+## 변경 사항 요약
+
+<!-- 무엇을 변경했는지, 왜 변경했는지 간략하게 설명해주세요. -->
+
+## 변경 상세 내용
+
+<!--
+- 어떤 문제가 해결되었나요? (Issue #, Bug 등)
+- 새로운 기능이라면 어떤 기능을 추가했나요?
+- 기술적인 구현 세부 사항 (선택 사항)
+-->
+
+## 테스트 계획
+
+<!--
+- 어떤 테스트를 수행했나요? (예: 유닛 테스트, 통합 테스트, 수동 테스트)
+- 테스트 시나리오 및 결과
+- TDD 원칙 준수 여부 (RED -> GREEN -> REFACTOR)
+-->
+
+## 스크린샷 (선택 사항)
+
+<!-- UI 변경 사항이 있다면 스크린샷을 첨부해주세요. -->
+
+## 체크리스트
+
+- [ ] [CONTRIBUTING.md](CONTRIBUTING.md) 기여 가이드라인을 준수했습니다.
+- [ ] 코드 스타일 (ESLint, Prettier)을 준수하고 있습니다.
+- [ ] 모든 테스트가 성공적으로 통과했습니다.
+- [ ] 관련 문서를 업데이트했습니다 (필요한 경우).
+- [ ] 브레이킹 체인지가 있는 경우, 이에 대한 설명을 포함했습니다.
+
+## 추가 코멘트 (선택 사항)
+<!-- 리뷰어에게 전달하고 싶은 내용이나 특별히 주의해야 할 점이 있다면 작성해주세요. -->

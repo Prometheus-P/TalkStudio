@@ -22,3 +22,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Build artifacts
+build/
+
+# Environment variables
+.env*
+
+# Python specific
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Universal temporary files
+Thumbs.db
+*.tmp
