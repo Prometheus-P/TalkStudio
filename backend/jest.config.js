@@ -7,7 +7,7 @@ export default {
     globalSetup: '<rootDir>/tests/globalSetup.js', // For global setup (e.g., starting MongoDB-Memory-Server)
     globalTeardown: '<rootDir>/tests/globalTeardown.js', // For global teardown
     // Enable Jest's ESM support
-    extensionsToTreatAsEsm: ['.js'],
+    // extensionsToTreatAsEsm: ['.js'], // Removed due to Jest validation error (inferred from package.json type: "module")
     moduleNameMapper: {
       '^(\.{1,2}/.*)\.js$': '$1', // Helps with relative imports in ESM
     },
