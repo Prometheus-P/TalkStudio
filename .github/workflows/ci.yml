@@ -15,41 +15,52 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js (Frontend)
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Or your preferred Node.js version
+          node-version: '20'
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Install Frontend Dependencies
-        run: npm install
+        run: npm install --prefix frontend
 
       - name: Run Frontend Lint
-        run: npm run lint # Make sure this script exists in package.json
+        run: npm run lint --prefix frontend # Make sure this script exists in frontend/package.json
 
       - name: Run Frontend Tests
-        run: npm test -- --coverage # Make sure this script exists in package.json and generates coverage
+        run: npm test --prefix frontend -- --coverage # Make sure this script exists in frontend/package.json and generates coverage
+
+      - name: Set up Node.js (Backend)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'backend/package-lock.json'
+
+      - name: Install Backend Dependencies
+        run: npm install --prefix backend
+
+      - name: Run Backend Tests
+        run: npm test --prefix backend -- --coverage # Assuming 'test' script runs Jest tests
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10' # Or your preferred Python version
+          python-version: '3.10'
           cache: 'pip'
-          cache-dependency-path: '**/requirements.txt'
+          cache-dependency-path: 'ai_agent_system/requirements.txt'
 
-      - name: Install Python Dependencies
-        run: pip install -r requirements.txt # Assuming a requirements.txt for backend/AI agent
+      - name: Install Python Dependencies (AI Agent System)
+        run: python -m pip install -r ai_agent_system/requirements.txt
 
-      - name: Run Backend/Agent Lint
+      - name: Run Python Lint (AI Agent System)
         run: |
-          # Add your backend/agent lint command here (e.g., ruff check .)
-          echo "Running backend/agent lint (placeholder)"
+          # Add your Python lint command here (e.g., ruff check ai_agent_system)
+          echo "Running Python lint (AI Agent System) - Placeholder"
 
-      - name: Run Backend/Agent Tests
-        run: |
-          # Add your backend/agent test command here (e.g., pytest --cov=.)
-          echo "Running backend/agent tests (placeholder)"
+      - name: Run Python Tests (AI Agent System)
+        run: python -m pytest ai_agent_system --cov=ai_agent_system # Assuming pytest with coverage
 
       - name: Security Scan (Placeholder)
         run: |
@@ -60,8 +71,8 @@ jobs:
       - name: Upload Test Coverage
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # If using Codecov
-          fail_ci_if_error: true # Optional: Fail CI if coverage upload fails
-          # files: ./coverage.xml # Specify coverage report paths if needed
-
-  # Add deployment jobs here (deploy-*.yml will be separate)
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          # files: ./coverage.xml # Specify coverage report paths if needed (for both frontend and python)
+          # Python coverage typically generates .coverage file, Jest can output JSON/LCOV.
+          # You might need to merge them or upload separately.

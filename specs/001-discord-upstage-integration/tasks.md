@@ -98,12 +98,12 @@
 
 - [X] T046 전반적인 에러 로깅 및 모니터링 시스템 연동 (`MONITORING.md` 참조)
 - [X] T047 보안 강화 (API Key 암호화 저장, Discord OAuth2 흐름 개선 등)
-- [ ] T048 테스트 코드 작성 (유닛, 통합, E2E) for all new components/features (`TEST_STRATEGY.md` 참조)
-- [ ] T049 Swagger/OpenAPI 문서 자동 생성 및 배포 파이프라인 연동 (`API_SPEC.md` 참조)
-- [ ] T050 CI/CD 파이프라인 업데이트 (`.github/workflows/ci.yml`, `deploy_staging.yml`, `deploy_production.yml`에 이 기능 관련 테스트/배포 단계 추가)
-- [ ] T051 `README.md`, `CONTRIBUTING.md` 등 문서 업데이트 및 기능 사용 가이드 추가
-- [ ] T052 최종 코드 리뷰 및 리팩토링
-- [ ] T053 성능 최적화 및 확장성 점검
+- [X] T048 테스트 코드 작성 (유닛, 통합, E2E) for all new components/features (`TEST_STRATEGY.md` 참조)
+- [X] T049 Swagger/OpenAPI 문서 자동 생성 및 배포 파이프라인 연동 (`API_SPEC.md` 참조)
+- [X] T050 CI/CD 파이프라인 업데이트 (`.github/workflows/ci.yml`, `deploy_staging.yml`, `deploy_production.yml`에 이 기능 관련 테스트/배포 단계 추가)
+- [X] T051 `README.md`, `CONTRIBUTING.md` 등 문서 업데이트 및 기능 사용 가이드 추가
+- [X] T052 최종 코드 리뷰 및 리팩토링
+- [X] T053 성능 최적화 및 확장성 점검
 
 ## User Story Dependencies
 
