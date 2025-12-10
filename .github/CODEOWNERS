@@ -1,0 +1,87 @@
+# =============================================================================
+# TalkStudio - Code Owners
+# =============================================================================
+#
+# This file defines the code owners for different parts of the repository.
+# Code owners are automatically requested for review when someone opens a
+# pull request that modifies code they own.
+#
+# Format: <pattern> <owner1> <owner2> ...
+#
+# Learn more: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# =============================================================================
+
+# =============================================================================
+# Global Owners (fallback for all files)
+# =============================================================================
+* @haseongpark
+
+# =============================================================================
+# Documentation
+# =============================================================================
+/docs/ @haseongpark
+*.md @haseongpark
+/README.md @haseongpark
+/CONTRIBUTING.md @haseongpark
+
+# =============================================================================
+# Source Code
+# =============================================================================
+
+# Frontend Core
+/src/ @haseongpark
+
+# Components
+/src/components/ @haseongpark
+
+# State Management (Zustand)
+/src/store/ @haseongpark
+
+# Utilities & Helpers
+/src/lib/ @haseongpark
+/src/utils/ @haseongpark
+
+# Types
+/src/types/ @haseongpark
+
+# Styles
+/src/styles/ @haseongpark
+*.css @haseongpark
+
+# =============================================================================
+# Configuration Files
+# =============================================================================
+
+# Build & Tooling
+/vite.config.* @haseongpark
+/tsconfig.* @haseongpark
+/tailwind.config.* @haseongpark
+/postcss.config.* @haseongpark
+/eslint.config.* @haseongpark
+
+# Package Management
+/package.json @haseongpark
+/pnpm-lock.yaml @haseongpark
+
+# =============================================================================
+# CI/CD & DevOps
+# =============================================================================
+/.github/ @haseongpark
+/.github/workflows/ @haseongpark
+
+# =============================================================================
+# Tests
+# =============================================================================
+/src/**/*.test.* @haseongpark
+/src/**/*.spec.* @haseongpark
+/tests/ @haseongpark
+/e2e/ @haseongpark
+/vitest.config.* @haseongpark
+/playwright.config.* @haseongpark
+
+# =============================================================================
+# Security & Sensitive Files
+# =============================================================================
+/.env* @haseongpark
+/SECURITY.md @haseongpark
+/.github/CODEOWNERS @haseongpark

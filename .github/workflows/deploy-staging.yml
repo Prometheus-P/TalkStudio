@@ -1,0 +1,493 @@
+# =============================================================================
+# TalkStudio - Staging Environment Deployment
+# =============================================================================
+# Version: 1.0.0
+# Owner: @haseongpark
+# Created: 2025-12-08
+# Updated: 2025-12-08
+#
+# Description:
+#   Deployment pipeline for staging environment.
+#   Deploys automatically on push to release/* branches.
+#   Used for QA testing and stakeholder review before production.
+#
+# Environment:
+#   - URL: https://staging.talkstudio.app (example)
+#   - Purpose: QA testing, UAT, pre-production validation
+#   - Auto-deploy: Yes (on release/* branch push)
+#
+# Related Documents:
+#   - docs/specs/ARCHITECTURE.md
+#   - VERSIONING_GUIDE.md
+# =============================================================================
+
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - 'release/**'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'develop'
+        type: string
+      run_e2e:
+        description: 'Run E2E tests after deployment'
+        required: false
+        default: 'true'
+        type: boolean
+
+# Only one staging deployment at a time
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '9'
+  ENVIRONMENT: staging
+  DEPLOY_URL: https://staging.talkstudio.app
+
+jobs:
+  # ===========================================================================
+  # Pre-deployment Validation
+  # ===========================================================================
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      release_name: ${{ steps.version.outputs.release_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract version info
+        id: version
+        run: |
+          # Extract version from branch name (release/v1.2.3 -> 1.2.3)
+          if [[ "${{ github.ref_name }}" == release/* ]]; then
+            VERSION=$(echo "${{ github.ref_name }}" | sed 's/release\///' | sed 's/^v//')
+          else
+            VERSION=$(node -p "require('./package.json').version")
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release_name=v$VERSION" >> $GITHUB_OUTPUT
+
+          echo "Deploying version: $VERSION"
+
+      - name: Validate semantic version
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Invalid version format: $VERSION"
+            exit 1
+          fi
+
+      - name: Display deployment info
+        run: |
+          echo "## Staging Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Version | ${{ steps.version.outputs.release_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | Staging |" >> $GITHUB_STEP_SUMMARY
+
+  # ===========================================================================
+  # Full Test Suite
+  # ===========================================================================
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run linter
+        run: pnpm lint
+
+      - name: Run type check
+        run: pnpm tsc --noEmit
+
+      - name: Run unit tests
+        run: pnpm test:coverage
+        env:
+          CI: true
+
+      - name: Check coverage thresholds
+        run: |
+          COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
+
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "::error::Coverage ($COVERAGE%) is below threshold (80%)"
+            exit 1
+          fi
+
+          echo "Coverage: $COVERAGE%"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-staging
+          path: |
+            coverage/
+          retention-days: 14
+
+  # ===========================================================================
+  # Build for Staging
+  # ===========================================================================
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [validate, test]
+    outputs:
+      build_id: ${{ steps.build-info.outputs.build_id }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Create .env.staging
+        run: |
+          cat > .env.staging << EOF
+          VITE_APP_ENV=staging
+          VITE_APP_VERSION=${{ needs.validate.outputs.version }}
+          VITE_API_URL=https://api-staging.talkstudio.app
+          VITE_ENABLE_DEBUG=false
+          VITE_ENABLE_ANALYTICS=true
+          VITE_SENTRY_DSN=${{ secrets.SENTRY_DSN_STAGING }}
+          EOF
+
+      - name: Build application
+        run: pnpm build
+        env:
+          NODE_ENV: production
+          VITE_APP_ENV: staging
+
+      - name: Generate build info
+        id: build-info
+        run: |
+          BUILD_ID="staging-${{ needs.validate.outputs.version }}-${{ github.run_number }}"
+          echo "build_id=$BUILD_ID" >> $GITHUB_OUTPUT
+
+          cat > dist/build-info.json << EOF
+          {
+            "buildId": "$BUILD_ID",
+            "version": "${{ needs.validate.outputs.version }}",
+            "commit": "${{ github.sha }}",
+            "branch": "${{ github.ref_name }}",
+            "environment": "staging",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "triggeredBy": "${{ github.actor }}"
+          }
+          EOF
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-staging-${{ needs.validate.outputs.version }}
+          path: dist/
+          retention-days: 30
+
+  # ===========================================================================
+  # Deploy to Staging
+  # ===========================================================================
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [validate, build]
+    environment:
+      name: staging
+      url: ${{ env.DEPLOY_URL }}
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-staging-${{ needs.validate.outputs.version }}
+          path: dist/
+
+      # ---------------------------------------------------------------------
+      # Option 1: Deploy to Vercel
+      # ---------------------------------------------------------------------
+      - name: Deploy to Vercel
+        if: vars.DEPLOY_TARGET == 'vercel'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./dist
+          alias-domains: staging.talkstudio.app
+
+      # ---------------------------------------------------------------------
+      # Option 2: Deploy to Netlify
+      # ---------------------------------------------------------------------
+      - name: Deploy to Netlify
+        if: vars.DEPLOY_TARGET == 'netlify'
+        uses: nwtgck/actions-netlify@v3
+        with:
+          publish-dir: './dist'
+          production-deploy: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Staging ${{ needs.validate.outputs.release_name }}"
+          alias: staging
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      # ---------------------------------------------------------------------
+      # Option 3: Deploy to AWS S3 + CloudFront
+      # ---------------------------------------------------------------------
+      - name: Configure AWS credentials
+        if: vars.DEPLOY_TARGET == 'aws'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION || 'ap-northeast-2' }}
+
+      - name: Deploy to S3
+        if: vars.DEPLOY_TARGET == 'aws'
+        run: |
+          aws s3 sync dist/ s3://${{ secrets.AWS_S3_BUCKET_STAGING }} \
+            --delete \
+            --cache-control "public, max-age=31536000" \
+            --exclude "index.html" \
+            --exclude "build-info.json"
+
+          aws s3 cp dist/index.html s3://${{ secrets.AWS_S3_BUCKET_STAGING }}/index.html \
+            --cache-control "no-cache, no-store, must-revalidate"
+
+          aws s3 cp dist/build-info.json s3://${{ secrets.AWS_S3_BUCKET_STAGING }}/build-info.json \
+            --cache-control "no-cache"
+
+      - name: Invalidate CloudFront cache
+        if: vars.DEPLOY_TARGET == 'aws'
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.AWS_CLOUDFRONT_STAGING_ID }} \
+            --paths "/*"
+
+      - name: Deployment summary
+        run: |
+          echo "## Staging Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ needs.validate.outputs.release_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: ${{ env.DEPLOY_URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Build ID**: ${{ needs.build.outputs.build_id }}" >> $GITHUB_STEP_SUMMARY
+
+  # ===========================================================================
+  # E2E Tests on Staging
+  # ===========================================================================
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: github.event.inputs.run_e2e != 'false'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Wait for deployment
+        run: sleep 60
+
+      - name: Run E2E tests against staging
+        run: pnpm test:e2e
+        env:
+          CI: true
+          BASE_URL: ${{ env.DEPLOY_URL }}
+          PLAYWRIGHT_BASE_URL: ${{ env.DEPLOY_URL }}
+
+      - name: Upload E2E results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results-staging
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+  # ===========================================================================
+  # Smoke Tests
+  # ===========================================================================
+  smoke-test:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Wait for deployment propagation
+        run: sleep 30
+
+      - name: Health check
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ env.DEPLOY_URL }})
+
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "::error::Health check failed with status $HTTP_STATUS"
+            exit 1
+          fi
+
+      - name: Check critical pages
+        run: |
+          PAGES=("/" "/build-info.json")
+
+          for page in "${PAGES[@]}"; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.DEPLOY_URL }}$page")
+            if [ "$STATUS" != "200" ]; then
+              echo "::error::Page $page returned status $STATUS"
+              exit 1
+            fi
+            echo "Page $page: OK ($STATUS)"
+          done
+
+      - name: Verify version
+        run: |
+          BUILD_INFO=$(curl -s ${{ env.DEPLOY_URL }}/build-info.json)
+          DEPLOYED_COMMIT=$(echo $BUILD_INFO | jq -r '.commit')
+
+          if [ "$DEPLOYED_COMMIT" != "${{ github.sha }}" ]; then
+            echo "::error::Version mismatch. Expected ${{ github.sha }}, got $DEPLOYED_COMMIT"
+            exit 1
+          fi
+
+          echo "Version verified: $DEPLOYED_COMMIT"
+
+      - name: Performance check
+        run: |
+          # Simple load time check
+          LOAD_TIME=$(curl -s -o /dev/null -w "%{time_total}" ${{ env.DEPLOY_URL }})
+
+          echo "Page load time: ${LOAD_TIME}s"
+
+          # Warn if load time exceeds 3 seconds
+          if (( $(echo "$LOAD_TIME > 3" | bc -l) )); then
+            echo "::warning::Page load time (${LOAD_TIME}s) exceeds recommended (3s)"
+          fi
+
+  # ===========================================================================
+  # Create Release Tag
+  # ===========================================================================
+  tag-release:
+    name: Tag Release
+    runs-on: ubuntu-latest
+    needs: [validate, deploy, smoke-test]
+    if: startsWith(github.ref, 'refs/heads/release/')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create staging tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          TAG_NAME="${{ needs.validate.outputs.release_name }}-staging"
+
+          git tag -a "$TAG_NAME" -m "Staging release ${{ needs.validate.outputs.release_name }}"
+          git push origin "$TAG_NAME"
+
+          echo "Created tag: $TAG_NAME"
+
+  # ===========================================================================
+  # Notification
+  # ===========================================================================
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [validate, deploy, smoke-test, e2e]
+    if: always()
+    steps:
+      - name: Determine status
+        id: status
+        run: |
+          if [ "${{ needs.deploy.result }}" == "success" ] && [ "${{ needs.smoke-test.result }}" == "success" ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "emoji=:white_check_mark:" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "emoji=:x:" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Notify Slack
+        if: vars.SLACK_WEBHOOK_URL != ''
+        run: |
+          curl -X POST ${{ vars.SLACK_WEBHOOK_URL }} \
+            -H 'Content-type: application/json' \
+            -d '{
+              "text": "TalkStudio Staging Deployment",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ steps.status.outputs.emoji }} *TalkStudio* staging deployment *${{ steps.status.outputs.status }}*\n\n*Version*: `${{ needs.validate.outputs.release_name }}`\n*URL*: ${{ env.DEPLOY_URL }}\n*E2E Tests*: ${{ needs.e2e.result }}"
+                  }
+                }
+              ]
+            }'
+
+      - name: Create GitHub deployment status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: context.payload.deployment?.id || 0,
+              state: '${{ steps.status.outputs.status }}',
+              environment_url: '${{ env.DEPLOY_URL }}',
+              description: 'Staging deployment ${{ needs.validate.outputs.release_name }}'
+            });
