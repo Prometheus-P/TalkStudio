@@ -4,25 +4,25 @@
 
 ## 1. Setup Phase (프로젝트 초기화)
 
-- [ ] T001 `backend/src/api/conversations/` 디렉토리 생성
-- [ ] T002 `backend/src/services/` 디렉토리에 대화 생성 관련 파일 구조 생성
-- [ ] T003 `frontend/src/components/ConversationGenerator/` 디렉토리 생성
-- [ ] T004 `frontend/src/components/BulkGeneration/` 디렉토리 생성
-- [ ] T005 `backend/package.json`에 필요한 종속성 추가 (openai, multer, archiver, xlsx)
-- [ ] T006 `frontend/package.json`에 필요한 종속성 추가 (xlsx)
-- [ ] T007 `.env.example`에 AI API 키 환경변수 추가 (UPSTAGE_API_KEY, OPENAI_API_KEY)
+- [x] T001 `backend/src/api/conversations/` 디렉토리 생성
+- [x] T002 `backend/src/services/` 디렉토리에 대화 생성 관련 파일 구조 생성
+- [x] T003 `src/components/ConversationGenerator/` 디렉토리 생성 *(경로 수정: frontend/ → src/)*
+- [x] T004 `src/components/BulkGeneration/` 디렉토리 생성 *(경로 수정: frontend/ → src/)*
+- [x] T005 `backend/package.json`에 필요한 종속성 추가 (openai, archiver, express-validator)
+- [x] T006 루트 `package.json`에 필요한 종속성 추가 (xlsx) *(경로 수정: frontend/ → root)*
+- [x] T007 `.env.example`에 AI API 키 환경변수 추가 (UPSTAGE_API_KEY, OPENAI_API_KEY)
 
 ## 2. Foundational Phase (공통 기반 작업)
 
-- [ ] T008 `backend/src/services/ai_client.js`에 Upstage/OpenAI 통합 클라이언트 구현 (폴백 로직 포함)
-- [ ] T009 `backend/src/services/content_filter.js`에 콘텐츠 안전 필터링 서비스 구현
-- [ ] T010 `backend/src/services/prompt_builder.js`에 대화 생성 프롬프트 빌더 구현
-- [ ] T011 `backend/src/utils/excel_parser.js`에 Excel 파싱 유틸리티 구현
-- [ ] T012 `backend/src/models/conversation_model.js`에 Conversation 데이터 모델 구현
-- [ ] T013 `backend/src/models/template_model.js`에 Template 데이터 모델 구현
-- [ ] T014 `backend/src/models/bulk_job_model.js`에 BulkJob 데이터 모델 구현
-- [ ] T015 MongoDB 인덱스 생성 스크립트 작성 `backend/src/db/migrations/002_conversation_indexes.js`
-- [ ] T016 시스템 템플릿 시드 데이터 생성 `backend/src/db/seeds/system_templates.js`
+- [x] T008 `backend/src/services/ai_client.js`에 Upstage/OpenAI 통합 클라이언트 구현 (폴백 로직 포함)
+- [x] T009 `backend/src/services/content_filter.js`에 콘텐츠 안전 필터링 서비스 구현
+- [x] T010 `backend/src/services/prompt_builder.js`에 대화 생성 프롬프트 빌더 구현
+- [x] T011 `backend/src/utils/excel_parser.js`에 Excel 파싱 유틸리티 구현
+- [x] T012 `backend/src/models/conversation_model.js`에 Conversation 데이터 모델 구현
+- [x] T013 `backend/src/models/template_model.js`에 Template 데이터 모델 구현
+- [x] T014 `backend/src/models/bulk_job_model.js`에 BulkJob 데이터 모델 구현
+- [x] T015 MongoDB 인덱스 생성 스크립트 작성 `backend/src/db/migrations/002_conversation_indexes.js`
+- [x] T016 시스템 템플릿 시드 데이터 생성 `backend/src/db/seeds/system_templates.js`
 
 ## 3. User Story 1: 시나리오 기반 대화 생성 (US1) (P1)
 
