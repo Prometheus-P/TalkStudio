@@ -11,6 +11,7 @@ import discordConfigRoutes from './src/api/integrations/discord_config_routes.js
 import discordCaptureRoutes from './src/api/integrations/discord_capture_routes.js';
 import intentAnalysisRoutes from './src/api/integrations/intent_analysis_routes.js';
 import contentGenerationRoutes from './src/api/integrations/content_generation_routes.js';
+import { startRetentionJob } from './src/jobs/data_retention_job.js';
 
 const app = express();
 
@@ -39,4 +40,7 @@ app.use((err, req, res, next) => {
 // Start the server
 app.listen(config.port, () => {
   logger.info(`Server running on port ${config.port}`);
+
+  // Start data retention job (US7/NFR-8)
+  startRetentionJob();
 });

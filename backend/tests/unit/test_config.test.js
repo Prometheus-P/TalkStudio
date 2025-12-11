@@ -33,6 +33,11 @@ describe('Config Module', () => {
     expect(config.encryptionSecret).toBe('supersecretencryptionkey');
     expect(config.discordBotToken).toBeUndefined();
     expect(config.upstageApiKey).toBeUndefined();
+    // Data retention default values
+    expect(config.dataRetention).toBeDefined();
+    expect(config.dataRetention.retentionDays).toBe(90);
+    expect(config.dataRetention.cleanupCronSchedule).toBe('0 2 * * *');
+    expect(config.dataRetention.enabled).toBe(true);
     expect(mockDotenvConfig).toHaveBeenCalledTimes(1);
     expect(mockDotenvConfig).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -48,6 +53,9 @@ describe('Config Module', () => {
     process.env.ENCRYPTION_SECRET = 'mytestencryptionsecret';
     process.env.DISCORD_BOT_TOKEN = 'test_discord_token';
     process.env.UPSTAGE_API_KEY = 'test_upstage_key';
+    process.env.DATA_RETENTION_DAYS = '30';
+    process.env.DATA_RETENTION_CRON = '0 3 * * *';
+    process.env.DATA_RETENTION_ENABLED = 'false';
 
     const { default: config } = await import('../../src/config/index.js');
 
@@ -57,6 +65,9 @@ describe('Config Module', () => {
     expect(config.encryptionSecret).toBe('mytestencryptionsecret');
     expect(config.discordBotToken).toBe('test_discord_token');
     expect(config.upstageApiKey).toBe('test_upstage_key');
+    expect(config.dataRetention.retentionDays).toBe(30);
+    expect(config.dataRetention.cleanupCronSchedule).toBe('0 3 * * *');
+    expect(config.dataRetention.enabled).toBe(false);
   });
 
   test('should log a warning if ENCRYPTION_SECRET is default', async () => {

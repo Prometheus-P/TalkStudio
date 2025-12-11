@@ -20,3 +20,6 @@ pymongo>=4.6.0
 
 # Async utilities
 aiohttp>=3.9.0
+
+# Structured logging (NFR-9)
+structlog>=24.1.0

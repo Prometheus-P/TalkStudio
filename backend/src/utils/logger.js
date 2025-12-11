@@ -1,36 +1,61 @@
 // backend/src/utils/logger.js
-// In a production environment, consider a more robust logging library like Winston or Pino.
+// Pino-based structured JSON logger (NFR-9)
 
-const logLevels = {
-  info: 0,
-  warn: 1,
-  error: 2,
-  debug: 3,
+import pino from 'pino';
+
+const isProduction = process.env.NODE_ENV === 'production';
+const logLevel = process.env.LOG_LEVEL || 'info';
+
+// Base configuration for structured JSON logging
+const baseConfig = {
+  level: logLevel,
+  base: {
+    service: 'talkstudio-backend',
+    version: process.env.npm_package_version || '1.0.0',
+  },
+  timestamp: pino.stdTimeFunctions.isoTime,
+  formatters: {
+    level: (label) => ({ level: label }),
+    bindings: (bindings) => ({
+      pid: bindings.pid,
+      host: bindings.hostname,
+    }),
+  },
+  redact: {
+    paths: ['req.headers.authorization', 'req.headers.cookie', 'password', 'token', 'apiKey'],
+    censor: '[REDACTED]',
+  },
 };
 
-const currentLogLevel = process.env.LOG_LEVEL || 'info';
+// Development: use pino-pretty for readable output
+// Production: pure JSON for log aggregation (ELK, Datadog, etc.)
+const transport = isProduction
+  ? undefined
+  : {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        translateTime: 'SYS:standard',
+        ignore: 'pid,hostname',
+      },
+    };
 
-const logger = {
-  info: (...args) => {
-    if (logLevels[currentLogLevel] <= logLevels.info) {
-      console.log(`[INFO] [${new Date().toISOString()}]`, ...args);
-    }
-  },
-  warn: (...args) => {
-    if (logLevels[currentLogLevel] <= logLevels.warn) {
-      console.warn(`[WARN] [${new Date().toISOString()}]`, ...args);
-    }
-  },
-  error: (...args) => {
-    if (logLevels[currentLogLevel] <= logLevels.error) {
-      console.error(`[ERROR] [${new Date().toISOString()}]`, ...args);
-    }
-  },
-  debug: (...args) => {
-    if (logLevels[currentLogLevel] <= logLevels.debug) {
-      console.debug(`[DEBUG] [${new Date().toISOString()}]`, ...args);
-    }
-  },
+const logger = pino({
+  ...baseConfig,
+  transport,
+});
+
+// Child logger factory for request context
+export const createRequestLogger = (requestId, userId = null) => {
+  return logger.child({
+    requestId,
+    userId,
+  });
+};
+
+// Child logger factory for specific modules
+export const createModuleLogger = (moduleName) => {
+  return logger.child({ module: moduleName });
 };
 
 export default logger;

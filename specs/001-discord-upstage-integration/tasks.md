@@ -146,3 +146,91 @@ MVP (Minimum Viable Product)는 다음 User Story들을 순차적으로 구현�
 - Polish Phase: 9/9 tasks ✅
 
 **Total Progress**: 54/54 tasks completed (100%)
+
+---
+
+## 8. Enhancement Phase: Clarification 기반 신규 요구사항 (v1.1)
+
+> 2025-12-11 `/speckit.clarify` 세션에서 추가된 요구사항
+
+### US5: OpenAI Fallback 및 AI 비교 (FR-4.4, FR-4.5)
+
+**목표**: Upstage 장애 시 OpenAI 자동 전환 및 AI 결과 비교 기능
+
+**독립 테스트 기준**:
+- Upstage API 장애 시 OpenAI로 자동 전환되는가?
+- 두 AI의 결과를 비교하여 품질 차이를 확인할 수 있는가?
+
+- [X] T054 [US5] `ai_agent_system/src/services/openai_client.py`에 OpenAI API 클라이언트 구현
+- [X] T055 [US5] `ai_agent_system/src/services/ai_router.py`에 Upstage/OpenAI 라우팅 및 fallback 로직 구현
+- [X] T056 [US5] `ai_agent_system/src/agents/content_generation_agent.py`에 ai_router 연동 (기존 upstage_client 대체)
+- [X] T057 [P] [US5] `ai_agent_system/src/services/ai_comparator.py`에 두 AI 결과 비교 로직 구현
+- [X] T058 [P] [US5] `backend/src/api/content_generation_routes.js`에 `POST /content/compare` (AI 비교 요청) API 엔드포인트 추가
+- [X] T059 [US5] `frontend/src/components/AIComparisonView.jsx`에 AI 비교 결과 표시 UI 컴포넌트 구현
+
+### US6: Excel 데이터 입출력 (FR-6)
+
+**목표**: Excel 템플릿을 통한 메시지 데이터 입력 및 JSON 내보내기
+
+**독립 테스트 기준**:
+- Excel 파일 업로드 시 메시지 데이터가 정확히 파싱되는가?
+- 유효성 검증 실패 시 오류 행이 피드백되는가?
+- 생성된 콘텐츠가 JSON 형식으로 내보내지는가?
+
+- [X] T060 [US6] `backend/package.json`에 `xlsx` (SheetJS) 종속성 추가
+- [X] T061 [US6] `backend/src/services/excel_parser.js`에 Excel 파일 파싱 로직 구현
+- [X] T062 [US6] `backend/src/services/excel_validator.js`에 Excel 데이터 유효성 검증 로직 구현 (오류 행 피드백 포함)
+- [X] T063 [P] [US6] `backend/src/api/data_io_routes.js`에 `POST /data/import/excel` (Excel 업로드) API 엔드포인트 구현
+- [X] T064 [P] [US6] `backend/src/api/data_io_routes.js`에 `GET /data/export/json` (JSON 내보내기) API 엔드포인트 구현
+- [X] T065 [US6] `frontend/src/components/ExcelUploader.jsx`에 Excel 업로드 UI 컴포넌트 구현
+- [X] T066 [US6] `frontend/src/components/ExcelValidationFeedback.jsx`에 유효성 검증 결과 표시 UI 구현
+- [X] T067 [US6] `public/templates/message_template.xlsx`에 Excel 템플릿 파일 생성
+
+### US7: 데이터 보관 정책 (NFR-8)
+
+**목표**: 90일 후 캡쳐 메시지 및 생성 콘텐츠 자동 삭제
+
+**독립 테스트 기준**:
+- 90일 이상 된 데이터가 자동으로 삭제되는가?
+- 삭제 작업이 성능에 영향을 주지 않는가?
+
+- [X] T068 [US7] `backend/src/jobs/data_retention_job.js`에 90일 초과 데이터 삭제 cron job 구현
+- [X] T069 [US7] `backend/src/config/index.js`에 데이터 보관 기간 설정 추가 (DATA_RETENTION_DAYS=90)
+- [X] T070 [P] [US7] `backend/index.js`에 데이터 보관 job 스케줄러 등록 (node-cron 활용)
+
+### US8: 구조화된 로깅 및 메트릭 (NFR-9)
+
+**목표**: JSON 형식 구조화 로그 및 기본 메트릭 (요청수, 지연시간)
+
+**독립 테스트 기준**:
+- 모든 요청/응답이 구조화된 JSON 로그로 기록되는가?
+- 요청 수와 지연시간 메트릭이 조회 가능한가?
+
+- [X] T071 [US8] `backend/package.json`에 `pino` (구조화 로깅) 종속성 추가
+- [X] T072 [US8] `backend/src/utils/logger.js`에 pino 기반 JSON 로거 구현 (기존 logger 교체)
+- [X] T073 [US8] `backend/src/middleware/request_logger.js`에 HTTP 요청/응답 로깅 미들웨어 구현
+- [X] T074 [P] [US8] `backend/src/middleware/metrics.js`에 요청 수/지연시간 메트릭 수집 미들웨어 구현
+- [X] T075 [P] [US8] `backend/src/api/metrics_routes.js`에 `GET /metrics` 엔드포인트 구현 (Prometheus 형식)
+- [X] T076 [US8] `ai_agent_system/src/utils/logger.py`에 Python structlog 기반 JSON 로거 구현
+
+---
+
+## v1.1 Enhancement Dependencies
+
+- **US5 (OpenAI Fallback)**: Depends on US3 (기존 Upstage 콘텐츠 생성)
+- **US6 (Excel 입출력)**: Depends on US1 (DiscordMessage 모델)
+- **US7 (데이터 보관)**: Depends on Foundational Phase (DB 연결)
+- **US8 (로깅/메트릭)**: Independent - 모든 요청에 적용
+
+## v1.1 Parallel Execution
+
+- T057-T058 (AI 비교 API/로직)은 T054-T056 (OpenAI 클라이언트) 완료 후 병렬 가능
+- T063-T064 (데이터 입출력 API)는 T061-T062 (파서/검증) 완료 후 병렬 가능
+- T074-T075 (메트릭)는 T071-T073 (로깅) 과 병렬 가능
+- US7 (데이터 보관)은 다른 US와 완전히 독립 실행 가능
+
+## Updated Progress
+
+**v1.0 (Original)**: 54/54 tasks ✅ (100%)
+**v1.1 (Enhancements)**: 23/23 tasks ✅ (100%) - US5, US6, US7, US8 완료
+**Total**: 77/77 tasks ✅ (100%)
