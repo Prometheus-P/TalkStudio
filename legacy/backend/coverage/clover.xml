@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1765432254923" clover="3.2.0">
+  <project timestamp="1765432254923" name="All files">
+    <metrics statements="23" coveredstatements="15" conditionals="24" coveredconditionals="21" methods="3" coveredmethods="0" elements="50" coveredelements="36" complexity="0" loc="23" ncloc="23" packages="2" files="2" classes="2"/>
+    <package name="config">
+      <metrics statements="13" coveredstatements="11" conditionals="22" coveredconditionals="21" methods="0" coveredmethods="0"/>
+      <file name="index.js" path="/Users/admin/Documents/dev/TalkStudio/backend/src/config/index.js">
+        <metrics statements="13" coveredstatements="11" conditionals="22" coveredconditionals="21" methods="0" coveredmethods="0"/>
+        <line num="6" count="7" type="stmt"/>
+        <line num="7" count="7" type="stmt"/>
+        <line num="9" count="7" type="stmt"/>
+        <line num="11" count="7" type="stmt"/>
+        <line num="31" count="7" type="cond" truecount="1" falsecount="1"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+        <line num="35" count="7" type="cond" truecount="4" falsecount="0"/>
+        <line num="36" count="4" type="stmt"/>
+        <line num="38" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="39" count="5" type="stmt"/>
+        <line num="41" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="42" count="6" type="stmt"/>
+      </file>
+    </package>
+    <package name="models">
+      <metrics statements="10" coveredstatements="4" conditionals="2" coveredconditionals="0" methods="3" coveredmethods="0"/>
+      <file name="discord_config_model.js" path="/Users/admin/Documents/dev/TalkStudio/backend/src/models/discord_config_model.js">
+        <metrics statements="10" coveredstatements="4" conditionals="2" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="21" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="24" count="0" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>
