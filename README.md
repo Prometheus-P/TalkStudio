@@ -16,12 +16,44 @@ TalkStudio는 AI Software Factory v4.0 프레임워크를 기반으로 개발된
 - **AI/Agent Framework**: Python (v3.10+), 경량 Agent SDK, `discord.py`, `Upstage API Python SDK`, `PyMongo`, `Pydantic`
 - **Testing**: Jest (Frontend, Backend), Pytest (AI Agent System)
 
+## 프로젝트 구조
+
+```
+TalkStudio/
+├── frontend/                 # React 프론트엔드
+│   ├── src/
+│   │   ├── components/       # UI 컴포넌트
+│   │   ├── pages/            # 페이지 컴포넌트
+│   │   └── store/            # Zustand 상태 관리
+│   └── package.json
+├── backend/                  # Node.js 백엔드 API
+│   ├── src/
+│   │   ├── api/              # REST API 라우트
+│   │   ├── models/           # MongoDB 모델
+│   │   ├── config/           # 환경 설정
+│   │   └── db/               # 데이터베이스 연결
+│   └── package.json
+├── ai_agent_system/          # Python AI 에이전트 시스템
+│   ├── src/
+│   │   ├── agents/           # AI 에이전트 클래스
+│   │   ├── services/         # 외부 API 클라이언트
+│   │   ├── models/           # 데이터 모델
+│   │   └── config/           # 환경 설정
+│   └── requirements.txt
+├── docs/                     # 문서
+│   ├── MONITORING.md         # 모니터링 전략
+│   └── TEST_STRATEGY.md      # 테스트 전략
+└── specs/                    # 기능 명세
+    └── 001-discord-upstage-integration/
+```
+
 ## 시작하기
 
 ### 1. 전제 조건
 - Node.js (v20 이상) 및 npm/yarn 설치
 - Python (v3.10 이상) 및 pip 설치
 - Git 설치
+- MongoDB 인스턴스 (로컬 또는 클라우드)
 - Discord 개발자 포털에서 봇 생성 및 토큰 발급
 - Upstage API 키 발급
 
@@ -37,38 +69,132 @@ cd TalkStudio
 ```bash
 cd frontend
 npm install
-# 개발 서버 실행
-npm run dev # (예정)
+npm run dev
 ```
 
 **b. Backend 설정**
 ```bash
 cd backend
 npm install
-# 개발 서버 실행
-npm run start # (예정)
+# .env 파일 생성 (.env.example 참조)
+cp .env.example .env
+# 환경 변수 편집 후 실행
+node index.js
 ```
-- `backend/` 디렉토리의 `.env` 파일에 `DATABASE_URL`, `JWT_SECRET`, `ENCRYPTION_SECRET` 등을 설정합니다.
+
+Backend `.env` 필수 변수:
+```env
+DATABASE_URL=mongodb://localhost:27017/talkstudio
+JWT_SECRET=your-jwt-secret-key
+ENCRYPTION_SECRET=your-encryption-secret-key
+DISCORD_BOT_TOKEN=your-discord-bot-token
+UPSTAGE_API_KEY=your-upstage-api-key
+PORT=3000
+```
 
 **c. AI Agent System 설정**
 ```bash
 cd ai_agent_system
 python -m venv venv
-source venv/bin/activate # macOS/Linux
-# 또는 venv\Scripts\activate # Windows
+source venv/bin/activate  # macOS/Linux
 pip install -r requirements.txt
+# .env 파일 생성
+cp .env.example .env
 ```
-- `ai_agent_system/` 디렉토리의 `.env` 파일에 `DISCORD_BOT_TOKEN`, `UPSTAGE_API_KEY`, `DATABASE_URL` 등을 설정합니다.
+
+AI Agent System `.env` 필수 변수:
+```env
+DISCORD_BOT_TOKEN=your-discord-bot-token
+UPSTAGE_API_KEY=your-upstage-api-key
+DATABASE_URL=mongodb://localhost:27017/talkstudio
+```
 
 ### 4. Discord 봇 권한 설정
-Discord 개발자 포털에서 봇에 다음 권한(Permissions)을 부여해야 합니다.
+Discord 개발자 포털에서 봇에 다음 권한을 부여:
 - `Message Content Intent` 활성화
 - `Read Message History`
 - `Send Messages` (콘텐츠를 다시 Discord에 전송하는 경우)
+
 봇을 원하는 Discord 서버에 초대합니다.
 
-## 기여 (예정)
+## Discord-Upstage 통합 기능 사용법
+
+### API 엔드포인트
+
+Backend 서버 실행 후 Swagger UI에서 전체 API 문서 확인 가능:
+- **Swagger UI**: `http://localhost:3000/api-docs`
+
+#### Discord 통합 관리
+| Method | Endpoint | 설명 |
+|--------|----------|------|
+| POST | `/api/v1/integrations/discord/config` | Discord 설정 등록 |
+| GET | `/api/v1/integrations/discord/config/:configId` | 설정 조회 |
+| DELETE | `/api/v1/integrations/discord/config/:configId` | 설정 삭제 |
+
+#### 메시지 캡쳐
+| Method | Endpoint | 설명 |
+|--------|----------|------|
+| POST | `/api/v1/integrations/discord/config/:configId/capture/start` | 캡쳐 시작 |
+| GET | `/api/v1/integrations/discord/capture/:captureJobId/status` | 캡쳐 상태 조회 |
+
+#### 콘텐츠 생성
+| Method | Endpoint | 설명 |
+|--------|----------|------|
+| POST | `/api/v1/content/generate` | 콘텐츠 생성 요청 |
+| GET | `/api/v1/content/generated/:generatedContentId` | 생성된 콘텐츠 조회 |
+
+### 사용 예시
+
+**1. Discord 설정 등록**
+```bash
+curl -X POST http://localhost:3000/api/v1/integrations/discord/config \
+  -H "Content-Type: application/json" \
+  -d '{
+    "serverId": "YOUR_DISCORD_SERVER_ID",
+    "serverName": "My Server",
+    "botToken": "YOUR_BOT_TOKEN",
+    "enabledChannels": ["CHANNEL_ID_1", "CHANNEL_ID_2"]
+  }'
+```
+
+**2. 메시지 캡쳐 시작**
+```bash
+curl -X POST http://localhost:3000/api/v1/integrations/discord/config/{configId}/capture/start \
+  -H "Content-Type: application/json" \
+  -d '{
+    "limitMessages": 1000
+  }'
+```
+
+**3. 콘텐츠 생성 요청**
+```bash
+curl -X POST http://localhost:3000/api/v1/content/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "discordMessageIds": ["msg_id_1", "msg_id_2"],
+    "contentType": "summary",
+    "generationParameters": {
+      "temperature": 0.7,
+      "maxLength": 500
+    }
+  }'
+```
+
+## 테스트
+
+```bash
+# Frontend 테스트
+cd frontend && npm test
+
+# Backend 테스트
+cd backend && npm test
+
+# AI Agent System 테스트
+cd ai_agent_system && python -m pytest --cov
+```
+
+## 기여
 TalkStudio 프로젝트에 기여하고 싶으시다면, `CONTRIBUTING.md` 파일을 참조해 주세요.
 
-## 라이선스 (예정)
-본 프로젝트는 [라이선스 종류]에 따라 배포됩니다.
+## 라이선스
+본 프로젝트는 MIT 라이선스에 따라 배포됩니다.
