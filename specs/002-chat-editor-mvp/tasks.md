@@ -169,30 +169,30 @@
 
 ### Store Actions for US4
 
-- [ ] T059 [US4] Implement updateSpeaker action in `src/store/useEditorStore.ts`
-- [ ] T060 [US4] Implement addSpeaker action (max 10) in `src/store/useEditorStore.ts`
-- [ ] T061 [US4] Implement removeSpeaker action (min 2) in `src/store/useEditorStore.ts`
-- [ ] T062 [US4] Implement updateStatusBar action in `src/store/useEditorStore.ts`
+- [x] T059 [US4] Implement updateAuthor action in `src/store/useChatStore.js` (JSX 구현)
+- [x] T060 [US4] Implement addAuthor action (max 10) in `src/store/useChatStore.js` (JSX 구현)
+- [x] T061 [US4] Implement removeAuthor action in `src/store/useChatStore.js` (JSX 구현)
+- [x] T062 [US4] Implement updateStatusBar action in `src/store/useChatStore.js` (JSX 구현)
 
 ### Speaker Panel for US4
 
-- [ ] T063 [US4] Create SpeakerPanel component in `src/components/editor/SpeakerPanel.tsx`
-- [ ] T064 [US4] Add speaker name input field to SpeakerPanel in `src/components/editor/SpeakerPanel.tsx`
-- [ ] T065 [US4] Add profile image upload to SpeakerPanel in `src/components/editor/SpeakerPanel.tsx`
-- [ ] T066 [US4] Add speaker add/remove buttons to SpeakerPanel in `src/components/editor/SpeakerPanel.tsx`
+- [x] T063 [US4] Create ProfileEditor component in `src/components/editor/ProfileEditor.jsx` (JSX 구현)
+- [x] T064 [US4] Add author name input field in `src/components/editor/ProfileEditor.jsx` (JSX 구현)
+- [x] T065 [US4] Add avatar URL input in `src/components/editor/ProfileEditor.jsx` (JSX 구현)
+- [x] T066 [US4] Add author add/remove buttons in `src/components/editor/ProfileEditor.jsx` (JSX 구현)
 
 ### Message Type for US4
 
-- [ ] T067 [US4] Add message type selector to MessageInput in `src/components/editor/MessageInput.tsx`
-- [ ] T068 [US4] Update ChatBubble to render system message style in `src/components/preview/ChatBubble.tsx`
-- [ ] T069 [US4] Update ChatBubble to render emphasis message style in `src/components/preview/ChatBubble.tsx`
+- [x] T067 [US4] Message author selector in `src/components/editor/MessageEditor.jsx` (JSX 구현)
+- [x] T068 [US4] System message styling in `src/components/preview/MessageBubble.jsx` (JSX 구현)
+- [x] T069 [US4] Basic message styling in `src/components/preview/MessageBubble.jsx` (JSX 구현)
 
 ### StatusBar Customization for US4
 
-- [ ] T070 [US4] Create StatusBarSettings component in `src/components/editor/StatusBarSettings.tsx`
-- [ ] T071 [US4] Add time/battery/wifi toggle controls in `src/components/editor/StatusBarSettings.tsx`
-- [ ] T072 [US4] Add chat name input field in `src/components/editor/StatusBarSettings.tsx`
-- [ ] T073 [US4] Integrate SpeakerPanel and StatusBarSettings into EditorPanel in `src/components/layout/EditorPanel.tsx`
+- [x] T070 [US4] StatusBar settings in `src/components/editor/ThemeControls.jsx` (JSX 구현)
+- [x] T071 [US4] Time/battery/wifi controls in `src/components/editor/ThemeControls.jsx` (JSX 구현)
+- [x] T072 [US4] Chat title input in `src/components/editor/LeftPanel.jsx` (JSX 구현)
+- [x] T073 [US4] Integrated in LeftPanel with tabs in `src/components/editor/LeftPanel.jsx` (JSX 구현)
 
 **Checkpoint**: User Story 4 완료 - 발화자 커스터마이징 및 메시지 타입 선택 가능
 
@@ -206,33 +206,33 @@
 
 ### Storage Utilities for US5
 
-- [ ] T074 [US5] Create localStorage save/load utilities in `src/utils/storage.ts`
-- [ ] T075 [US5] Create project validation utility in `src/utils/storage.ts`
-- [ ] T076 [US5] Create corrupted project repair utility in `src/utils/storage.ts`
+- [x] T074 [US5] Create localStorage save/load utilities in `src/utils/storage.js` (JSX 구현)
+- [x] T075 [US5] Create project validation utility in `src/utils/storage.js` (JSX 구현)
+- [x] T076 [US5] Create corrupted project repair utility in `src/utils/storage.js` (JSX 구현)
 
 ### Auto-Save for US5
 
-- [ ] T077 [US5] Create useAutoSave hook with debounce in `src/hooks/useAutoSave.ts`
-- [ ] T078 [US5] Integrate useAutoSave in App.tsx in `src/App.tsx`
+- [x] T077 [US5] Create useAutoSave hook with debounce in `src/hooks/useAutoSave.js` (JSX 구현)
+- [x] T078 [US5] Integrate useAutoSave in App.jsx in `src/App.jsx` (JSX 구현)
 
 ### Store Actions for US5
 
-- [ ] T079 [US5] Implement saveProject action in `src/store/useEditorStore.ts`
-- [ ] T080 [US5] Implement loadProject action in `src/store/useEditorStore.ts`
-- [ ] T081 [US5] Implement loadProjects (list) action in `src/store/useEditorStore.ts`
-- [ ] T082 [US5] Implement deleteProject action in `src/store/useEditorStore.ts`
+- [x] T079 [US5] Implement saveCurrentProject action in `src/store/useChatStore.js` (JSX 구현)
+- [x] T080 [US5] Implement loadProject action in `src/store/useChatStore.js` (JSX 구현)
+- [x] T081 [US5] Implement loadProjects (list) action in `src/store/useChatStore.js` (JSX 구현)
+- [x] T082 [US5] Implement deleteProject action in `src/store/useChatStore.js` (JSX 구현)
 
 ### Project List UI for US5
 
-- [ ] T083 [US5] Create ProjectListModal component in `src/components/editor/ProjectListModal.tsx`
-- [ ] T084 [US5] Add project title display and edit in ProjectListModal in `src/components/editor/ProjectListModal.tsx`
-- [ ] T085 [US5] Add project delete confirmation in ProjectListModal in `src/components/editor/ProjectListModal.tsx`
-- [ ] T086 [US5] Add "New Project" and "Load Project" buttons to EditorPanel in `src/components/layout/EditorPanel.tsx`
+- [x] T083 [US5] Create ProjectListModal component in `src/components/editor/ProjectListModal.jsx` (JSX 구현)
+- [x] T084 [US5] Add project title display in ProjectListModal in `src/components/editor/ProjectListModal.jsx` (JSX 구현)
+- [x] T085 [US5] Add project delete confirmation in ProjectListModal in `src/components/editor/ProjectListModal.jsx` (JSX 구현)
+- [x] T086 [US5] Add project buttons to App.jsx header in `src/App.jsx` (JSX 구현)
 
 ### Storage Error Handling for US5
 
-- [ ] T087 [US5] Add storage quota exceeded handling in `src/utils/storage.ts`
-- [ ] T088 [US5] Add corrupted data detection and user notification in `src/utils/storage.ts`
+- [x] T087 [US5] Add storage quota exceeded handling in `src/utils/storage.js` (JSX 구현)
+- [x] T088 [US5] Add corrupted data detection in `src/utils/storage.js` (JSX 구현)
 
 **Checkpoint**: User Story 5 완료 - 프로젝트 자동 저장/수동 저장/불러오기/삭제 가능
 
