@@ -206,10 +206,15 @@ const ChatPreview = () => {
         />
       )}
 
-      {/* 메시지 리스트 */}
+      {/* 메시지 리스트 - 성능 최적화 */}
       <div
-        className="flex-1 overflow-hidden flex flex-col justify-end"
-        style={{ paddingTop: 8, paddingBottom: 8 }}
+        className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col justify-end"
+        style={{
+          paddingTop: 8,
+          paddingBottom: 8,
+          contain: 'layout style',
+          willChange: 'scroll-position',
+        }}
       >
         {messages.map((message, index) => {
           const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);

@@ -24,6 +24,9 @@ dist-ssr
 *.sw?
 # Build artifacts
 build/
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.d.ts.map
 
 # Environment variables
 .env*
@@ -41,3 +44,8 @@ Thumbs.db
 
 *.png
 backend/coverage/
+
+# Legacy code (Discord/Upstage integration - moved for MVP)
+legacy/*/node_modules/
+legacy/*/.venv/
+legacy/*/coverage/
