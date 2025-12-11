@@ -41,3 +41,8 @@ Thumbs.db
 
 *.png
 backend/coverage/
+
+# Legacy code (Discord/Upstage integration - moved for MVP)
+legacy/*/node_modules/
+legacy/*/.venv/
+legacy/*/coverage/

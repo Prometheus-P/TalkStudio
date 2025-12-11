@@ -161,3 +161,10 @@ worker/
 ## Tech Stack
 
 React 19 + Zustand 5 + Tailwind CSS 4 + Vite 7 (Rolldown) + html2canvas
+
+## Active Technologies
+- TypeScript 5.x + React 19 + React, Zustand 5, Tailwind CSS 4, html-to-image, @dnd-kit/core (002-chat-editor-mvp)
+- Browser localStorage (IndexedDB는 v2에서 대용량 프로젝트 지원 시 고려) (002-chat-editor-mvp)
+
+## Recent Changes
+- 002-chat-editor-mvp: Added TypeScript 5.x + React 19 + React, Zustand 5, Tailwind CSS 4, html-to-image, @dnd-kit/core
