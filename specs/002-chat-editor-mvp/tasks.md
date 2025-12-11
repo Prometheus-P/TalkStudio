@@ -121,8 +121,8 @@
 
 ### UI Components for US2
 
-- [X] T046 [US2] Create theme buttons in Sidebar (integrated approach) in `src/components/layout/Sidebar.jsx`
-- [X] T047 [US2] Update Sidebar with theme selection buttons in `src/components/layout/Sidebar.jsx`
+- [X] T046 [US2] Create theme selection buttons in Sidebar in `src/components/layout/Sidebar.jsx`
+- [X] ~~T047~~ (merged into T046)
 
 ### Preview Updates for US2
 

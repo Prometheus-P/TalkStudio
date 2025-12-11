@@ -5,12 +5,12 @@
 
 ## Summary
 
-TalkStudio MVP는 브라우저에서 카카오톡/디스코드/인스타그램 DM 스타일의 가상 대화 UI를 편집하고 이미지로 저장하는 **프론트엔드 전용 SPA**입니다. React + TypeScript + Zustand를 사용하여 상태 관리하고, html-to-image로 DOM을 이미지로 변환하며, localStorage에 프로젝트를 자동 저장합니다.
+TalkStudio MVP는 브라우저에서 카카오톡/디스코드/인스타그램 DM 스타일의 가상 대화 UI를 편집하고 이미지로 저장하는 **프론트엔드 전용 SPA**입니다. React + Zustand를 사용하여 상태 관리하고, html2canvas로 DOM을 이미지로 변환하며, localStorage에 프로젝트를 자동 저장합니다.
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x + React 19
-**Primary Dependencies**: React, Zustand 5, Tailwind CSS 4, html-to-image, @dnd-kit/core
+**Language/Version**: JavaScript (JSX) + React 19 (TypeScript config present for future migration)
+**Primary Dependencies**: React, Zustand 5, Tailwind CSS 4, html2canvas, @dnd-kit/core
 **Storage**: Browser localStorage (IndexedDB는 v2에서 대용량 프로젝트 지원 시 고려)
 **Testing**: Vitest + React Testing Library
 **Target Platform**: Modern browsers (Chrome, Firefox, Safari, Edge - 데스크톱 우선)
@@ -58,44 +58,29 @@ specs/002-chat-editor-mvp/
 src/
 ├── components/
 │   ├── editor/          # 에디터 영역 컴포넌트
-│   │   ├── Canvas.tsx           # 대화 캔버스 (미리보기)
-│   │   ├── MessageList.tsx      # 메시지 목록 (편집)
-│   │   ├── MessageItem.tsx      # 개별 메시지 아이템
-│   │   ├── MessageInput.tsx     # 메시지 입력 폼
-│   │   └── SpeakerPanel.tsx     # 발화자 설정 패널
+│   │   ├── LeftPanel.jsx        # 에디터 메인 패널 (탭 구조)
+│   │   ├── MessageEditor.jsx    # 메시지 입력/편집/목록
+│   │   ├── ProfileEditor.jsx    # 발화자 프로필 설정
+│   │   ├── ThemeControls.jsx    # 테마/상단바 설정
+│   │   ├── ExportButton.jsx     # PNG 내보내기 버튼 (html2canvas)
+│   │   └── ProjectListModal.jsx # 프로젝트 목록 모달
 │   ├── preview/         # 프리뷰 영역 컴포넌트
-│   │   ├── PhoneFrame.tsx       # iPhone 프레임
-│   │   ├── StatusBar.tsx        # 상단 바 (시간, 배터리, Wi-Fi)
-│   │   └── ChatBubble.tsx       # 말풍선 컴포넌트
-│   ├── layout/          # 레이아웃 컴포넌트
-│   │   ├── Sidebar.tsx          # 좌측 테마 선택 사이드바
-│   │   ├── EditorPanel.tsx      # 중앙 에디터 패널
-│   │   └── PreviewPanel.tsx     # 우측 미리보기 패널
-│   └── common/          # 공통 UI 컴포넌트
-│       ├── Button.tsx
-│       ├── Modal.tsx
-│       └── Toast.tsx
+│   │   ├── ChatPreview.jsx      # 메인 프리뷰 (플랫폼별 렌더링)
+│   │   ├── StatusBar.jsx        # 상단 바 (시간, 배터리, Wi-Fi)
+│   │   └── MessageBubble.jsx    # 말풍선 컴포넌트
+│   └── layout/          # 레이아웃 컴포넌트
+│       └── Sidebar.jsx          # 좌측 테마 선택 사이드바
 ├── store/
-│   ├── useEditorStore.ts        # 에디터 상태 (프로젝트, 메시지, 테마)
-│   └── useUIStore.ts            # UI 상태 (모달, 토스트, 로딩)
+│   └── useChatStore.js          # 통합 상태 관리 (프로젝트, 메시지, 테마, UI)
 ├── themes/
-│   ├── index.ts                 # 테마 프리셋 export
-│   ├── kakao.ts                 # 카카오톡 테마
-│   ├── discord.ts               # 디스코드 테마
-│   └── instagram.ts             # 인스타그램 DM 테마
-├── types/
-│   ├── project.ts               # Project, Message, Speaker 타입
-│   └── theme.ts                 # Theme 타입
+│   └── presets.js               # 테마 프리셋 (kakao, discord, instagram, telegram)
 ├── utils/
-│   ├── export.ts                # 이미지 export 유틸
-│   ├── storage.ts               # localStorage 유틸
-│   ├── id.ts                    # ID 생성 유틸
-│   └── debounce.ts              # debounce 유틸
+│   ├── storage.js               # localStorage 유틸 (프로젝트 CRUD)
+│   └── timeValidation.js        # 시간 형식 검증 유틸
 ├── hooks/
-│   ├── useAutoSave.ts           # 자동 저장 훅
-│   └── useExport.ts             # 이미지 export 훅
-├── App.tsx                      # 3-column 레이아웃 루트
-└── main.tsx                     # 엔트리 포인트
+│   └── useAutoSave.js           # 자동 저장 훅 (debounce 적용)
+├── App.jsx                      # 3-column 레이아웃 루트 (PhoneFrame 포함)
+└── main.jsx                     # 엔트리 포인트
 
 tests/
 ├── unit/
@@ -105,7 +90,7 @@ tests/
     └── editor/                  # 에디터 통합 테스트
 ```
 
-**Structure Decision**: Single SPA 구조 선택. 백엔드 없이 프론트엔드만으로 MVP 완성. 기존 `src/` 구조를 에디터 중심으로 재구성하며, `backend/`, `ai_agent_system/` 등 기존 Python 관련 코드는 `legacy/`로 이동.
+**Structure Decision**: Single SPA 구조 선택. 백엔드 없이 프론트엔드만으로 MVP 완성. JSX 기반으로 구현 (TypeScript 설정은 향후 마이그레이션용으로 유지). `backend/`, `ai_agent_system/` 등 기존 Python 관련 코드는 `legacy/`로 이동 완료.
 
 ## Complexity Tracking
 
