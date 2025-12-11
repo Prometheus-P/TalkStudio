@@ -3,7 +3,7 @@
  * 3-Column 레이아웃: Sidebar + Editor + Preview
  * CLAYMORPHISM DESIGN STYLE
  */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { FolderOpen, Save, Cloud, CloudOff } from 'lucide-react';
 import Sidebar from './components/layout/Sidebar';
 import LeftPanel from './components/editor/LeftPanel';
@@ -36,7 +36,7 @@ function App() {
   }, [currentProjectId, conversation, theme, statusBar]);
 
   // Auto-save 훅
-  const { isSaving, lastSaved, error: saveError } = useAutoSave(projectData, {
+  const { isSaving } = useAutoSave(projectData, {
     enabled: !!currentProjectId,
     debounceMs: 2000,
     onSave: () => {
@@ -48,12 +48,8 @@ function App() {
     },
   });
 
-  // 저장 상태 업데이트
-  useEffect(() => {
-    if (isSaving) {
-      setSaveStatus('saving');
-    }
-  }, [isSaving]);
+  // 저장 상태 업데이트 - isSaving 변경 시 직접 반영
+  const displayStatus = isSaving ? 'saving' : saveStatus;
 
   // 수동 저장
   const handleManualSave = () => {
@@ -134,9 +130,9 @@ function App() {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-transform hover:scale-105"
               style={{
                 background: currentProjectId
-                  ? saveStatus === 'saved'
+                  ? displayStatus === 'saved'
                     ? 'rgba(34, 197, 94, 0.3)'
-                    : saveStatus === 'error'
+                    : displayStatus === 'error'
                     ? 'rgba(239, 68, 68, 0.3)'
                     : 'rgba(255,255,255,0.2)'
                   : 'rgba(255,255,255,0.15)',
@@ -144,21 +140,21 @@ function App() {
               }}
               title={currentProjectId ? '저장됨' : '새 프로젝트로 저장'}
             >
-              {saveStatus === 'saving' ? (
+              {displayStatus === 'saving' ? (
                 <Cloud size={14} className="animate-pulse" />
-              ) : saveStatus === 'saved' ? (
+              ) : displayStatus === 'saved' ? (
                 <Cloud size={14} />
-              ) : saveStatus === 'error' ? (
+              ) : displayStatus === 'error' ? (
                 <CloudOff size={14} />
               ) : (
                 <Save size={14} />
               )}
               <span className="text-xs font-semibold">
-                {saveStatus === 'saving'
+                {displayStatus === 'saving'
                   ? '저장 중...'
-                  : saveStatus === 'saved'
+                  : displayStatus === 'saved'
                   ? '저장됨'
-                  : saveStatus === 'error'
+                  : displayStatus === 'error'
                   ? '오류'
                   : '저장'}
               </span>

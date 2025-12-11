@@ -3,7 +3,7 @@
  * 채팅 에디터의 모든 상태를 관리
  */
 import { create } from 'zustand';
-import { themePresets, getPreset } from '../themes/presets';
+import { getPreset } from '../themes/presets';
 import {
   loadProjects as loadProjectsFromStorage,
   loadProject as loadProjectFromStorage,

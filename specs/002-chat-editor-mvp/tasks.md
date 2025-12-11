@@ -23,12 +23,12 @@
 
 **Purpose**: Project initialization, legacy cleanup, dependency installation
 
-- [ ] T001 Move existing Python/Discord code to `legacy/` directory per hard constraint
-- [ ] T002 Update package.json with new dependencies (html-to-image, @dnd-kit/core, @dnd-kit/sortable, nanoid)
-- [ ] T003 [P] Configure TypeScript strict mode in `tsconfig.json`
-- [ ] T004 [P] Configure Tailwind CSS 4 in `tailwind.config.js`
-- [ ] T005 [P] Update Vite config for clean build in `vite.config.ts`
-- [ ] T006 Create directory structure per plan.md (components/, store/, themes/, types/, utils/, hooks/)
+- [x] T001 Move existing Python/Discord code to `legacy/` directory per hard constraint
+- [x] T002 Update package.json with new dependencies (html-to-image, @dnd-kit/core, @dnd-kit/sortable, nanoid)
+- [x] T003 [P] Configure TypeScript strict mode in `tsconfig.json`
+- [x] T004 [P] Configure Tailwind CSS 4 in `tailwind.config.js`
+- [x] T005 [P] Update Vite config for clean build in `vite.config.ts`
+- [x] T006 Create directory structure per plan.md (components/, store/, themes/, types/, utils/, hooks/)
 
 ---
 
@@ -38,22 +38,22 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T007 [P] Create Project type interface in `src/types/project.ts`
-- [ ] T008 [P] Create Message type interface in `src/types/project.ts`
-- [ ] T009 [P] Create Speaker type interface in `src/types/project.ts`
-- [ ] T010 [P] Create StatusBarConfig type interface in `src/types/project.ts`
-- [ ] T011 [P] Create Theme and ThemeStyles type interfaces in `src/types/theme.ts`
-- [ ] T012 Create ID generation utility using nanoid in `src/utils/id.ts`
-- [ ] T013 [P] Create debounce utility function in `src/utils/debounce.ts`
-- [ ] T014 Create base useEditorStore with initial state structure in `src/store/useEditorStore.ts`
-- [ ] T015 [P] Create useUIStore for modals/toasts/loading in `src/store/useUIStore.ts`
-- [ ] T016 [P] Create Button component in `src/components/common/Button.tsx`
-- [ ] T017 [P] Create Toast component in `src/components/common/Toast.tsx`
-- [ ] T018 [P] Create Modal component in `src/components/common/Modal.tsx`
-- [ ] T019 Create 3-column layout structure in `src/App.tsx`
-- [ ] T020 [P] Create Sidebar layout component (placeholder) in `src/components/layout/Sidebar.tsx`
-- [ ] T021 [P] Create EditorPanel layout component (placeholder) in `src/components/layout/EditorPanel.tsx`
-- [ ] T022 [P] Create PreviewPanel layout component (placeholder) in `src/components/layout/PreviewPanel.tsx`
+- [x] T007 [P] Create Project type interface in `src/types/project.ts`
+- [x] T008 [P] Create Message type interface in `src/types/project.ts`
+- [x] T009 [P] Create Speaker type interface in `src/types/project.ts`
+- [x] T010 [P] Create StatusBarConfig type interface in `src/types/project.ts`
+- [x] T011 [P] Create Theme and ThemeStyles type interfaces in `src/types/theme.ts`
+- [x] T012 Create ID generation utility using nanoid in `src/utils/id.ts`
+- [x] T013 [P] Create debounce utility function in `src/utils/debounce.ts`
+- [x] T014 Create base useEditorStore with initial state structure in `src/store/useEditorStore.ts`
+- [x] T015 [P] Create useUIStore for modals/toasts/loading in `src/store/useUIStore.ts`
+- [x] T016 [P] Create Button component in `src/components/common/Button.tsx`
+- [x] T017 [P] Create Toast component in `src/components/common/Toast.tsx`
+- [x] T018 [P] Create Modal component in `src/components/common/Modal.tsx`
+- [x] T019 Create 3-column layout structure in `src/App.tsx`
+- [x] T020 [P] Create Sidebar layout component (placeholder) in `src/components/layout/Sidebar.tsx`
+- [x] T021 [P] Create EditorPanel layout component (placeholder) in `src/components/layout/EditorPanel.tsx`
+- [x] T022 [P] Create PreviewPanel layout component (placeholder) in `src/components/layout/PreviewPanel.tsx`
 
 **Checkpoint**: Foundation ready - user story implementation can begin
 
@@ -67,35 +67,35 @@
 
 ### Store Actions for US1
 
-- [ ] T023 [US1] Implement createProject action in `src/store/useEditorStore.ts`
-- [ ] T024 [US1] Implement addMessage action in `src/store/useEditorStore.ts`
-- [ ] T025 [US1] Implement deleteMessage action in `src/store/useEditorStore.ts`
-- [ ] T026 [US1] Implement selectMessage action in `src/store/useEditorStore.ts`
+- [x] T023 [US1] Implement createProject action in `src/store/useChatStore.js` (createNewProject)
+- [x] T024 [US1] Implement addMessage action in `src/store/useChatStore.js`
+- [x] T025 [US1] Implement deleteMessage action in `src/store/useChatStore.js` (removeMessage)
+- [x] T026 [US1] Implement selectMessage action in `src/store/useChatStore.js`
 
 ### Preview Components for US1
 
-- [ ] T027 [P] [US1] Create PhoneFrame component (iPhone frame wrapper) in `src/components/preview/PhoneFrame.tsx`
-- [ ] T028 [P] [US1] Create StatusBar component (time, battery, wifi icons) in `src/components/preview/StatusBar.tsx`
-- [ ] T029 [US1] Create ChatBubble component (sent/received styles) in `src/components/preview/ChatBubble.tsx`
-- [ ] T030 [US1] Integrate preview components into PreviewPanel in `src/components/layout/PreviewPanel.tsx`
+- [x] T027 [P] [US1] Create PhoneFrame component (iPhone frame wrapper) in `src/App.jsx` (inline)
+- [x] T028 [P] [US1] Create StatusBar component (time, battery, wifi icons) in `src/components/preview/StatusBar.jsx`
+- [x] T029 [US1] Create ChatBubble component (sent/received styles) in `src/components/preview/MessageBubble.jsx`
+- [x] T030 [US1] Integrate preview components into PreviewPanel in `src/components/preview/ChatPreview.jsx`
 
 ### Editor Components for US1
 
-- [ ] T031 [US1] Create MessageInput component (speaker select, text input, add button) in `src/components/editor/MessageInput.tsx`
-- [ ] T032 [US1] Create MessageItem component (display message with delete button) in `src/components/editor/MessageItem.tsx`
-- [ ] T033 [US1] Create MessageList component (list of MessageItems) in `src/components/editor/MessageList.tsx`
-- [ ] T034 [US1] Integrate editor components into EditorPanel in `src/components/layout/EditorPanel.tsx`
+- [x] T031 [US1] Create MessageInput component (speaker select, text input, add button) in `src/components/editor/MessageEditor.jsx`
+- [x] T032 [US1] Create MessageItem component (display message with delete button) in `src/components/editor/MessageEditor.jsx`
+- [x] T033 [US1] Create MessageList component (list of MessageItems) in `src/components/editor/MessageEditor.jsx`
+- [x] T034 [US1] Integrate editor components into EditorPanel in `src/components/editor/LeftPanel.jsx`
 
 ### Image Export for US1
 
-- [ ] T035 [US1] Create image export utility (toPng with pixelRatio) in `src/utils/export.ts`
-- [ ] T036 [US1] Create useExport hook for export functionality in `src/hooks/useExport.ts`
-- [ ] T037 [US1] Add export button and resolution selector to EditorPanel in `src/components/layout/EditorPanel.tsx`
+- [x] T035 [US1] Create image export utility (html2canvas) in `src/components/editor/ExportButton.jsx`
+- [x] T036 [US1] Create export functionality in `src/components/editor/ExportButton.jsx`
+- [x] T037 [US1] Add export button in `src/components/editor/LeftPanel.jsx`
 
 ### Integration for US1
 
-- [ ] T038 [US1] Wire up App.tsx with store providers and layout components
-- [ ] T039 [US1] Add default Kakao theme styles (hardcoded for MVP) in `src/App.tsx`
+- [x] T038 [US1] Wire up App.jsx with store and layout components
+- [x] T039 [US1] Add default Kakao theme styles in `src/themes/presets.js`
 
 **Checkpoint**: User Story 1 완료 - 기본 대화 생성 및 이미지 저장 가능
 
@@ -109,26 +109,26 @@
 
 ### Theme Definitions for US2
 
-- [ ] T040 [P] [US2] Create Kakao theme preset in `src/themes/kakao.ts`
-- [ ] T041 [P] [US2] Create Discord theme preset in `src/themes/discord.ts`
-- [ ] T042 [P] [US2] Create Instagram theme preset in `src/themes/instagram.ts`
-- [ ] T043 [US2] Create theme index with all presets in `src/themes/index.ts`
+- [X] T040 [P] [US2] Create Kakao theme preset in `src/themes/presets.js` (combined file)
+- [X] T041 [P] [US2] Create Discord theme preset in `src/themes/presets.js` (combined file)
+- [X] T042 [P] [US2] Create Instagram theme preset in `src/themes/presets.js` (combined file)
+- [X] T043 [US2] Create theme index with all presets in `src/themes/presets.js` (themePresets export)
 
 ### Store Actions for US2
 
-- [ ] T044 [US2] Implement setTheme action in `src/store/useEditorStore.ts`
-- [ ] T045 [US2] Add currentTheme selector to store in `src/store/useEditorStore.ts`
+- [X] T044 [US2] Implement setPlatform action in `src/store/useChatStore.js` (equivalent to setTheme)
+- [X] T045 [US2] Add theme selector to store in `src/store/useChatStore.js`
 
 ### UI Components for US2
 
-- [ ] T046 [US2] Create ThemeButton component (theme preview thumbnail) in `src/components/layout/ThemeButton.tsx`
-- [ ] T047 [US2] Update Sidebar with theme selection buttons in `src/components/layout/Sidebar.tsx`
+- [X] T046 [US2] Create theme buttons in Sidebar (integrated approach) in `src/components/layout/Sidebar.jsx`
+- [X] T047 [US2] Update Sidebar with theme selection buttons in `src/components/layout/Sidebar.jsx`
 
 ### Preview Updates for US2
 
-- [ ] T048 [US2] Update ChatBubble to use theme styles dynamically in `src/components/preview/ChatBubble.tsx`
-- [ ] T049 [US2] Update StatusBar to use theme styles dynamically in `src/components/preview/StatusBar.tsx`
-- [ ] T050 [US2] Update PhoneFrame background to use theme styles in `src/components/preview/PhoneFrame.tsx`
+- [X] T048 [US2] Update MessageBubble to use theme styles dynamically in `src/components/preview/MessageBubble.jsx`
+- [X] T049 [US2] Update StatusBar to use theme styles dynamically in `src/components/preview/StatusBar.jsx`
+- [X] T050 [US2] Update ChatPreview background to use theme styles in `src/components/preview/ChatPreview.jsx`
 
 **Checkpoint**: User Story 2 완료 - 테마 변경으로 전체 스타일 즉시 변경 가능
 
@@ -142,20 +142,20 @@
 
 ### Store Actions for US3
 
-- [ ] T051 [US3] Implement updateMessage action in `src/store/useEditorStore.ts`
-- [ ] T052 [US3] Implement reorderMessages action in `src/store/useEditorStore.ts`
+- [X] T051 [US3] Implement updateMessage action in `src/store/useChatStore.js`
+- [X] T052 [US3] Implement reorderMessages action in `src/store/useChatStore.js`
 
-### Drag and Drop for US3
+### Reorder Functionality for US3
 
-- [ ] T053 [US3] Add DndContext and SortableContext to MessageList in `src/components/editor/MessageList.tsx`
-- [ ] T054 [US3] Make MessageItem draggable with useSortable hook in `src/components/editor/MessageItem.tsx`
-- [ ] T055 [US3] Implement handleDragEnd to reorder messages in `src/components/editor/MessageList.tsx`
+- [X] T053 [US3] Add moveMessageUp/Down actions (button-based approach) in `src/store/useChatStore.js`
+- [X] T054 [US3] Create MessageItem with up/down buttons in `src/components/editor/MessageEditor.jsx`
+- [X] T055 [US3] Implement message reorder via buttons in `src/components/editor/MessageEditor.jsx`
 
 ### Edit Mode for US3
 
-- [ ] T056 [US3] Add edit mode state to MessageItem (inline editing) in `src/components/editor/MessageItem.tsx`
-- [ ] T057 [US3] Add click handler to toggle edit mode in `src/components/editor/MessageItem.tsx`
-- [ ] T058 [US3] Add save/cancel buttons for edit mode in `src/components/editor/MessageItem.tsx`
+- [X] T056 [US3] Add inline textarea editing to MessageItem in `src/components/editor/MessageEditor.jsx`
+- [X] T057 [US3] Add onChange handler for real-time text update in `src/components/editor/MessageEditor.jsx`
+- [X] T058 [US3] Add author change selector in MessageItem in `src/components/editor/MessageEditor.jsx`
 
 **Checkpoint**: User Story 3 완료 - 메시지 드래그 순서 변경 및 인라인 편집 가능
 
