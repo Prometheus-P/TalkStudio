@@ -47,35 +47,32 @@ npm run preview  # 빌드 결과물 미리보기
 
 ## Architecture
 
-### 역할별 디렉토리 구조
-
-**역할별 담당자 고정:** AI Worker / BE / FE
+### 프로젝트 구조 (Monorepo)
 
 ```
 /
-├── frontend/          # 프론트엔드 (React)
-├── backend/           # 백엔드 API 서버
-└── worker/            # AI Worker 서비스
+├── src/                    # 메인 앱 (대화 스크린샷 생성기)
+│   ├── components/         # UI 컴포넌트
+│   │   ├── editor/         # 에디터 관련
+│   │   ├── preview/        # 미리보기 관련
+│   │   └── layout/         # 레이아웃
+│   ├── store/              # Zustand 상태 관리
+│   ├── themes/             # 테마 프리셋
+│   └── utils/              # 유틸리티 함수
+├── backend/                # Express API (Discord 연동)
+├── ai_agent_system/        # Python AI 에이전트
+├── specs/                  # 기능별 스펙 문서
+└── docs/                   # 문서
 ```
 
-### Frontend (React)
+### UI 레이아웃 (3-Column)
 
-**디렉토리 구조:**
-```
-frontend/
-├── pages/app/         # 페이지 컴포넌트
-├── components/        # 재사용 UI 컴포넌트
-├── hooks/             # 커스텀 훅
-├── lib/api/           # API 클라이언트
-└── types/             # TypeScript 타입 정의
-```
-
-**3-Column Layout:**
 - Sidebar (좌측 80px): 테마 선택 버튼
 - Editor (중앙 flex-1): 메시지 입력/편집 영역
 - Preview (우측 flex-1.2): iPhone 프레임 미리보기
 
-**State Management (Zustand):**
+### State Management (Zustand)
+
 ```
 useChatStore.js
 ├── config: { theme, capturedImage }
@@ -87,28 +84,6 @@ useChatStore.js
 
 **Data Flow:** Editor → Zustand Store → Preview 구독 → 리렌더링
 
-### Backend (Clean Architecture)
-
-```
-backend/
-├── router/            # HTTP 라우터 (엔드포인트 정의)
-├── service/           # 비즈니스 로직
-└── repo/              # 데이터 접근 계층
-```
-
-**흐름:** Router → Service → Repository
-
-### Worker (Parser/Strategy 패턴)
-
-```
-worker/
-├── parsers/           # 파일 타입별 파서 (파일 타입별 분리)
-├── strategies/        # 처리 전략
-└── handlers/          # 작업 핸들러
-```
-
-**패턴:** 파일 타입별 Parser 분리 + Strategy 패턴으로 처리 로직 캡슐화
-
 ## Conventions
 
 - 컴포넌트: PascalCase (`MessageInput.jsx`)
@@ -119,7 +94,7 @@ worker/
 
 ## Environment Configuration
 
-- **단일 `.env` + `.env.example` 제공** – 서비스별 symlink로 공유
+- **단일 `.env` + `.env.example` 제공**
 - `.env.example`에 모든 환경 변수 키와 설명 문서화
 - 비밀 값은 절대 커밋 금지
 
