@@ -54,13 +54,13 @@
 - 커스텀 템플릿 생성/삭제 가능
 - 카테고리별 필터링 동작
 
-- [ ] T026 [P] [US2] `backend/src/api/conversations/template_routes.js`에 `GET /templates` 엔드포인트 구현
-- [ ] T027 [P] [US2] `backend/src/api/conversations/template_routes.js`에 `POST /templates` 엔드포인트 구현
-- [ ] T028 [P] [US2] `backend/src/api/conversations/template_routes.js`에 `DELETE /templates/:id` 엔드포인트 구현
-- [ ] T029 [US2] `frontend/src/services/conversationApi.js`에 템플릿 API 클라이언트 추가
-- [ ] T030 [US2] `frontend/src/components/ConversationGenerator/TemplateSelector.jsx`에 템플릿 선택 컴포넌트 구현
-- [ ] T031 [US2] `frontend/src/pages/AIGenerator.jsx`에 템플릿 선택 기능 통합
-- [ ] T032 [US2] `backend/index.js`에 템플릿 라우트 등록
+- [x] T026 [P] [US2] `backend/src/api/conversations/template_routes.js`에 `GET /templates` 엔드포인트 구현 ✅
+- [x] T027 [P] [US2] `backend/src/api/conversations/template_routes.js`에 `POST /templates` 엔드포인트 구현 ✅
+- [x] T028 [P] [US2] `backend/src/api/conversations/template_routes.js`에 `DELETE /templates/:id` 엔드포인트 구현 ✅
+- [x] T029 [US2] `src/services/conversationApi.js`에 템플릿 API 클라이언트 추가 *(Phase 3에서 완료)* ✅
+- [x] T030 [US2] `src/components/ConversationGenerator/TemplateSelector.jsx`에 템플릿 선택 컴포넌트 구현 ✅
+- [x] T031 [US2] `src/pages/AIGenerator.jsx`에 템플릿 선택 기능 통합 ✅
+- [x] T032 [US2] `backend/index.js`에 템플릿 라우트 등록 ✅
 
 ## 5. User Story 3: 대량 생성 (US3) (P2)
 
@@ -73,17 +73,17 @@
 - 진행 상태 실시간 조회
 - ZIP 다운로드 (스크린샷 + JSON)
 
-- [ ] T033 [US3] `backend/src/services/bulk_processor.js`에 대량 생성 처리 서비스 구현
-- [ ] T034 [P] [US3] `backend/src/api/conversations/bulk_generation_routes.js`에 `GET /bulk/template` 엔드포인트 구현
-- [ ] T035 [P] [US3] `backend/src/api/conversations/bulk_generation_routes.js`에 `POST /bulk/start` 엔드포인트 구현
-- [ ] T036 [P] [US3] `backend/src/api/conversations/bulk_generation_routes.js`에 `GET /bulk/:jobId/status` 엔드포인트 구현
-- [ ] T037 [US3] `backend/src/api/conversations/bulk_generation_routes.js`에 `GET /bulk/:jobId/download` 엔드포인트 구현
-- [ ] T038 [US3] `backend/src/utils/zip_generator.js`에 ZIP 생성 유틸리티 구현
-- [ ] T039 [US3] `frontend/src/services/conversationApi.js`에 대량 생성 API 클라이언트 추가
-- [ ] T040 [P] [US3] `frontend/src/components/BulkGeneration/ExcelUploader.jsx`에 Excel 업로드 컴포넌트 구현
-- [ ] T041 [P] [US3] `frontend/src/components/BulkGeneration/ProgressTracker.jsx`에 진행 상태 표시 컴포넌트 구현
-- [ ] T042 [US3] `frontend/src/pages/AIGenerator.jsx`에 대량 생성 탭/섹션 추가
-- [ ] T043 [US3] `backend/index.js`에 대량 생성 라우트 등록
+- [x] T033 [US3] `backend/src/services/bulk_processor.js`에 대량 생성 처리 서비스 구현 ✅
+- [x] T034 [P] [US3] `backend/src/api/conversations/bulk_generation_routes.js`에 `GET /bulk/template` 엔드포인트 구현 ✅
+- [x] T035 [P] [US3] `backend/src/api/conversations/bulk_generation_routes.js`에 `POST /bulk/start` 엔드포인트 구현 ✅
+- [x] T036 [P] [US3] `backend/src/api/conversations/bulk_generation_routes.js`에 `GET /bulk/:jobId/status` 엔드포인트 구현 ✅
+- [x] T037 [US3] `backend/src/api/conversations/bulk_generation_routes.js`에 `GET /bulk/:jobId/download` 엔드포인트 구현 ✅
+- [x] T038 [US3] `backend/src/utils/zip_generator.js`에 ZIP 생성 유틸리티 구현 ✅
+- [x] T039 [US3] `src/services/conversationApi.js`에 대량 생성 API 클라이언트 추가 *(Phase 3에서 완료)* ✅
+- [x] T040 [P] [US3] `src/components/BulkGeneration/ExcelUploader.jsx`에 Excel 업로드 컴포넌트 구현 ✅
+- [x] T041 [P] [US3] `src/components/BulkGeneration/ProgressTracker.jsx`에 진행 상태 표시 컴포넌트 구현 ✅
+- [x] T042 [US3] `src/pages/AIGenerator.jsx`에 대량 생성 탭/섹션 추가 ✅
+- [x] T043 [US3] `backend/index.js`에 대량 생성 라우트 등록 ✅
 
 ## 6. User Story 4: 대화 편집 및 출력 (US4) (P1)
 
@@ -95,15 +95,15 @@
 - 4개 플랫폼 스타일 선택 (카카오톡, 디스코드, 텔레그램, 인스타그램)
 - PNG/JPEG 다운로드
 
-- [ ] T044 [P] [US4] `backend/src/api/conversations/conversation_routes.js`에 `PATCH /conversations/:id` 엔드포인트 구현
-- [ ] T045 [P] [US4] `backend/src/api/conversations/conversation_routes.js`에 `POST /conversations/:id/regenerate` 엔드포인트 구현
-- [ ] T046 [US4] `frontend/src/components/ConversationGenerator/ConversationEditor.jsx`에 대화 편집기 컴포넌트 구현
-- [ ] T047 [US4] `frontend/src/components/ConversationGenerator/ConversationEditor.jsx`에 메시지 추가/삭제/수정 기능 구현
-- [ ] T048 [US4] `frontend/src/components/ConversationGenerator/ConversationEditor.jsx`에 AI 재생성 요청 기능 구현
-- [ ] T049 [US4] `frontend/src/hooks/useTalkStudioRenderer.js`에 TalkStudio 렌더러 연동 훅 구현
-- [ ] T050 [US4] `frontend/src/components/ConversationGenerator/PlatformSelector.jsx`에 플랫폼 스타일 선택 컴포넌트 구현
-- [ ] T051 [US4] `frontend/src/components/ConversationGenerator/ExportButton.jsx`에 이미지 내보내기 버튼 구현
-- [ ] T052 [US4] `frontend/src/pages/AIGenerator.jsx`에 편집 및 출력 기능 통합
+- [x] T044 [P] [US4] `backend/src/api/conversations/conversation_routes.js`에 `PATCH /conversations/:id` 엔드포인트 구현 *(Phase 3에서 완료)* ✅
+- [x] T045 [P] [US4] `backend/src/api/conversations/conversation_routes.js`에 `POST /conversations/:id/regenerate` 엔드포인트 구현 *(Phase 3에서 완료)* ✅
+- [x] T046 [US4] 대화 편집기 - 기존 TalkStudio 에디터 (`src/components/editor/`) 활용 ✅
+- [x] T047 [US4] 메시지 추가/삭제/수정 - 기존 TalkStudio MessageEditor 활용 ✅
+- [x] T048 [US4] AI 재생성 - `src/services/conversationApi.js`에 regenerateMessage 구현 완료 ✅
+- [x] T049 [US4] TalkStudio 렌더러 연동 - 기존 ChatPreview/useChatStore 활용 ✅
+- [x] T050 [US4] 플랫폼 선택 - `src/components/ConversationGenerator/ParameterPanel.jsx`에 구현 완료 ✅
+- [x] T051 [US4] 이미지 내보내기 - 기존 `src/components/editor/ExportButton.jsx` 활용 ✅
+- [x] T052 [US4] AIGenerator.jsx 통합 - 생성 후 기존 에디터로 자동 연결 ✅
 
 ## 7. User Story 7: 90일 데이터 보관 (US7) (P3)
 
