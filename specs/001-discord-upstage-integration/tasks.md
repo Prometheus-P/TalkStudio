@@ -161,12 +161,12 @@ MVP (Minimum Viable Product)는 다음 User Story들을 순차적으로 구현�
 - Upstage API 장애 시 OpenAI로 자동 전환되는가?
 - 두 AI의 결과를 비교하여 품질 차이를 확인할 수 있는가?
 
-- [ ] T054 [US5] `ai_agent_system/src/services/openai_client.py`에 OpenAI API 클라이언트 구현
-- [ ] T055 [US5] `ai_agent_system/src/services/ai_router.py`에 Upstage/OpenAI 라우팅 및 fallback 로직 구현
-- [ ] T056 [US5] `ai_agent_system/src/agents/content_generation_agent.py`에 ai_router 연동 (기존 upstage_client 대체)
-- [ ] T057 [P] [US5] `ai_agent_system/src/services/ai_comparator.py`에 두 AI 결과 비교 로직 구현
-- [ ] T058 [P] [US5] `backend/src/api/content_generation_routes.js`에 `POST /content/compare` (AI 비교 요청) API 엔드포인트 추가
-- [ ] T059 [US5] `frontend/src/components/AIComparisonView.jsx`에 AI 비교 결과 표시 UI 컴포넌트 구현
+- [X] T054 [US5] `ai_agent_system/src/services/openai_client.py`에 OpenAI API 클라이언트 구현
+- [X] T055 [US5] `ai_agent_system/src/services/ai_router.py`에 Upstage/OpenAI 라우팅 및 fallback 로직 구현
+- [X] T056 [US5] `ai_agent_system/src/agents/content_generation_agent.py`에 ai_router 연동 (기존 upstage_client 대체)
+- [X] T057 [P] [US5] `ai_agent_system/src/services/ai_comparator.py`에 두 AI 결과 비교 로직 구현
+- [X] T058 [P] [US5] `backend/src/api/content_generation_routes.js`에 `POST /content/compare` (AI 비교 요청) API 엔드포인트 추가
+- [X] T059 [US5] `frontend/src/components/AIComparisonView.jsx`에 AI 비교 결과 표시 UI 컴포넌트 구현
 
 ### US6: Excel 데이터 입출력 (FR-6)
 
@@ -232,5 +232,5 @@ MVP (Minimum Viable Product)는 다음 User Story들을 순차적으로 구현�
 ## Updated Progress
 
 **v1.0 (Original)**: 54/54 tasks ✅ (100%)
-**v1.1 (Enhancements)**: 17/23 tasks (74%) - US6, US7, US8 완료
-**Total**: 71/77 tasks (92%)
+**v1.1 (Enhancements)**: 23/23 tasks ✅ (100%) - US5, US6, US7, US8 완료
+**Total**: 77/77 tasks ✅ (100%)
