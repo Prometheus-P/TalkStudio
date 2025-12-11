@@ -242,14 +242,14 @@
 
 **Purpose**: Edge cases, error handling, performance optimization
 
-- [ ] T089 [P] Add loading state indicators to useUIStore in `src/store/useUIStore.ts`
-- [ ] T090 [P] Add error boundary component in `src/components/common/ErrorBoundary.tsx`
-- [ ] T091 Handle long message text (500+ chars) word-wrap in `src/components/preview/ChatBubble.tsx`
-- [ ] T092 Handle 100+ messages scrolling performance in `src/components/preview/PhoneFrame.tsx`
-- [ ] T093 Add browser compatibility check for html-to-image in `src/utils/export.ts`
-- [ ] T094 [P] Add WebP export option to export utility in `src/utils/export.ts`
-- [ ] T095 Update README.md with TalkStudio MVP description in `README.md`
-- [ ] T096 Run quickstart.md validation - verify npm run dev works
+- [x] T089 [P] Add loading state indicators to useUIStore in `src/store/useUIStore.js` *(JSX 구현)*
+- [x] T090 [P] Add error boundary component in `src/components/common/ErrorBoundary.jsx` *(JSX 구현)*
+- [x] T091 Handle long message text (500+ chars) word-wrap in `src/components/preview/MessageBubble.jsx` *(JSX 구현)*
+- [x] T092 Handle 100+ messages scrolling performance in `src/components/preview/ChatPreview.jsx` *(CSS contain/will-change 적용)*
+- [x] T093 Add browser compatibility check for html-to-image in `src/utils/exportUtils.js` *(브라우저 포맷 지원 체크)*
+- [x] T094 [P] Add WebP export option to export utility in `src/utils/exportUtils.js` *(PNG/JPEG/WebP 포맷 선택)*
+- [x] T095 Update README.md with TalkStudio MVP description in `README.md`
+- [x] T096 Run quickstart.md validation - verify npm run dev works
 
 ---
 

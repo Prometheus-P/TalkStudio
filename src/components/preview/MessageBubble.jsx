@@ -115,7 +115,16 @@ const MessageBubble = ({ message, author, theme, isFirstInGroup, isLastInGroup }
                 themeId={theme.id}
               />
             )}
-            <span className="whitespace-pre-wrap break-words">{text}</span>
+            <span
+              className="whitespace-pre-wrap break-words"
+              style={{
+                wordBreak: 'break-word',
+                overflowWrap: 'anywhere',
+                hyphens: 'auto',
+              }}
+            >
+              {text}
+            </span>
           </div>
 
           {/* 시간 & 읽음 표시 */}
@@ -243,6 +252,8 @@ const DiscordMessage = ({ author, text, time, isMe, isFirstInGroup, theme, bubbl
             lineHeight: '18px',
             color: discordColors.textNormal,
             margin: 0,
+            wordBreak: 'break-word',
+            overflowWrap: 'anywhere',
           }}
         >
           {text}
