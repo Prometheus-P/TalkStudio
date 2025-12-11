@@ -24,7 +24,7 @@
 **Purpose**: Project initialization, legacy cleanup, dependency installation
 
 - [x] T001 Move existing Python/Discord code to `legacy/` directory per hard constraint
-- [x] T002 Update package.json with new dependencies (html-to-image, @dnd-kit/core, @dnd-kit/sortable, nanoid)
+- [x] T002 Update package.json with new dependencies (html2canvas, @dnd-kit/core, @dnd-kit/sortable, nanoid)
 - [x] T003 [P] Configure TypeScript strict mode in `tsconfig.json`
 - [x] T004 [P] Configure Tailwind CSS 4 in `tailwind.config.js`
 - [x] T005 [P] Update Vite config for clean build in `vite.config.ts`
@@ -45,7 +45,7 @@
 - [x] T011 [P] Create Theme and ThemeStyles type interfaces in `src/types/theme.ts`
 - [x] T012 Create ID generation utility using nanoid in `src/utils/id.ts`
 - [x] T013 [P] Create debounce utility function in `src/utils/debounce.ts`
-- [x] T014 Create base useEditorStore with initial state structure in `src/store/useEditorStore.ts`
+- [x] T014 Create base useChatStore with initial state structure in `src/store/useChatStore.js`
 - [x] T015 [P] Create useUIStore for modals/toasts/loading in `src/store/useUIStore.ts`
 - [x] T016 [P] Create Button component in `src/components/common/Button.tsx`
 - [x] T017 [P] Create Toast component in `src/components/common/Toast.tsx`
