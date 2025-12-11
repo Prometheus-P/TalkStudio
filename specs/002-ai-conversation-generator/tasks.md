@@ -34,15 +34,15 @@
 - 톤/스타일(casual/formal/humorous) 적용 확인
 - 생성 시간 < 5초
 
-- [ ] T017 [US1] `backend/src/services/conversation_generator.js`에 AI 대화 생성 핵심 로직 구현
-- [ ] T018 [P] [US1] `backend/src/api/conversations/conversation_routes.js`에 `POST /conversations/generate` 엔드포인트 구현
-- [ ] T019 [P] [US1] `backend/src/api/conversations/conversation_routes.js`에 `GET /conversations/:id` 엔드포인트 구현
-- [ ] T020 [P] [US1] `backend/src/api/conversations/conversation_routes.js`에 `DELETE /conversations/:id` 엔드포인트 구현
-- [ ] T021 [US1] `frontend/src/services/conversationApi.js`에 대화 생성 API 클라이언트 구현
-- [ ] T022 [P] [US1] `frontend/src/components/ConversationGenerator/ScenarioInput.jsx`에 시나리오 입력 컴포넌트 구현
-- [ ] T023 [P] [US1] `frontend/src/components/ConversationGenerator/ParameterPanel.jsx`에 파라미터 설정 패널 구현
-- [ ] T024 [US1] `frontend/src/pages/AIGenerator.jsx`에 AI 생성기 메인 페이지 구현 (US1 기능 통합)
-- [ ] T025 [US1] `backend/index.js`에 대화 생성 라우트 등록
+- [x] T017 [US1] `backend/src/services/conversation_generator.js`에 AI 대화 생성 핵심 로직 구현 ✅
+- [x] T018 [P] [US1] `backend/src/api/conversations/conversation_routes.js`에 `POST /conversations/generate` 엔드포인트 구현 ✅
+- [x] T019 [P] [US1] `backend/src/api/conversations/conversation_routes.js`에 `GET /conversations/:id` 엔드포인트 구현 ✅
+- [x] T020 [P] [US1] `backend/src/api/conversations/conversation_routes.js`에 `DELETE /conversations/:id` 엔드포인트 구현 ✅
+- [x] T021 [US1] `src/services/conversationApi.js`에 대화 생성 API 클라이언트 구현 ✅
+- [x] T022 [P] [US1] `src/components/ConversationGenerator/ScenarioInput.jsx`에 시나리오 입력 컴포넌트 구현 ✅
+- [x] T023 [P] [US1] `src/components/ConversationGenerator/ParameterPanel.jsx`에 파라미터 설정 패널 구현 ✅
+- [x] T024 [US1] `src/pages/AIGenerator.jsx`에 AI 생성기 메인 페이지 구현 (US1 기능 통합) ✅
+- [x] T025 [US1] `backend/index.js`에 대화 생성 라우트 등록 ✅
 
 ## 4. User Story 2: 템플릿 활용 (US2) (P1)
 
