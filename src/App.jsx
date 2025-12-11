@@ -3,14 +3,69 @@
  * 3-Column 레이아웃: Sidebar + Editor + Preview
  * CLAYMORPHISM DESIGN STYLE
  */
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { FolderOpen, Save, Cloud, CloudOff } from 'lucide-react';
 import Sidebar from './components/layout/Sidebar';
 import LeftPanel from './components/editor/LeftPanel';
 import ChatPreview from './components/preview/ChatPreview';
+import ProjectListModal from './components/editor/ProjectListModal';
 import useChatStore from './store/useChatStore';
+import { useAutoSave } from './hooks/useAutoSave';
 
 function App() {
   const platformSkin = useChatStore((s) => s.conversation.platformSkin);
+  const currentProjectId = useChatStore((s) => s.currentProjectId);
+  const conversation = useChatStore((s) => s.conversation);
+  const theme = useChatStore((s) => s.theme);
+  const statusBar = useChatStore((s) => s.statusBar);
+  const saveCurrentProject = useChatStore((s) => s.saveCurrentProject);
+
+  const [isProjectModalOpen, setProjectModalOpen] = useState(false);
+  const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, saved, error
+
+  // 프로젝트 데이터 (auto-save용)
+  const projectData = useMemo(() => {
+    if (!currentProjectId) return null;
+    return {
+      id: currentProjectId,
+      title: conversation.title || '제목 없음',
+      conversation,
+      theme,
+      statusBar,
+    };
+  }, [currentProjectId, conversation, theme, statusBar]);
+
+  // Auto-save 훅
+  const { isSaving, lastSaved, error: saveError } = useAutoSave(projectData, {
+    enabled: !!currentProjectId,
+    debounceMs: 2000,
+    onSave: () => {
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
+    },
+    onError: () => {
+      setSaveStatus('error');
+    },
+  });
+
+  // 저장 상태 업데이트
+  useEffect(() => {
+    if (isSaving) {
+      setSaveStatus('saving');
+    }
+  }, [isSaving]);
+
+  // 수동 저장
+  const handleManualSave = () => {
+    if (!currentProjectId) {
+      // 새 프로젝트로 저장
+      const result = saveCurrentProject();
+      if (result.success) {
+        setSaveStatus('saved');
+        setTimeout(() => setSaveStatus('idle'), 2000);
+      }
+    }
+  };
 
   return (
     <div
@@ -58,15 +113,68 @@ function App() {
               BETA
             </span>
           </div>
-          <span
-            className="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
-            style={{
-              background: 'rgba(255,255,255,0.25)',
-              color: '#FFFFFF',
-            }}
-          >
-            {platformSkin}
-          </span>
+          <div className="flex items-center gap-2">
+            {/* 프로젝트 버튼 */}
+            <button
+              onClick={() => setProjectModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-transform hover:scale-105"
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                color: '#FFFFFF',
+              }}
+              title="프로젝트 관리"
+            >
+              <FolderOpen size={14} />
+              <span className="text-xs font-semibold">프로젝트</span>
+            </button>
+
+            {/* 저장 버튼 */}
+            <button
+              onClick={handleManualSave}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-transform hover:scale-105"
+              style={{
+                background: currentProjectId
+                  ? saveStatus === 'saved'
+                    ? 'rgba(34, 197, 94, 0.3)'
+                    : saveStatus === 'error'
+                    ? 'rgba(239, 68, 68, 0.3)'
+                    : 'rgba(255,255,255,0.2)'
+                  : 'rgba(255,255,255,0.15)',
+                color: '#FFFFFF',
+              }}
+              title={currentProjectId ? '저장됨' : '새 프로젝트로 저장'}
+            >
+              {saveStatus === 'saving' ? (
+                <Cloud size={14} className="animate-pulse" />
+              ) : saveStatus === 'saved' ? (
+                <Cloud size={14} />
+              ) : saveStatus === 'error' ? (
+                <CloudOff size={14} />
+              ) : (
+                <Save size={14} />
+              )}
+              <span className="text-xs font-semibold">
+                {saveStatus === 'saving'
+                  ? '저장 중...'
+                  : saveStatus === 'saved'
+                  ? '저장됨'
+                  : saveStatus === 'error'
+                  ? '오류'
+                  : '저장'}
+              </span>
+            </button>
+
+            {/* 플랫폼 표시 */}
+            <span
+              className="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
+              style={{
+                background: 'rgba(255,255,255,0.25)',
+                color: '#FFFFFF',
+              }}
+            >
+              {platformSkin}
+            </span>
+          </div>
         </header>
 
         {/* 컨트롤 패널 */}
@@ -190,6 +298,12 @@ function App() {
           메시지를 편집하고 PNG로 저장하세요
         </div>
       </div>
+
+      {/* 프로젝트 목록 모달 */}
+      <ProjectListModal
+        isOpen={isProjectModalOpen}
+        onClose={() => setProjectModalOpen(false)}
+      />
     </div>
   );
 }

@@ -4,8 +4,22 @@
  */
 import { create } from 'zustand';
 import { themePresets, getPreset } from '../themes/presets';
+import {
+  loadProjects as loadProjectsFromStorage,
+  loadProject as loadProjectFromStorage,
+  saveProject as saveProjectToStorage,
+  deleteProject as deleteProjectFromStorage,
+  createNewProject as createNewProjectInStorage,
+  generateProjectId,
+} from '../utils/storage';
 
 const useChatStore = create((set, get) => ({
+  // ============================================
+  // 0. 프로젝트 상태 관리
+  // ============================================
+  currentProjectId: null,
+  projects: [],
+
   // ============================================
   // 1. ConversationState - 대화 내용 관리
   // ============================================
@@ -277,6 +291,118 @@ const useChatStore = create((set, get) => ({
   getAuthor: (authorId) => {
     const state = get();
     return state.conversation.authors.find((a) => a.id === authorId);
+  },
+
+  // ============================================
+  // 액션 - 프로젝트 관리
+  // ============================================
+
+  /** 프로젝트 목록 불러오기 */
+  loadProjects: () => {
+    const projects = loadProjectsFromStorage();
+    set({ projects });
+    return projects;
+  },
+
+  /** 특정 프로젝트 불러오기 */
+  loadProject: (projectId) => {
+    const result = loadProjectFromStorage(projectId);
+    if (!result.success) return result;
+
+    const { project } = result;
+    set({
+      currentProjectId: project.id,
+      conversation: project.conversation || get().conversation,
+      theme: project.theme || getPreset(project.conversation?.platformSkin || 'kakao'),
+      statusBar: project.statusBar || get().statusBar,
+    });
+    return result;
+  },
+
+  /** 현재 프로젝트 저장 */
+  saveCurrentProject: (title) => {
+    const state = get();
+    const projectId = state.currentProjectId || generateProjectId();
+
+    const project = {
+      id: projectId,
+      title: title || state.conversation.title || '제목 없음',
+      conversation: state.conversation,
+      theme: state.theme,
+      statusBar: state.statusBar,
+    };
+
+    const result = saveProjectToStorage(project);
+    if (result.success) {
+      set({
+        currentProjectId: projectId,
+        projects: loadProjectsFromStorage(),
+      });
+    }
+    return result;
+  },
+
+  /** 새 프로젝트 생성 */
+  createNewProject: (title = '새 프로젝트') => {
+    const newProject = createNewProjectInStorage(title);
+    const preset = getPreset('kakao');
+
+    set({
+      currentProjectId: newProject.id,
+      conversation: {
+        platformSkin: 'kakao',
+        title: '상대방',
+        authors: [
+          {
+            id: 'me',
+            name: '나',
+            avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
+          },
+          {
+            id: 'other',
+            name: '상대방',
+            avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka',
+          },
+        ],
+        messages: [],
+        unreadCount: 20,
+      },
+      theme: preset,
+      statusBar: {
+        time: '12:30',
+        battery: 85,
+        isWifi: true,
+      },
+    });
+
+    return newProject;
+  },
+
+  /** 프로젝트 삭제 */
+  deleteProject: (projectId) => {
+    const result = deleteProjectFromStorage(projectId);
+    if (result.success) {
+      const state = get();
+      if (state.currentProjectId === projectId) {
+        set({ currentProjectId: null });
+      }
+      set({ projects: loadProjectsFromStorage() });
+    }
+    return result;
+  },
+
+  /** 현재 프로젝트 데이터 가져오기 */
+  getProjectData: () => {
+    const state = get();
+    if (!state.currentProjectId) return null;
+
+    return {
+      id: state.currentProjectId,
+      title: state.conversation.title || '제목 없음',
+      conversation: state.conversation,
+      theme: state.theme,
+      statusBar: state.statusBar,
+    };
   },
 }));
 
