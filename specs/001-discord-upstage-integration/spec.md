@@ -23,14 +23,21 @@ TalkStudio에 Discord 서버/채널의 대화 내역을 캡쳐하고, NLP 기반
 - **FR-3.2**: 핵심 키워드를 추출한다
 - **FR-3.3**: 감정(positive/negative/neutral)을 분석한다
 
-### FR-4: Upstage API 콘텐츠 생성
+### FR-4: AI 콘텐츠 생성 (Upstage + OpenAI)
 - **FR-4.1**: 분석된 의도를 기반으로 요약, FAQ, 아이디어 목록을 생성한다
 - **FR-4.2**: 생성 파라미터(temperature, maxLength, tone)를 조정할 수 있다
 - **FR-4.3**: 생성된 콘텐츠를 저장하고 조회할 수 있다
+- **FR-4.4**: Upstage를 기본으로 사용하고, 장애 시 OpenAI로 자동 전환한다
+- **FR-4.5**: 두 AI 결과를 비교하여 품질 평가에 활용할 수 있다
 
 ### FR-5: 결과 표시 UI
 - **FR-5.1**: 웹 UI에서 Discord 통합 설정을 관리할 수 있다
 - **FR-5.2**: 캡쳐 상태, 의도 분석 결과, 생성된 콘텐츠를 조회할 수 있다
+
+### FR-6: 데이터 입출력
+- **FR-6.1**: Excel(xlsx) 템플릿을 통해 메시지 데이터를 입력(기입)할 수 있다
+- **FR-6.2**: 생성된 콘텐츠를 JSON 형식으로 API를 통해 내보낼 수 있다
+- **FR-6.3**: Excel 업로드 시 유효성 검증 후 오류 행을 피드백한다
 
 ## Non-Functional Requirements
 
@@ -39,9 +46,12 @@ TalkStudio에 Discord 서버/채널의 대화 내역을 캡쳐하고, NLP 기반
 | NFR-1 | Performance | 메시지 캡쳐 속도 | 10,000 messages < 60 seconds |
 | NFR-2 | Performance | 의도 분석 + 콘텐츠 생성 | < 5 seconds per request |
 | NFR-3 | Security | 봇 토큰 저장 | AES-256 암호화 |
+| NFR-7 | Security | 접근 제어 | 내부 전용 (인증 없음, 네트워크 레벨 보안) |
 | NFR-4 | Reliability | Discord API 장애 대응 | 자동 재시도 3회, exponential backoff |
 | NFR-5 | Scalability | 동시 사용자 | 1,000 concurrent users |
 | NFR-6 | Cost | Upstage API 비용 | 월 $500 이하 (초기) |
+| NFR-8 | Data Retention | 데이터 보관 정책 | 90일 후 자동 삭제 (캡쳐 메시지 + 생성 콘텐츠) |
+| NFR-9 | Observability | 로깅/메트릭 | 구조화된 로그 (JSON) + 기본 메트릭 (요청수, 지연시간) |
 
 ## User Stories
 
@@ -85,6 +95,16 @@ TalkStudio에 Discord 서버/채널의 대화 내역을 캡쳐하고, NLP 기반
 - [ ] 캡쳐 상태 실시간 표시
 - [ ] 생성된 콘텐츠 목록 조회 및 필터링
 
+### US7: 90일 데이터 보관 (P3)
+**As a** 시스템 관리자
+**I want to** 캡쳐된 메시지와 생성된 콘텐츠가 90일 후 자동 삭제
+**So that** 저장소 비용을 관리하고 데이터 보관 정책을 준수할 수 있다
+
+**Acceptance Criteria**:
+- [ ] DiscordMessage, GeneratedContent 문서에 expiresAt 필드 자동 설정 (생성일 + 90일)
+- [ ] MongoDB TTL 인덱스로 자동 삭제 동작 확인
+- [ ] 캡쳐 작업(CaptureJob)은 7일 후 자동 삭제
+
 ## Edge Cases
 
 | ID | Scenario | Expected Behavior |
@@ -99,3 +119,12 @@ TalkStudio에 Discord 서버/채널의 대화 내역을 캡쳐하고, NLP 기반
 - Discord 실시간 스트리밍 (WebSocket)
 - 다국어 의도 분석 (한국어/영어만 지원)
 - 생성된 콘텐츠의 Discord 자동 게시 (T045는 선택적)
+
+## Clarifications
+
+### Session 2025-12-11
+- Q: 생성된 콘텐츠의 내보내기 형식은? → A: Excel(xlsx) + JSON, Excel은 데이터 기입(입력)에 초점
+- Q: Upstage 외 추가 AI 서비스? → A: Upstage + OpenAI (백업/비교용)
+- Q: 인증/권한 모델? → A: 인증 없음 (내부 전용 시스템)
+- Q: 데이터 보관 기간? → A: 90일 후 자동 삭제
+- Q: 로깅/메트릭 수준? → A: 구조화된 로그 + 기본 메트릭 (요청수, 지연시간)

@@ -15,6 +15,16 @@ const config = {
   encryptionSecret: process.env.ENCRYPTION_SECRET || 'supersecretencryptionkey', // NEW: Encryption secret
   discordBotToken: process.env.DISCORD_BOT_TOKEN, // Used for AI Agent System communication
   upstageApiKey: process.env.UPSTAGE_API_KEY, // If backend calls Upstage API directly
+
+  // Data retention settings (US7/NFR-8)
+  dataRetention: {
+    // Retention period in days (default: 90 days)
+    retentionDays: parseInt(process.env.DATA_RETENTION_DAYS, 10) || 90,
+    // Cron schedule for cleanup job (default: daily at 2:00 AM)
+    cleanupCronSchedule: process.env.DATA_RETENTION_CRON || '0 2 * * *',
+    // Enable/disable retention job
+    enabled: process.env.DATA_RETENTION_ENABLED !== 'false',
+  },
 };
 
 // Validate essential configurations
