@@ -12,8 +12,8 @@ TalkStudio의 새로운 기능은 Discord 서버/채널에서 대량의 대화 �
 ## Technical Context
 
 **Language/Version**: Frontend: TypeScript/JavaScript (React, Node.js 20); Backend/AI Agent: Python 3.10+
-**Primary Dependencies**: Frontend: React, Tailwind CSS; Backend: Node.js (Express.js or Fastify), discord.py (Python Discord library); AI Agent: Python Agent SDK, Upstage Python SDK, scikit-learn (or Hugging Face Transformers for NLP)
-**Storage**: NoSQL (MongoDB) or relational (PostgreSQL) for User, Conversation, Message, Agent, AgentTrace data, and for Upstage API generated content.
+**Primary Dependencies**: Frontend: React, Tailwind CSS; Backend: Node.js (Fastify), discord.py (Python Discord library); AI Agent: Python Agent SDK, Upstage Python SDK, scikit-learn (or Hugging Face Transformers for NLP)
+**Storage**: PostgreSQL for structured data (User, DiscordConfig, GeneratedContent) with JSONB columns for flexible fields (rawContent, rawData).
 **Testing**: Frontend: Jest, React Testing Library; Backend/AI Agent: Jest (Node.js), Pytest (Python); E2E: Playwright
 **Target Platform**: Linux server (containerized via Docker), Web Browsers
 **Project Type**: Web application (Frontend + Backend + AI Agent System)

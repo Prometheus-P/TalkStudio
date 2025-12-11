@@ -32,7 +32,12 @@ Write clean, well-documented, and consistent code that is easy to understand, mo
 
 ## Technology Stack
 
-This project utilizes React for the frontend, Node.js for the backend (if applicable), and Tailwind CSS for styling. All new features and components must adhere to this stack unless explicitly approved for a deviation.
+This project utilizes:
+- **Frontend**: React + Tailwind CSS
+- **Backend API**: Node.js (Express.js or Fastify)
+- **AI/ML Subsystems**: Python 3.10+ is permitted for specialized AI agent systems requiring ML libraries (discord.py, scikit-learn, Hugging Face)
+
+All new features must adhere to this stack. Python subsystems must communicate with the Node.js backend via REST API or message queue, not direct database access from frontend.
 
 ## Development Workflow
 
