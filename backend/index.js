@@ -13,6 +13,7 @@ import intentAnalysisRoutes from './src/api/integrations/intent_analysis_routes.
 import contentGenerationRoutes from './src/api/integrations/content_generation_routes.js';
 import conversationRoutes from './src/api/conversations/conversation_routes.js';
 import templateRoutes from './src/api/conversations/template_routes.js';
+import bulkGenerationRoutes from './src/api/conversations/bulk_generation_routes.js';
 import { startRetentionJob } from './src/jobs/data_retention_job.js';
 import { seed as seedTemplates } from './src/db/seeds/system_templates.js';
 
@@ -37,6 +38,7 @@ app.use('/api/v1/content', contentGenerationRoutes);
 // Routes - AI Conversation Generator (002)
 app.use('/api/v1/conversations', conversationRoutes);
 app.use('/api/v1/templates', templateRoutes);
+app.use('/api/v1/bulk', bulkGenerationRoutes);
 
 // Basic error handling middleware
 app.use((err, req, res, next) => {
