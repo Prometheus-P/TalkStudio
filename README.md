@@ -180,6 +180,84 @@ curl -X POST http://localhost:3000/api/v1/content/generate \
   }'
 ```
 
+## AI 대화 생성기 사용법
+
+시나리오를 입력하면 AI가 자연스러운 대화를 생성하고, TalkStudio 렌더링 엔진을 통해 카카오톡/디스코드 등 플랫폼 스타일 스크린샷으로 출력합니다.
+
+### 기능 개요
+
+| 기능 | 설명 |
+|------|------|
+| 시나리오 기반 생성 | 프롬프트를 입력하면 AI가 대화 생성 |
+| 템플릿 활용 | 사전 정의된 템플릿으로 빠른 시작 |
+| 대량 생성 | Excel 업로드로 최대 100건 일괄 처리 |
+| 대화 편집 | 생성된 대화 수정 및 재생성 |
+| 스크린샷 내보내기 | 4개 플랫폼 스타일 PNG/JPEG 출력 |
+
+### API 엔드포인트
+
+#### 대화 생성
+| Method | Endpoint | 설명 |
+|--------|----------|------|
+| POST | `/api/v1/conversations/generate` | 새 대화 생성 |
+| GET | `/api/v1/conversations/:id` | 대화 조회 |
+| PATCH | `/api/v1/conversations/:id` | 대화 수정 |
+| DELETE | `/api/v1/conversations/:id` | 대화 삭제 |
+| POST | `/api/v1/conversations/:id/regenerate` | 메시지 재생성 |
+
+#### 템플릿 관리
+| Method | Endpoint | 설명 |
+|--------|----------|------|
+| GET | `/api/v1/templates` | 템플릿 목록 조회 |
+| POST | `/api/v1/templates` | 커스텀 템플릿 생성 |
+| DELETE | `/api/v1/templates/:id` | 템플릿 삭제 |
+
+#### 대량 생성
+| Method | Endpoint | 설명 |
+|--------|----------|------|
+| GET | `/api/v1/bulk/template` | Excel 템플릿 다운로드 |
+| POST | `/api/v1/bulk/start` | 대량 생성 시작 |
+| GET | `/api/v1/bulk/:jobId/status` | 진행 상태 조회 |
+| GET | `/api/v1/bulk/:jobId/download` | 결과 ZIP 다운로드 |
+
+### 사용 예시
+
+**1. 대화 생성 요청**
+```bash
+curl -X POST http://localhost:3000/api/v1/conversations/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "scenario": "친구와 카페에서 주말 계획에 대해 이야기하는 캐주얼한 대화",
+    "participants": 2,
+    "messageCount": 10,
+    "tone": "casual",
+    "platform": "kakaotalk"
+  }'
+```
+
+**2. 생성 파라미터**
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| scenario | string | ✅ | 시나리오 설명 (10-500자) |
+| participants | number | - | 참여자 수 (2-5, 기본값: 2) |
+| messageCount | number | - | 메시지 수 (5-50, 기본값: 10) |
+| tone | string | - | casual / formal / humorous (기본값: casual) |
+| platform | string | - | kakaotalk / discord / telegram / instagram (기본값: kakaotalk) |
+| participantNames | string[] | - | 참여자 이름 배열 |
+| templateId | string | - | 템플릿 ID |
+
+**3. Rate Limiting**
+API 요청 제한이 적용됩니다:
+- 대화 생성: 분당 10회
+- 템플릿 API: 분당 30회
+- 대량 생성: 분당 3회
+
+### 데이터 보관 정책
+
+- **대화 데이터**: 생성 후 90일간 보관, 이후 자동 삭제
+- **대량 생성 작업**: 24시간 후 자동 삭제 (결과 파일 포함)
+- MongoDB TTL 인덱스를 통한 자동 정리
+
 ## 테스트
 
 ```bash

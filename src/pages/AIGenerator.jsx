@@ -46,8 +46,8 @@ const AIGenerator = ({ onClose, onGenerated }) => {
     setTone(template.tone || 'casual');
   }, []);
 
-  // Switch to custom mode for manual input
-  const handleSwitchToCustom = useCallback(() => {
+  // Switch to custom mode for manual input (reserved for future use)
+  const _handleSwitchToCustom = useCallback(() => {
     setActiveTab('custom');
     setSelectedTemplate(null);
   }, []);
@@ -316,7 +316,7 @@ const AIGenerator = ({ onClose, onGenerated }) => {
                 showOnlyPlatform={true}
               />
             </>
-          ) : (
+          ) : activeTab === 'custom' ? (
             <>
               {/* Scenario Input */}
               <ScenarioInput

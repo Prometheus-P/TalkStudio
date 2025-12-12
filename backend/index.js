@@ -1,6 +1,5 @@
 // backend/index.js
 import express from 'express';
-import mongoose from 'mongoose';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './src/config/openapi.js'; // Import swaggerSpec
 
@@ -16,6 +15,12 @@ import templateRoutes from './src/api/conversations/template_routes.js';
 import bulkGenerationRoutes from './src/api/conversations/bulk_generation_routes.js';
 import { startRetentionJob } from './src/jobs/data_retention_job.js';
 import { seed as seedTemplates } from './src/db/seeds/system_templates.js';
+import {
+  aiGenerationLimiter,
+  templateLimiter,
+  bulkGenerationLimiter,
+} from './src/middleware/rate_limiter.js';
+import errorHandler, { notFoundHandler } from './src/middleware/error_handler.js';
 
 const app = express();
 
@@ -35,16 +40,16 @@ app.use('/api/v1/integrations/discord', discordCaptureRoutes);
 app.use('/api/v1/integrations/discord', intentAnalysisRoutes);
 app.use('/api/v1/content', contentGenerationRoutes);
 
-// Routes - AI Conversation Generator (002)
-app.use('/api/v1/conversations', conversationRoutes);
-app.use('/api/v1/templates', templateRoutes);
-app.use('/api/v1/bulk', bulkGenerationRoutes);
+// Routes - AI Conversation Generator (002) with rate limiting
+app.use('/api/v1/conversations', aiGenerationLimiter, conversationRoutes);
+app.use('/api/v1/templates', templateLimiter, templateRoutes);
+app.use('/api/v1/bulk', bulkGenerationLimiter, bulkGenerationRoutes);
 
-// Basic error handling middleware
-app.use((err, req, res, next) => {
-  logger.error('Unhandled error:', err);
-  res.status(500).json({ status: 'error', code: 'INTERNAL_SERVER_ERROR', message: 'An unexpected error occurred.' });
-});
+// 404 handler for undefined routes
+app.use(notFoundHandler);
+
+// Global error handler (must be last middleware)
+app.use(errorHandler);
 
 // Start the server
 app.listen(config.port, async () => {
