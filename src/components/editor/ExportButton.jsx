@@ -1,11 +1,12 @@
 /**
  * ExportButton - PNG 내보내기 버튼
  * CLAYMORPHISM DESIGN STYLE
+ * Uses html-to-image for proper Korean font rendering
  */
 import React from 'react';
-import html2canvas from 'html2canvas';
 import { Download, Loader2 } from 'lucide-react';
 import useChatStore from '../../store/useChatStore';
+import { exportAsPng } from '../../utils/imageExport';
 
 const ExportButton = () => {
   const isExporting = useChatStore((s) => s.ui.isExporting);
@@ -21,22 +22,15 @@ const ExportButton = () => {
     setExporting(true);
 
     try {
-      const result = await html2canvas(canvas, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: null,
-        logging: false,
-      });
-
       const now = new Date();
       const timestamp = now.toISOString().replace(/[-:T]/g, '').slice(0, 14);
       const filename = `talkstudio-${timestamp}.png`;
 
-      const dataUrl = result.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = dataUrl;
-      link.download = filename;
-      link.click();
+      await exportAsPng(canvas, {
+        scale: 2,
+        filename,
+        backgroundColor: null,
+      });
     } catch (error) {
       console.error('이미지 내보내기 실패:', error);
       alert('이미지 내보내기에 실패했습니다.');
