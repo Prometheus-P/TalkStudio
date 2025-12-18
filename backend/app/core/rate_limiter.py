@@ -139,12 +139,11 @@ class DailyQuotaManager:
         entry_count = len(self._memory_counters)
 
         if entry_count >= self.CLEANUP_THRESHOLD:
-            removed = self._cleanup_old_entries()
+            self._cleanup_old_entries()
             remaining = len(self._memory_counters)
 
             # If still over limit after cleanup, remove oldest entries
             if remaining >= self.MAX_MEMORY_ENTRIES:
-                current_day = self._get_current_day()
                 # Sort by count (lowest first) and remove excess
                 sorted_ips = sorted(
                     self._memory_counters.items(),

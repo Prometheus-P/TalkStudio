@@ -5,6 +5,7 @@ Returns detailed validation errors instead of 500 Internal Server Errors.
 
 import io
 import uuid
+import zipfile
 from datetime import datetime, timezone
 from typing import Any
 
@@ -415,7 +416,3 @@ class ExcelService:
             )
 
         return datetime.now(timezone.utc)
-
-
-# Import for BadZipFile handling
-import zipfile

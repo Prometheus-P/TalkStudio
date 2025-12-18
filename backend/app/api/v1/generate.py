@@ -5,16 +5,14 @@ from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile, status
-from slowapi import Limiter
 
 from app.core.config import settings
-from app.core.rate_limiter import check_daily_quota, get_client_ip, limiter
+from app.core.rate_limiter import check_daily_quota, limiter
 from app.schemas.chat import (
     ChatMessage,
     GenerateRequest,
     GenerateResponse,
     MessageType,
-    ParseExcelRequest,
     ParseExcelResponse,
     SpeakerType,
 )
@@ -83,7 +81,7 @@ async def generate_conversation(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={"error": "validation_error", "message": str(e)},
         )
-    except Exception as e:
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail={
