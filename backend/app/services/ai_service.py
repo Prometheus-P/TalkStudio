@@ -1,6 +1,7 @@
 """AI service for conversation generation."""
 
 import json
+import logging
 import uuid
 from datetime import datetime, timezone
 from typing import Literal
@@ -8,8 +9,11 @@ from typing import Literal
 import httpx
 from openai import AsyncOpenAI
 
+from app.core.cache import ResponseCache, response_cache
 from app.core.config import settings
 from app.schemas.chat import ChatMessage, MessageType, SpeakerType
+
+logger = logging.getLogger(__name__)
 
 
 class AIService:
@@ -86,22 +90,72 @@ type must be "text" or "emoji"
         style: Literal["casual", "formal", "romantic", "funny", "dramatic"] = "casual",
         language: Literal["ko", "en", "ja"] = "ko",
         provider: Literal["openai", "upstage"] = "openai",
+        use_cache: bool = True,
     ) -> tuple[list[ChatMessage], dict]:
         """
         Generate a conversation using AI.
 
+        Args:
+            prompt: Description of the conversation to generate
+            message_count: Number of messages to generate
+            style: Conversation style
+            language: Output language
+            provider: AI provider to use
+            use_cache: Whether to use response caching
+
         Returns:
             Tuple of (messages, metadata)
         """
+        # Generate cache key
+        cache_key = ResponseCache.generate_cache_key(
+            prompt=prompt,
+            message_count=message_count,
+            style=style,
+            language=language,
+            provider=provider,
+        )
+
+        # Check cache first
+        if use_cache:
+            cached = response_cache.get(cache_key)
+            if cached:
+                logger.info("Using cached response for prompt: %s...", prompt[:50])
+                messages = self._parse_messages(cached["messages_data"])
+                metadata = cached["metadata"].copy()
+                metadata["cached"] = True
+                metadata["cache_key"] = cache_key
+                return messages, metadata
+
+        # Generate new response
         system_prompt = self._build_system_prompt(style, language, message_count)
         user_prompt = f"Generate a conversation about: {prompt}"
 
         if provider == "openai":
-            return await self._generate_with_openai(system_prompt, user_prompt)
+            messages, metadata = await self._generate_with_openai(system_prompt, user_prompt)
         elif provider == "upstage":
-            return await self._generate_with_upstage(system_prompt, user_prompt)
+            messages, metadata = await self._generate_with_upstage(system_prompt, user_prompt)
         else:
             raise ValueError(f"Unknown provider: {provider}")
+
+        # Store in cache
+        if use_cache and messages:
+            messages_data = [
+                {
+                    "speaker": msg.speaker.value,
+                    "text": msg.text,
+                    "type": msg.type.value,
+                    "name": msg.speaker_name,
+                }
+                for msg in messages
+            ]
+            response_cache.set(cache_key, {
+                "messages_data": messages_data,
+                "metadata": metadata,
+            })
+            logger.info("Cached response for prompt: %s...", prompt[:50])
+
+        metadata["cached"] = False
+        return messages, metadata
 
     async def _generate_with_openai(
         self,

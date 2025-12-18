@@ -11,4 +11,15 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./setupTests.js'],
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/legacy/**',
+      '**/backend/**',
+    ],
+  },
 })

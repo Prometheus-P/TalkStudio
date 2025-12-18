@@ -22,7 +22,7 @@ const MessageEditor = () => {
   const timeWarnings = useMemo(() => validateTimeOrder(messages), [messages]);
 
   const handleAddMessage = (authorId, insertIndex = null) => {
-    const author = authors.find((a) => a.id === authorId);
+    const _author = authors.find((a) => a.id === authorId);
     const newMessage = {
       role: authorId === 'me' ? 'me' : 'other',
       authorId,
@@ -218,7 +218,7 @@ const MessageItem = ({
   onMoveDown,
 }) => {
   const [text, setText] = useState(message.text);
-  const isMe = message.authorId === 'me';
+  const _isMe = message.authorId === 'me';
 
   // datetime에서 date와 time 분리
   const dateValue = extractDate(message.datetime);
@@ -249,7 +249,7 @@ const MessageItem = ({
     onUpdate(message.id, { datetime: newDatetime });
   };
 
-  const currentAuthor = authors.find((a) => a.id === message.authorId) || authors[0];
+  const _currentAuthor = authors.find((a) => a.id === message.authorId) || authors[0];
   const isAuthorMe = message.authorId === 'me';
 
   return (

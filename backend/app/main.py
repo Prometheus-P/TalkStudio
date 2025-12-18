@@ -80,7 +80,7 @@ async def validation_exception_handler(
     """Handle Pydantic validation errors with clear messages."""
     errors = []
     for error in exc.errors():
-        loc = " -> ".join(str(l) for l in error["loc"])
+        loc = " -> ".join(str(part) for part in error["loc"])
         errors.append({
             "field": loc,
             "message": error["msg"],

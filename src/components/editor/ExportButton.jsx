@@ -59,7 +59,7 @@ const ExportButton = () => {
     }
   };
 
-  const formatLabel = IMAGE_FORMATS[selectedFormat]?.label || 'PNG';
+  const _formatLabel = IMAGE_FORMATS[selectedFormat]?.label || 'PNG';
 
   return (
     <div className="relative w-full">
