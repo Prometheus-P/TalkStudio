@@ -11,21 +11,15 @@
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Language/Version**: Frontend: TypeScript/JavaScript (React, Node.js 20); Backend/AI Agent: Python 3.10+
+**Primary Dependencies**: Frontend: React, Tailwind CSS; Backend: Node.js (Express), discord.py (Python Discord library); AI Agent: Python Agent SDK, Upstage Python SDK, scikit-learn (or Hugging Face Transformers for NLP)
+**Storage**: MongoDB for structured data (User, DiscordConfig, GeneratedContent) with flexible document structure.
+**Testing**: Frontend: Vitest, React Testing Library; Backend/AI Agent: Jest (Node.js), Pytest (Python); E2E: Playwright
+**Target Platform**: Linux server (containerized via Docker), Web Browsers
+**Project Type**: Web application (Frontend + Backend + AI Agent System)
+**Performance Goals**: Discord message capture: Efficiently handle up to 10,000 messages per channel within a reasonable timeframe (< 1 minute for initial sync). Intent analysis & content generation: Upstage API response time + custom processing < 5 seconds for typical requests. Overall system responsiveness for user interaction.
+**Constraints**: Discord API rate limits and terms of service compliance. Upstage API cost management. Data privacy and security for Discord conversation data. LLM hallucination mitigation.
+**Scale/Scope**: Support multiple Discord servers/channels. Process large volumes of historical Discord messages. Generate various content types based on analyzed intent. Support up to 1,000 concurrent users (initial target).
 
 ## Constitution Check
 

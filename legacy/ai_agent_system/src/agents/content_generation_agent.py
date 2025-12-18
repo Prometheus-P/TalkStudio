@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from uuid import uuid4
 import asyncio
 
-from ai_agent_system.src.services.upstage_client import UpstageClient
+from ai_agent_system.src.services.ai_router import get_ai_router, AIProvider, AIResponse
 from ai_agent_system.src.services.prompt_engineer import PromptEngineer
 from ai_agent_system.src.db.client import MongoDBClient
 from ai_agent_system.src.models.discord_message_model import DiscordMessage
@@ -13,7 +13,7 @@ from ai_agent_system.src.models.generated_content_model import GeneratedContent
 
 class ContentGenerationAgent:
     def __init__(self):
-        self.upstage_client = UpstageClient()
+        self.ai_router = get_ai_router()  # US5: Use AI Router instead of direct client
         self.prompt_engineer = PromptEngineer()
         self.db_client = MongoDBClient()
         self.db = self.db_client.get_db()
@@ -75,28 +75,28 @@ class ContentGenerationAgent:
             return None
 
         # --- T038: LLM Hallucination 방지 및 사실 확인 메커니즘 (예: RAG 연동) 초기 연구 및 적용 고려 ---
-        # Before calling Upstage API, consider adding a RAG (Retrieval Augmented Generation) step
+        # Before calling AI API, consider adding a RAG (Retrieval Augmented Generation) step
         # to ground the LLM's response in factual information from Discord messages or external sources.
-        # This could involve:
-        # 1. Retrieving relevant message chunks based on prompt/intent.
-        # 2. Augmenting the prompt with retrieved facts.
-        # This is a research/consideration task, so for implementation, we'll keep it as a comment for now.
         # -----------------------------------------------------------------------------------------
 
-        # Call Upstage API
+        # US5: Call AI via Router (with automatic fallback)
         gen_params = generation_parameters if generation_parameters else {}
-        generated_text = await self.upstage_client.text_generation(
+        ai_response: AIResponse = await self.ai_router.generate(
             prompt=prompt,
-            model_name=gen_params.get("model_name", "llama-2-70b-chat"),
+            model_name=gen_params.get("model_name"),  # None uses provider default
             temperature=gen_params.get("temperature", 0.7),
             max_tokens=gen_params.get("max_tokens", 500),
             top_p=gen_params.get("top_p", 1.0),
             stop_sequences=gen_params.get("stop_sequences")
         )
 
-        if not generated_text:
-            print("Upstage API did not return generated text.")
+        if not ai_response.success or not ai_response.text:
+            print(f"AI generation failed: {ai_response.error}")
             return None
+
+        generated_text = ai_response.text
+        if ai_response.fallback_used:
+            print(f"Note: Used fallback provider {ai_response.provider.value}")
 
         # Save generated content to database
         generated_content_data = {
@@ -104,10 +104,13 @@ class ContentGenerationAgent:
             "relatedDiscordMessageIds": discord_message_ids,
             "contentType": content_type,
             "generatedText": generated_text,
-            "upstageModelUsed": gen_params.get("model_name", "llama-2-70b-chat"),
+            "upstageModelUsed": ai_response.model,  # Actual model used
+            "aiProvider": ai_response.provider.value,  # US5: Track which provider was used
+            "fallbackUsed": ai_response.fallback_used,  # US5: Track if fallback was used
             "promptUsed": prompt,
             "temperature": gen_params.get("temperature", 0.7),
-            "generatedAt": datetime.now(timezone.utc)
+            "generatedAt": datetime.now(timezone.utc),
+            "latencyMs": ai_response.latency_ms
         }
         generated_content = GeneratedContent(**generated_content_data)
 
@@ -124,14 +127,14 @@ class ContentGenerationAgent:
 async def main():
     from ai_agent_system.src.config.settings import settings
     settings.validate()
-    
-    # Needs valid Upstage API Key in .env
-    if not settings.UPSTAGE_API_KEY:
-        print("Please set UPSTAGE_API_KEY in your .env for testing.")
+
+    # US5: Works with either Upstage or OpenAI (or both)
+    if not settings.UPSTAGE_API_KEY and not settings.OPENAI_API_KEY:
+        print("Please set UPSTAGE_API_KEY or OPENAI_API_KEY in your .env for testing.")
         return
 
     agent = ContentGenerationAgent()
-    
+
     # Dummy messages and intent results (normally fetched from DB)
     dummy_message = DiscordMessage(
         discordMessageId="dummy_msg_1", authorId="1", authorName="User1",
@@ -154,10 +157,11 @@ async def main():
     )
     if generated_summary:
         print(f"\nGenerated Summary: {generated_summary.generatedText}")
+        print(f"Provider used: {generated_summary.dict().get('aiProvider', 'unknown')}")
     else:
         print("Summary generation failed.")
-        
-    await agent.upstage_client.close()
+
+    await agent.ai_router.close()
 
 if __name__ == "__main__":
     asyncio.run(main())

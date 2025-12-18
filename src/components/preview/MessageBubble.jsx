@@ -115,7 +115,16 @@ const MessageBubble = ({ message, author, theme, isFirstInGroup, isLastInGroup }
                 themeId={theme.id}
               />
             )}
-            <span className="whitespace-pre-wrap break-words">{text}</span>
+            <span
+              className="whitespace-pre-wrap break-words"
+              style={{
+                wordBreak: 'break-word',
+                overflowWrap: 'anywhere',
+                hyphens: 'auto',
+              }}
+            >
+              {text}
+            </span>
           </div>
 
           {/* 시간 & 읽음 표시 */}
@@ -143,35 +152,20 @@ const DiscordMessage = ({ author, text, time, isMe, isFirstInGroup, theme, bubbl
     return discordColors.headerSecondary; // #C7C8CE
   };
 
-  // Discord iOS 타임스탬프 형식으로 변환 (YYYY.MM.DD. 오전/오후 H:MM)
+  // Discord iOS 타임스탬프 형식으로 변환 (MM/DD/YY, HH:MM)
   const formatDiscordTime = (timeStr) => {
     const today = new Date();
-    const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
+    const year = String(today.getFullYear()).slice(-2);
 
-    // 시간과 오전/오후 추출
-    let hours = 12;
-    let minutes = '00';
-    let ampm = '오후';
-
+    // 시간만 추출 (오전/오후 제거)
+    let timeOnly = timeStr;
     if (timeStr.includes('오전') || timeStr.includes('오후')) {
-      ampm = timeStr.includes('오전') ? '오전' : '오후';
-      const timeMatch = timeStr.match(/(\d{1,2}):(\d{2})/);
-      if (timeMatch) {
-        hours = parseInt(timeMatch[1], 10);
-        minutes = timeMatch[2];
-      }
-    } else {
-      const timeMatch = timeStr.match(/(\d{1,2}):(\d{2})/);
-      if (timeMatch) {
-        hours = parseInt(timeMatch[1], 10);
-        minutes = timeMatch[2];
-      }
+      timeOnly = timeStr.replace(/오[전후]\s?/, '');
     }
 
-    // 실제 디스코드 형식: 2023.06.03. 오전 2:43
-    return `${year}.${month}.${day}. ${ampm} ${hours}:${minutes}`;
+    return `${month}/${day}/${year}, ${timeOnly}`;
   };
 
   // 연속 메시지: 50px 왼쪽 인덴트 (Avatar 40px + Gap 10px)
@@ -258,6 +252,8 @@ const DiscordMessage = ({ author, text, time, isMe, isFirstInGroup, theme, bubbl
             lineHeight: '18px',
             color: discordColors.textNormal,
             margin: 0,
+            wordBreak: 'break-word',
+            overflowWrap: 'anywhere',
           }}
         >
           {text}

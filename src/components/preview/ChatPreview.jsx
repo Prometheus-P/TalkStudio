@@ -14,25 +14,24 @@ import { discordColors } from '../../themes/presets';
 // Discord iOS Mobile SVG Icons (from Figma export)
 // ============================================
 
-// 뒤로가기 화살표 아이콘 - 실제 디스코드 iOS 스타일 (얇은 chevron)
-const DiscordBackIcon = ({ color = '#C7C8CE', size = 24 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M15 19l-7-7 7-7" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+// 뒤로가기 화살표 아이콘
+const DiscordBackIcon = ({ color = '#C7C8CE', size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 18 15" fill="none">
+    <path d="M0.328 7.128C0.328 6.785 0.478 6.425 0.715 6.188L6.437 0.475C6.709 0.202 7.026 0.07 7.333 0.07C8.08 0.07 8.59 0.589 8.59 1.274C8.59 1.661 8.423 1.96 8.186 2.189L6.217 4.166L4.275 5.959L6.191 5.854H16.122C16.913 5.854 17.441 6.363 17.441 7.128C17.441 7.884 16.913 8.402 16.122 8.402H6.191L4.266 8.297L6.217 10.09L8.186 12.059C8.423 12.287 8.59 12.595 8.59 12.973C8.59 13.658 8.08 14.177 7.333 14.177C7.026 14.177 6.709 14.045 6.446 13.781L0.715 8.068C0.478 7.831 0.328 7.471 0.328 7.128Z" fill={color}/>
   </svg>
 );
 
-// 전화 아이콘 (Nav bar) - outline 스타일
-const DiscordPhoneIcon = ({ color = '#C7C8CE', size = 24 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+// 전화 아이콘 (Nav bar)
+const DiscordPhoneIcon = ({ color = '#C7C8CE', size = 15 }) => (
+  <svg width={size} height={size} viewBox="0 0 15 15" fill="none">
+    <path d="M4.307 9.728C3.603 9.029 2.971 8.297 2.41 7.53C1.853 6.759 1.414 5.99 1.091 5.223C0.769 4.457 0.608 3.729 0.608 3.04C0.608 2.582 0.688 2.149 0.85 1.744C1.011 1.339 1.269 0.97 1.626 0.638C2.051 0.238 2.507 0.038 2.996 0.038C3.206 0.038 3.403 0.082 3.589 0.169C3.779 0.252 3.943 0.389 4.08 0.58L5.588 2.704C5.71 2.875 5.801 3.036 5.859 3.187C5.918 3.334 5.947 3.468 5.947 3.59C5.947 3.761 5.901 3.924 5.808 4.081C5.72 4.232 5.596 4.388 5.435 4.549L4.929 5.069C4.856 5.138 4.819 5.226 4.819 5.333C4.819 5.387 4.827 5.44 4.841 5.494C4.861 5.543 4.883 5.587 4.907 5.626C5.024 5.851 5.232 6.139 5.53 6.49C5.828 6.837 6.152 7.186 6.504 7.538C6.855 7.889 7.205 8.214 7.551 8.512C7.903 8.805 8.191 9.015 8.415 9.142C8.45 9.161 8.491 9.181 8.54 9.2C8.594 9.215 8.65 9.222 8.708 9.222C8.816 9.222 8.906 9.186 8.979 9.112L9.492 8.607C9.653 8.446 9.81 8.321 9.961 8.233C10.117 8.141 10.278 8.094 10.444 8.094C10.571 8.094 10.708 8.124 10.854 8.182C11.001 8.236 11.16 8.326 11.331 8.453L13.477 9.977C13.662 10.104 13.796 10.26 13.879 10.445C13.967 10.631 14.011 10.824 14.011 11.024C14.011 11.263 13.957 11.5 13.85 11.734C13.743 11.969 13.596 12.193 13.411 12.408C13.083 12.77 12.717 13.033 12.312 13.199C11.912 13.365 11.479 13.448 11.016 13.448C10.327 13.448 9.597 13.285 8.826 12.958C8.059 12.635 7.288 12.191 6.511 11.625C5.74 11.063 5.005 10.431 4.307 9.728Z" fill={color}/>
   </svg>
 );
 
-// 비디오 아이콘 (Nav bar) - outline 스타일
-const DiscordVideoIcon = ({ color = '#C7C8CE', size = 24 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <path d="M23 7l-7 5 7 5V7z" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-    <rect x="1" y="5" width="15" height="14" rx="2" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+// 비디오 아이콘 (Nav bar)
+const DiscordVideoIcon = ({ color = '#C7C8CE', size = 17 }) => (
+  <svg width={size} height={size * 0.75} viewBox="0 0 17 13" fill="none">
+    <path d="M1.699 11.806C0.894 11.806 0.273 11.608 -0.161 11.212C-0.596 10.822 -0.813 10.238 -0.813 9.462V2.628C-0.813 1.852 -0.593 1.252 -0.154 0.827C0.291 0.402 0.908 0.19 1.699 0.19H8.848C9.648 0.19 10.259 0.402 10.679 0.827C11.099 1.252 11.309 1.85 11.309 2.621V9.367C11.309 10.143 11.091 10.744 10.657 11.169C10.222 11.593 9.604 11.806 8.804 11.806H1.699ZM12.407 8.437V3.632L14.604 1.75C14.78 1.603 14.951 1.486 15.117 1.398C15.283 1.31 15.452 1.266 15.623 1.266C15.916 1.266 16.157 1.364 16.348 1.559C16.538 1.75 16.633 2.006 16.633 2.328V9.74C16.633 10.063 16.538 10.321 16.348 10.517C16.157 10.707 15.916 10.802 15.623 10.802C15.452 10.802 15.283 10.758 15.117 10.67C14.951 10.583 14.78 10.468 14.604 10.326L12.407 8.437Z" transform="translate(0.813 0)" fill={color}/>
   </svg>
 );
 
@@ -61,14 +60,6 @@ const DiscordGiftIcon = ({ color = '#C7C8CE', size = 20 }) => (
 const DiscordEmojiIcon = ({ color = '#C7C8CE', size = 22 }) => (
   <svg width={size} height={size} viewBox="0 0 22 22" fill="none">
     <path d="M11 0C17.075 0.003 22 4.925 22 11C22 16.939 17.433 21.727 11.5 22C5.425 22.279 0.273 17.575 0 11.5C-0.279 5.292 4.785 -0.003 11 0ZM15.5 14.5C16.053 13.875 15 12.5 14.5 13C14.403 13.097 14.286 13.226 14.155 13.372C13.611 13.977 12.805 14.872 12 15C11.244 15.12 10.755 15.123 10 15C9.406 14.903 8.808 14.251 8.318 13.717C7.983 13.352 7.698 13.041 7.5 13C6.571 12.808 5.839 13.77 6.5 14.5C7.449 15.548 8.999 17 9.5 17C9.575 17 9.732 17.008 9.932 17.019C10.571 17.052 11.658 17.11 12 17C13.413 16.486 14.185 15.986 15.5 14.5ZM5.5 9C4.671 9 4 9.672 4 10.5C4 11.328 4.671 12 5.5 12C6.328 12 7 11.329 7 10.5C7 9.672 6.328 9 5.5 9ZM16.5 9C15.671 9 15 9.672 15 10.5C15 11.328 15.671 12 16.5 12C17.328 12 18 11.329 18 10.5C18 9.672 17.328 9 16.5 9Z" fill={color}/>
-  </svg>
-);
-
-// Search 아이콘 (돋보기) - outline 스타일
-const DiscordSearchIcon = ({ color = '#C7C8CE', size = 24 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <circle cx="11" cy="11" r="8" stroke={color} strokeWidth="1.8"/>
-    <path d="M21 21l-4.35-4.35" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
@@ -115,19 +106,38 @@ const ChatPreview = () => {
     };
   };
 
-  // Discord iOS 모바일 레이아웃 - 실제 캡처본처럼 직사각형
+  // Discord iOS 모바일 레이아웃 - 폰 크기로 스케일
   if (theme.id === 'discord') {
+    const scale = 0.7; // 적절한 크기로 스케일
+    const scaledHeight = theme.canvasHeight * scale;
+    const scaledWidth = theme.canvasWidth * scale;
+
     return (
       <div
-        id="chat-canvas"
-        className="overflow-hidden flex flex-col"
+        className="relative flex items-center justify-center"
         style={{
-          width: theme.canvasWidth,
-          height: theme.canvasHeight,
-          fontFamily: theme.fontFamily,
-          backgroundColor: discordColors.backgroundPrimary,
+          width: scaledWidth,
+          height: scaledHeight,
         }}
       >
+        <div
+          style={{
+            transform: `scale(${scale})`,
+            transformOrigin: 'center center',
+          }}
+        >
+          <div
+            id="chat-canvas"
+            className="overflow-hidden flex flex-col"
+            style={{
+              width: theme.canvasWidth,
+              height: theme.canvasHeight,
+              fontFamily: theme.fontFamily,
+              backgroundColor: discordColors.backgroundPrimary,
+              borderRadius: 44,
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+            }}
+          >
         {/* iOS 상태바 (47px) - 토글 가능 */}
         {theme.showStatusBar && <DiscordIOSStatusBar statusBar={statusBar} />}
 
@@ -139,8 +149,8 @@ const ChatPreview = () => {
           className="flex-1 flex flex-col overflow-hidden"
           style={{ padding: '10px' }}
         >
-          {/* 날짜 구분선 - 한국어 형식 */}
-          <DiscordDateDivider />
+          {/* 날짜 구분선 */}
+          <DiscordDateDivider date="November 10" />
 
           {/* 메시지 리스트 */}
           <div className="flex-1 flex flex-col gap-0">
@@ -164,6 +174,8 @@ const ChatPreview = () => {
 
         {/* 하단 메시지 바 (92px) */}
         <DiscordMobileBottomNav title={title} />
+          </div>
+        </div>
       </div>
     );
   }
@@ -194,10 +206,15 @@ const ChatPreview = () => {
         />
       )}
 
-      {/* 메시지 리스트 */}
+      {/* 메시지 리스트 - 성능 최적화 */}
       <div
-        className="flex-1 overflow-hidden flex flex-col justify-end"
-        style={{ paddingTop: 8, paddingBottom: 8 }}
+        className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col justify-end"
+        style={{
+          paddingTop: 8,
+          paddingBottom: 8,
+          contain: 'layout style',
+          willChange: 'scroll-position',
+        }}
       >
         {messages.map((message, index) => {
           const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);
@@ -240,7 +257,7 @@ const DiscordIOSStatusBar = ({ statusBar }) => {
     <div
       className="relative flex items-center justify-between"
       style={{
-        width: '100%',
+        width: 390,
         height: 47,
         padding: '14px 27px 0',
         backgroundColor: discordColors.backgroundPrimary,
@@ -330,71 +347,82 @@ const DiscordIOSStatusBar = ({ statusBar }) => {
   );
 };
 
-// Discord 모바일 네비게이션 헤더 - 실제 디스코드와 동일
+// Discord 모바일 네비게이션 헤더 (55px)
 const DiscordMobileNav = ({ title, avatar, unreadCount = 0 }) => {
   return (
     <div
       className="flex items-center justify-between"
       style={{
-        width: '100%',
-        height: 52,
-        padding: '8px 16px',
+        width: 390,
+        height: 55,
+        padding: '11px 10px 11px 13px',
         backgroundColor: discordColors.backgroundPrimary,
+        borderBottom: `1px solid ${discordColors.borderPrimary}`,
       }}
     >
       {/* 왼쪽: 뒤로가기 + 프로필 + 이름 */}
       <div className="flex items-center" style={{ gap: 10 }}>
         {/* 뒤로가기 버튼 (알림 뱃지 포함) */}
-        <div className="relative" style={{ width: 24, height: 24 }}>
-          <DiscordBackIcon color={discordColors.headerSecondary} size={24} />
-          {/* 알림 뱃지 */}
+        <div className="relative">
+          <div
+            className="flex items-center justify-center"
+            style={{
+              width: 33,
+              height: 33,
+              borderRadius: 23,
+            }}
+          >
+            <DiscordBackIcon color={discordColors.headerSecondary} size={18} />
+          </div>
+          {/* 알림 뱃지 - unreadCount가 0보다 클 때만 표시 */}
           {unreadCount > 0 && (
             <div
               className="absolute flex items-center justify-center"
               style={{
-                minWidth: 18,
-                height: 18,
-                left: -4,
-                bottom: -6,
-                backgroundColor: '#ED4245',
-                borderRadius: 9,
-                padding: '0 5px',
+                width: unreadCount > 99 ? 28 : 21,
+                height: 16,
+                left: 15,
+                top: 22,
+                backgroundColor: discordColors.notificationRed,
+                border: `3px solid ${discordColors.borderNotification}`,
+                borderRadius: 8,
               }}
             >
               <span
                 style={{
+                  fontFamily: "'gg sans', sans-serif",
                   fontWeight: 700,
-                  fontSize: 12,
+                  fontSize: unreadCount > 99 ? 10 : 12,
                   color: '#FFFFFF',
+                  letterSpacing: '0.03em',
                 }}
               >
-                {unreadCount > 99 ? '99+' : unreadCount}
+                {unreadCount > 999 ? '999+' : unreadCount}
               </span>
             </div>
           )}
         </div>
 
-        {/* 프로필 사진 - 원형 */}
+        {/* 프로필 사진 */}
         <div className="relative">
           <img
             src={avatar}
             alt={title}
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              objectFit: 'cover',
+              width: 33,
+              height: 33,
+              borderRadius: 22,
             }}
           />
           {/* 온라인 상태 점 */}
           <div
             className="absolute"
             style={{
-              width: 12,
-              height: 12,
-              right: -2,
-              bottom: -2,
-              backgroundColor: '#23A55A',
+              width: 10,
+              height: 10,
+              right: 0,
+              bottom: 0,
+              backgroundColor: discordColors.statusOnline,
               border: `3px solid ${discordColors.backgroundPrimary}`,
               borderRadius: '50%',
             }}
@@ -402,21 +430,24 @@ const DiscordMobileNav = ({ title, avatar, unreadCount = 0 }) => {
         </div>
 
         {/* 유저네임 + 화살표 */}
-        <div className="flex items-center" style={{ gap: 4 }}>
+        <div className="flex items-center" style={{ gap: 1 }}>
           <span
             style={{
-              fontFamily: "'Noto Sans KR', -apple-system, sans-serif",
-              fontWeight: 600,
-              fontSize: 17,
-              color: '#FFFFFF',
+              fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+              fontWeight: 700,
+              fontSize: 18,
+              color: discordColors.headerPrimary,
+              letterSpacing: '-0.408px',
             }}
           >
             {title}
           </span>
           <span
             style={{
-              fontSize: 14,
-              color: '#B5BAC1',
+              fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+              fontWeight: 400,
+              fontSize: 9,
+              color: '#FFFFFF',
             }}
           >
             ›
@@ -424,70 +455,83 @@ const DiscordMobileNav = ({ title, avatar, unreadCount = 0 }) => {
         </div>
       </div>
 
-      {/* 오른쪽: 통화, 영상, 검색 버튼 (배경 없이 아이콘만) */}
-      <div className="flex items-center" style={{ gap: 18 }}>
-        <DiscordPhoneIcon color={discordColors.headerSecondary} size={24} />
-        <DiscordVideoIcon color={discordColors.headerSecondary} size={26} />
-        <DiscordSearchIcon color={discordColors.headerSecondary} size={24} />
-      </div>
-    </div>
-  );
-};
-
-// Discord 날짜 구분선 - 한국어 형식 (YYYY년 M월 D일)
-const DiscordDateDivider = () => {
-  // 오늘 날짜를 한국어 형식으로 변환
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-  const day = today.getDate();
-  const formattedDate = `${year}년 ${month}월 ${day}일`;
-
-  return (
-    <div
-      className="flex items-center justify-center"
-      style={{
-        width: '100%',
-        height: 32,
-        padding: '12px 10px',
-      }}
-    >
-      <div
-        className="flex items-center"
-        style={{ width: '100%', gap: 8 }}
-      >
-        {/* 왼쪽 선 */}
+      {/* 오른쪽: 통화, 영상 버튼 */}
+      <div className="flex items-center" style={{ gap: 12, paddingRight: 6 }}>
+        {/* 통화 버튼 */}
         <div
+          className="flex items-center justify-center"
           style={{
-            flex: 1,
-            height: 1,
-            backgroundColor: discordColors.backgroundDivider,
-          }}
-        />
-        {/* 날짜 텍스트 */}
-        <span
-          style={{
-            fontFamily: "'SF Compact', -apple-system, sans-serif",
-            fontWeight: 457,
-            fontSize: 12,
-            color: discordColors.textPlaceholder,
-            letterSpacing: '-0.02em',
+            width: 33,
+            height: 33,
+            backgroundColor: discordColors.backgroundTertiary,
+            borderRadius: 23,
           }}
         >
-          {formattedDate}
-        </span>
-        {/* 오른쪽 선 */}
+          <DiscordPhoneIcon color={discordColors.headerSecondary} size={15} />
+        </div>
+
+        {/* 영상 버튼 */}
         <div
+          className="flex items-center justify-center"
           style={{
-            flex: 1,
-            height: 1,
-            backgroundColor: discordColors.backgroundDivider,
+            width: 33,
+            height: 33,
+            backgroundColor: discordColors.backgroundTertiary,
+            borderRadius: 23,
           }}
-        />
+        >
+          <DiscordVideoIcon color={discordColors.headerSecondary} size={17} />
+        </div>
       </div>
     </div>
   );
 };
+
+// Discord 날짜 구분선
+const DiscordDateDivider = ({ date }) => (
+  <div
+    className="flex items-center justify-center"
+    style={{
+      width: '100%',
+      height: 32,
+      padding: '12px 10px',
+    }}
+  >
+    <div
+      className="flex items-center"
+      style={{ width: '100%', gap: 8 }}
+    >
+      {/* 왼쪽 선 */}
+      <div
+        style={{
+          flex: 1,
+          height: 1,
+          backgroundColor: discordColors.backgroundDivider,
+        }}
+      />
+      {/* 날짜 텍스트 */}
+      <span
+        style={{
+          fontFamily: "'SF Compact', -apple-system, sans-serif",
+          fontWeight: 457,
+          fontSize: 12,
+          color: discordColors.textPlaceholder,
+          letterSpacing: '-0.02em',
+        }}
+      >
+        {date}
+      </span>
+      {/* 오른쪽 선 */}
+      <div
+        style={{
+          flex: 1,
+          height: 1,
+          backgroundColor: discordColors.backgroundDivider,
+        }}
+      />
+    </div>
+  </div>
+);
 
 // Discord 모바일 하단 메시지 바 (92px)
 const DiscordMobileBottomNav = ({ title }) => {
@@ -495,7 +539,7 @@ const DiscordMobileBottomNav = ({ title }) => {
     <div
       className="flex flex-col"
       style={{
-        width: '100%',
+        width: 390,
         height: 92,
         backgroundColor: discordColors.backgroundPrimary,
         borderTop: `1px solid ${discordColors.borderPrimary}`,
@@ -570,7 +614,7 @@ const DiscordMobileBottomNav = ({ title }) => {
               letterSpacing: '-0.507px',
             }}
           >
-            @{title}에 메시지...
+            Send a message..
           </span>
           {/* 이모지 버튼 */}
           <DiscordEmojiIcon color={discordColors.headerSecondary} size={22} />
@@ -594,7 +638,7 @@ const DiscordMobileBottomNav = ({ title }) => {
       <div
         className="flex items-start justify-center"
         style={{
-          width: '100%',
+          width: 390,
           height: 13,
           padding: '0 125px 8px',
         }}

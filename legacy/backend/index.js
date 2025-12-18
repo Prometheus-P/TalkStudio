@@ -10,17 +10,7 @@ import discordConfigRoutes from './src/api/integrations/discord_config_routes.js
 import discordCaptureRoutes from './src/api/integrations/discord_capture_routes.js';
 import intentAnalysisRoutes from './src/api/integrations/intent_analysis_routes.js';
 import contentGenerationRoutes from './src/api/integrations/content_generation_routes.js';
-import conversationRoutes from './src/api/conversations/conversation_routes.js';
-import templateRoutes from './src/api/conversations/template_routes.js';
-import bulkGenerationRoutes from './src/api/conversations/bulk_generation_routes.js';
 import { startRetentionJob } from './src/jobs/data_retention_job.js';
-import { seed as seedTemplates } from './src/db/seeds/system_templates.js';
-import {
-  aiGenerationLimiter,
-  templateLimiter,
-  bulkGenerationLimiter,
-} from './src/middleware/rate_limiter.js';
-import errorHandler, { notFoundHandler } from './src/middleware/error_handler.js';
 
 const app = express();
 
@@ -54,13 +44,6 @@ app.use(errorHandler);
 // Start the server
 app.listen(config.port, async () => {
   logger.info(`Server running on port ${config.port}`);
-
-  // Seed system templates (002-ai-conversation-generator)
-  try {
-    await seedTemplates();
-  } catch (error) {
-    logger.error('Failed to seed system templates:', error.message);
-  }
 
   // Start data retention job (US7/NFR-8)
   startRetentionJob();

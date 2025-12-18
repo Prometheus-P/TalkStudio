@@ -84,6 +84,28 @@ useChatStore.js
 
 **Data Flow:** Editor → Zustand Store → Preview 구독 → 리렌더링
 
+### Backend (Clean Architecture)
+
+```
+backend/
+├── router/            # HTTP 라우터 (엔드포인트 정의)
+├── service/           # 비즈니스 로직
+└── repo/              # 데이터 접근 계층
+```
+
+**흐름:** Router → Service → Repository
+
+### Worker (Parser/Strategy 패턴)
+
+```
+worker/
+├── parsers/           # 파일 타입별 파서 (파일 타입별 분리)
+├── strategies/        # 처리 전략
+└── handlers/          # 작업 핸들러
+```
+
+**패턴:** 파일 타입별 Parser 분리 + Strategy 패턴으로 처리 로직 캡슐화
+
 ## Conventions
 
 - 컴포넌트: PascalCase (`MessageInput.jsx`)
@@ -94,7 +116,7 @@ useChatStore.js
 
 ## Environment Configuration
 
-- **단일 `.env` + `.env.example` 제공**
+- **단일 `.env` + `.env.example` 제공** – 서비스별 symlink로 공유
 - `.env.example`에 모든 환경 변수 키와 설명 문서화
 - 비밀 값은 절대 커밋 금지
 
@@ -139,3 +161,10 @@ useChatStore.js
 ## Tech Stack
 
 React 19 + Zustand 5 + Tailwind CSS 4 + Vite 7 (Rolldown) + html2canvas
+
+## Active Technologies
+- TypeScript 5.x + React 19 + React, Zustand 5, Tailwind CSS 4, html-to-image, @dnd-kit/core (002-chat-editor-mvp)
+- Browser localStorage (IndexedDB는 v2에서 대용량 프로젝트 지원 시 고려) (002-chat-editor-mvp)
+
+## Recent Changes
+- 002-chat-editor-mvp: Added TypeScript 5.x + React 19 + React, Zustand 5, Tailwind CSS 4, html-to-image, @dnd-kit/core

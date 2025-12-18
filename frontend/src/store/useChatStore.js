@@ -92,9 +92,30 @@ const useChatStore = create(
          */
         getTheme: () => get().config.theme,
 
-        // ============================================================
-        // Message Actions
-        // ============================================================
+  // 설정 업데이트 (통합 함수)
+  updateConfig: (key, value) => set((state) => ({
+    config: { ...state.config, [key]: value }
+  })),
+
+  // 프리셋 저장 (localStorage)
+  saveState: () => set((state) => {
+    const stateToSave = {
+      config: state.config,
+      statusBar: state.statusBar,
+      profiles: state.profiles,
+      messages: state.messages,
+    };
+    localStorage.setItem('talkStudioPreset', JSON.stringify(stateToSave));
+    return {}; // 상태 변경 없음
+  }),
+
+  // 프리셋 불러오기 (localStorage)
+  loadState: () => set(() => {
+    const savedState = localStorage.getItem('talkStudioPreset');
+    if (savedState) return JSON.parse(savedState);
+    return {}; // 저장된 상태가 없으면 변경 없음
+  }),
+}));
 
         /**
          * Add a single message
