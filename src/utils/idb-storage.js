@@ -23,7 +23,7 @@ export const getDB = async () => {
   if (dbInstance) return dbInstance;
 
   dbInstance = await openDB(DB_NAME, DB_VERSION, {
-    upgrade(db, oldVersion, newVersion, transaction) {
+    upgrade(db, _oldVersion, _newVersion, _transaction) {
       // Create projects store with id as keyPath
       if (!db.objectStoreNames.contains(PROJECTS_STORE)) {
         const store = db.createObjectStore(PROJECTS_STORE, { keyPath: 'id' });

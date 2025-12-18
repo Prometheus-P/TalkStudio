@@ -219,7 +219,7 @@ const ProfileEditor = () => {
 };
 
 // 프로필 카드 컴포넌트 - Claymorphism
-const ProfileCard = ({ author, label, icon: Icon, isMe, canDelete, onUpdate, onRandomAvatar, onDelete }) => {
+const ProfileCard = ({ author, label, icon: _Icon, isMe, canDelete, onUpdate, onRandomAvatar, onDelete }) => {
   const fileInputRef = useRef(null);
 
   // 이미지 업로드 핸들러
