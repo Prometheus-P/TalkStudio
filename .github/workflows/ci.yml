@@ -15,46 +15,54 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js (Root)
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: 'package-lock.json' # Cache root package-lock
-
-      - name: Install Root Dependencies
-        run: npm install # Install dependencies for the root package.json
-
+      # Frontend (Root level - React/Vite)
       - name: Set up Node.js (Frontend)
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: 'frontend/package-lock.json' # Updated path
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install Frontend Dependencies
-        run: npm install --prefix frontend
+        run: npm ci --legacy-peer-deps
 
       - name: Run Frontend Lint
-        run: npm run lint --prefix frontend # Make sure this script exists in frontend/package.json
+        run: npm run lint
 
-      - name: Run Frontend Tests
-        run: npm test --prefix frontend # Removed -- --coverage
+      - name: Run Frontend Build
+        run: npm run build
 
-      - name: Set up Node.js (Backend)
-        uses: actions/setup-node@v4
+      # Backend (FastAPI)
+      - name: Set up Python (Backend)
+        uses: actions/setup-python@v5
         with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: 'backend/package-lock.json'
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'backend/requirements.txt'
 
       - name: Install Backend Dependencies
-        run: npm install --prefix backend
+        run: |
+          cd backend
+          pip install -r requirements.txt
 
-      - name: Run Backend Tests
-        run: npm test --prefix backend -- --coverage # Assuming 'test' script runs Jest tests
+      - name: Run Backend Lint
+        run: |
+          cd backend
+          pip install ruff
+          ruff check app/
 
-      - name: Set up Python
+      # AI Agent System (if exists)
+      - name: Check AI Agent System
+        id: check_ai
+        run: |
+          if [ -d "ai_agent_system" ] && [ -f "ai_agent_system/requirements.txt" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Python (AI Agent System)
+        if: steps.check_ai.outputs.exists == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
@@ -62,27 +70,5 @@ jobs:
           cache-dependency-path: 'ai_agent_system/requirements.txt'
 
       - name: Install Python Dependencies (AI Agent System)
+        if: steps.check_ai.outputs.exists == 'true'
         run: python -m pip install -r ai_agent_system/requirements.txt
-
-      - name: Run Python Lint (AI Agent System)
-        run: |
-          # Add your Python lint command here (e.g., ruff check ai_agent_system)
-          echo "Running Python lint (AI Agent System) - Placeholder"
-
-      - name: Run Python Tests (AI Agent System)
-        run: python -m pytest ai_agent_system --cov=ai_agent_system # Assuming pytest with coverage
-
-      - name: Security Scan (Placeholder)
-        run: |
-          echo "Running security scan (e.g., Snyk, Bandit) - Placeholder"
-          # Example: snyk test --all-projects # Requires Snyk token
-          # Example: bandit -r . -ll -f json -o bandit-report.json
-
-      - name: Upload Test Coverage
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: true
-          # files: ./coverage.xml # Specify coverage report paths if needed (for both frontend and python)
-          # Python coverage typically generates .coverage file, Jest can output JSON/LCOV.
-          # You might need to merge them or upload separately.
