@@ -19,11 +19,24 @@ from app.schemas.chat import (
     SpeakerType,
 )
 from app.services.ai_service import AIService
-from app.services.excel_service import ExcelService
+from app.services.excel_service import ExcelParseError, ExcelService
 
 router = APIRouter()
 ai_service = AIService()
 excel_service = ExcelService()
+
+
+def format_excel_error_detail(error: ExcelParseError) -> dict:
+    """Format ExcelParseError into API response format."""
+    detail = {
+        "error": "excel_parse_error",
+        "message": error.message,
+    }
+    if error.row is not None:
+        detail["row"] = error.row
+    if error.column is not None:
+        detail["column"] = error.column
+    return detail
 
 
 @router.post(
@@ -141,15 +154,15 @@ async def parse_excel(
             warnings=stats.get("warnings", []),
         )
 
+    except ExcelParseError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=format_excel_error_detail(e),
+        )
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail={"error": "parse_error", "message": str(e)},
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={"error": "parse_failed", "message": "Failed to parse Excel file"},
+            detail={"error": "validation_error", "message": str(e)},
         )
 
 
