@@ -17,10 +17,11 @@ const ProjectListModal = ({ isOpen, onClose }) => {
 
   const [confirmDelete, setConfirmDelete] = useState(null);
 
-  // Compute storage usage when modal opens (memoized to avoid re-computation)
+  // Compute storage usage when modal opens or projects change
   const storageUsage = useMemo(() => {
     if (!isOpen) return { percentage: 0, usedMB: '0' };
     return getStorageUsage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, projects]);
 
   useEffect(() => {
