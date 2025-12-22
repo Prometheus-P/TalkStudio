@@ -124,10 +124,9 @@ const ConversationSchema = new Schema({
   },
 });
 
-// Update updatedAt on save
-ConversationSchema.pre('save', function(next) {
+// Update updatedAt on save (Mongoose 8.x async style)
+ConversationSchema.pre('save', function() {
   this.updatedAt = new Date();
-  next();
 });
 
 // Indexes

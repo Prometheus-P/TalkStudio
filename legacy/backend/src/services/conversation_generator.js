@@ -52,11 +52,22 @@ export const generateConversation = async ({
   }
 
   // Create conversation document (status: generating)
+  // Note: Initially save with placeholder data to avoid validation errors
+  const placeholderParticipants = participantNames?.length >= 2
+    ? participantNames
+    : ['참여자1', '참여자2'];
+  const placeholderMessage = {
+    sender: placeholderParticipants[0],
+    text: '대화 생성 중...',
+    timestamp: '12:00',
+    type: 'text',
+  };
+
   const conversation = new Conversation({
     templateId: templateId || null,
     scenario,
-    participants: participantNames || [], // Will be populated from AI response
-    messages: [],
+    participants: placeholderParticipants,
+    messages: [placeholderMessage],
     tone,
     platform,
     parameters: {
