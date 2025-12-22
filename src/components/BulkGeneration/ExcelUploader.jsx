@@ -12,9 +12,9 @@ import {
   X,
   Loader2,
 } from 'lucide-react';
-import { downloadBulkTemplate, startBulkGeneration } from '../../services/conversationApi';
+import { downloadBatchTemplate, processBatch } from '../../services/conversationApi';
 
-const ExcelUploader = ({ onJobStarted, disabled = false }) => {
+const ExcelUploader = ({ onBatchComplete, disabled = false }) => {
   const [file, setFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -83,7 +83,7 @@ const ExcelUploader = ({ onJobStarted, disabled = false }) => {
     setError(null);
 
     try {
-      await downloadBulkTemplate();
+      await downloadBatchTemplate();
     } catch (err) {
       setError(err.message || '템플릿 다운로드에 실패했습니다.');
     } finally {
@@ -91,7 +91,7 @@ const ExcelUploader = ({ onJobStarted, disabled = false }) => {
     }
   };
 
-  // Upload and start bulk generation
+  // Upload and process batch (synchronous)
   const handleUpload = async () => {
     if (!file || isUploading || disabled) return;
 
@@ -99,16 +99,16 @@ const ExcelUploader = ({ onJobStarted, disabled = false }) => {
     setError(null);
 
     try {
-      const job = await startBulkGeneration(file);
+      const batchResponse = await processBatch(file);
       setFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
-      if (onJobStarted) {
-        onJobStarted(job);
+      if (onBatchComplete) {
+        onBatchComplete(batchResponse);
       }
     } catch (err) {
-      setError(err.message || '대량 생성 시작에 실패했습니다.');
+      setError(err.message || '배치 처리에 실패했습니다.');
     } finally {
       setIsUploading(false);
     }
@@ -306,12 +306,12 @@ const ExcelUploader = ({ onJobStarted, disabled = false }) => {
           {isUploading ? (
             <>
               <Loader2 size={18} className="animate-spin" />
-              업로드 중...
+              배치 처리 중...
             </>
           ) : (
             <>
               <Upload size={18} />
-              대량 생성 시작
+              배치 생성 시작
             </>
           )}
         </button>
