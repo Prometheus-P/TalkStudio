@@ -36,13 +36,18 @@ if (!fs.existsSync(outputDir)) {
 }
 
 /**
- * 디스코드 스타일 HTML 생성
+ * 디스코드 스타일 HTML 생성 (범용 형식 지원)
  */
 function generateDiscordHTML(chatData) {
   const { profiles, messages, metadata, statusBar } = chatData;
 
+  // 채널명과 날짜 (범용 형식 지원)
+  const channelName = metadata.channel_name || 'general';
+  const dateKorean = metadata.date_korean || metadata.trade_date_korean || '오늘';
+
   const messagesHTML = messages.map((msg, index) => {
-    const profile = msg.sender === 'me' ? profiles.me : profiles.other;
+    // 다중 참여자 지원: sender가 'me', 'other' 또는 participant_id일 수 있음
+    const profile = profiles[msg.sender] || profiles.me || profiles.other || { name: msg.sender, avatar: '' };
     const isFirstInGroup = index === 0 || messages[index - 1].sender !== msg.sender;
 
     if (isFirstInGroup) {
@@ -182,10 +187,10 @@ function generateDiscordHTML(chatData) {
   <div class="discord-container">
     <div class="channel-header">
       <span class="channel-icon">#</span>
-      <span class="channel-name">game-trade-demo</span>
+      <span class="channel-name">${channelName}</span>
     </div>
     <div class="date-divider">
-      <span>${metadata.trade_date_korean}</span>
+      <span>${dateKorean}</span>
     </div>
     <div class="messages-container">
       ${messagesHTML}
@@ -211,10 +216,16 @@ async function captureChats() {
     const chat = chats[i];
     const { metadata } = chat;
 
+    // 범용 형식 지원
+    const conversationId = metadata.conversation_id || `chat_${i + 1}`;
+    const channelName = metadata.channel_name || 'general';
+    const dateKorean = metadata.date_korean || metadata.trade_date_korean || '오늘';
+    const date = metadata.date || metadata.trade_date || new Date().toISOString().split('T')[0];
+
     console.log(`\n[${i + 1}/${chats.length}] 캡처 중...`);
-    console.log(`  아이템: ${metadata.item.name}`);
-    console.log(`  금액: ${metadata.amount_display}`);
-    console.log(`  날짜: ${metadata.trade_date_korean}`);
+    console.log(`  대화ID: ${conversationId}`);
+    console.log(`  채널: #${channelName}`);
+    console.log(`  날짜: ${dateKorean}`);
 
     const page = await context.newPage();
 
@@ -227,7 +238,7 @@ async function captureChats() {
 
     // 컨테이너만 캡처
     const container = await page.$('.discord-container');
-    const filename = `maple_trade_${i + 1}_${metadata.amount / 10000}만원_${metadata.trade_date.replace(/-/g, '')}.png`;
+    const filename = `discord_${conversationId}_${channelName}_${date.replace(/-/g, '')}.png`;
     const filepath = path.join(outputDir, filename);
 
     await container.screenshot({ path: filepath });
