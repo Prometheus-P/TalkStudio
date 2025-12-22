@@ -7,7 +7,7 @@ import io
 import uuid
 import zipfile
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from openpyxl import load_workbook
 from openpyxl.utils.exceptions import InvalidFileException
@@ -19,7 +19,7 @@ from app.schemas.chat import ChatMessage, MessageType, SpeakerType
 class ExcelParseError(Exception):
     """Custom exception for Excel parsing errors with details."""
 
-    def __init__(self, message: str, row: int | None = None, column: str | None = None):
+    def __init__(self, message: str, row: Optional[int] = None, column: Optional[str] = None):
         self.message = message
         self.row = row
         self.column = column
@@ -39,9 +39,9 @@ class RowValidation(BaseModel):
 
     speaker: str = Field(..., min_length=1, max_length=50)
     text: str = Field(..., min_length=1, max_length=5000)
-    message_type: str | None = Field(default=None, max_length=20)
-    name: str | None = Field(default=None, max_length=100)
-    time: datetime | str | None = None
+    message_type: Optional[str] = Field(default=None, max_length=20)
+    name: Optional[str] = Field(default=None, max_length=100)
+    time: Optional[Union[datetime, str]] = None
 
     @field_validator("speaker")
     @classmethod
@@ -189,9 +189,9 @@ class ExcelService:
 
     def _find_header_row(
         self,
-        rows: list[tuple],
+        rows: List[tuple],
         max_search: int = 10,
-    ) -> tuple[int, dict | None]:
+    ) -> Tuple[int, Optional[dict]]:
         """Find the header row and create column mapping."""
         for row_idx, row in enumerate(rows[:max_search]):
             column_map = self._try_map_columns(row)
@@ -199,7 +199,7 @@ class ExcelService:
                 return row_idx, column_map
         return -1, None
 
-    def _try_map_columns(self, row: tuple) -> dict[str, int] | None:
+    def _try_map_columns(self, row: tuple) -> Optional[Dict[str, int]]:
         """Try to map header row to column indices."""
         if not row:
             return None
@@ -219,10 +219,10 @@ class ExcelService:
 
     def _parse_all_rows(
         self,
-        rows: list[tuple],
+        rows: List[tuple],
         header_row_idx: int,
-        column_map: dict[str, int],
-    ) -> tuple[list[ChatMessage], list[dict], list[str]]:
+        column_map: Dict[str, int],
+    ) -> Tuple[List[ChatMessage], List[dict], List[str]]:
         """Parse all data rows with comprehensive error collection."""
         messages = []
         errors = []
@@ -287,9 +287,9 @@ class ExcelService:
     def _parse_row_validated(
         self,
         row: tuple,
-        column_map: dict[str, int],
+        column_map: Dict[str, int],
         row_num: int,
-    ) -> ChatMessage | None:
+    ) -> Optional[ChatMessage]:
         """Parse a single row with Pydantic validation."""
         if not row or all(cell is None for cell in row):
             return None
@@ -319,9 +319,9 @@ class ExcelService:
     def _extract_row_data(
         self,
         row: tuple,
-        column_map: dict[str, int],
+        column_map: Dict[str, int],
         row_num: int,
-    ) -> dict[str, Any] | None:
+    ) -> Optional[Dict[str, Any]]:
         """Extract raw data from row based on column mapping."""
 
         def get_cell(field: str) -> Any:
@@ -361,7 +361,7 @@ class ExcelService:
             return SpeakerType.SYSTEM
         return SpeakerType.OTHER
 
-    def _parse_message_type(self, type_str: str | None) -> MessageType:
+    def _parse_message_type(self, type_str: Optional[str]) -> MessageType:
         """Parse message type string to MessageType enum."""
         if not type_str:
             return MessageType.TEXT
@@ -377,7 +377,7 @@ class ExcelService:
 
     def _parse_timestamp(
         self,
-        time_val: datetime | str | None,
+        time_val: Optional[Union[datetime, str]],
         row_num: int,
     ) -> datetime:
         """Parse timestamp with error handling."""

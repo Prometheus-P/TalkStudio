@@ -9,7 +9,7 @@ import json
 import logging
 from collections import OrderedDict
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Dict, Optional
 
 from app.core.config import settings
 
@@ -26,11 +26,11 @@ class ResponseCache:
     MAX_MEMORY_ENTRIES = 1000  # Maximum in-memory cache entries
     CACHE_KEY_PREFIX = "talkstudio:ai:response"
 
-    def __init__(self, redis_url: str | None = None, ttl: int = DEFAULT_TTL):
+    def __init__(self, redis_url: Optional[str] = None, ttl: int = DEFAULT_TTL):
         self.ttl = ttl
         self._redis_client = None
         self._use_redis = False
-        self._memory_cache: OrderedDict[str, dict[str, Any]] = OrderedDict()
+        self._memory_cache: OrderedDict[str, Dict[str, Any]] = OrderedDict()
 
         if redis_url:
             self._init_redis(redis_url)
@@ -74,7 +74,7 @@ class ResponseCache:
         hash_digest = hashlib.sha256(key_data.encode()).hexdigest()[:32]
         return f"{ResponseCache.CACHE_KEY_PREFIX}:{hash_digest}"
 
-    def get(self, cache_key: str) -> dict[str, Any] | None:
+    def get(self, cache_key: str) -> Optional[Dict[str, Any]]:
         """
         Retrieve cached response.
         Returns None if not found or expired.
@@ -83,7 +83,7 @@ class ResponseCache:
             return self._get_redis(cache_key)
         return self._get_memory(cache_key)
 
-    def _get_redis(self, cache_key: str) -> dict[str, Any] | None:
+    def _get_redis(self, cache_key: str) -> Optional[Dict[str, Any]]:
         """Get from Redis."""
         try:
             data = self._redis_client.get(cache_key)
@@ -97,7 +97,7 @@ class ResponseCache:
             logger.warning("Redis get failed: %s", e)
             return self._get_memory(cache_key)
 
-    def _get_memory(self, cache_key: str) -> dict[str, Any] | None:
+    def _get_memory(self, cache_key: str) -> Optional[Dict[str, Any]]:
         """Get from in-memory cache."""
         if cache_key not in self._memory_cache:
             logger.debug("Cache MISS (Memory): %s", cache_key)
@@ -116,7 +116,7 @@ class ResponseCache:
         logger.debug("Cache HIT (Memory): %s", cache_key)
         return entry.get("data")
 
-    def set(self, cache_key: str, data: dict[str, Any], ttl: int | None = None) -> bool:
+    def set(self, cache_key: str, data: Dict[str, Any], ttl: Optional[int] = None) -> bool:
         """
         Store response in cache.
         Returns True if successful.
@@ -130,7 +130,7 @@ class ResponseCache:
 
         return self._set_memory(cache_key, data, ttl)
 
-    def _set_redis(self, cache_key: str, data: dict[str, Any], ttl: int) -> bool:
+    def _set_redis(self, cache_key: str, data: Dict[str, Any], ttl: int) -> bool:
         """Set in Redis."""
         try:
             serialized = json.dumps(data, ensure_ascii=False, default=str)
@@ -141,7 +141,7 @@ class ResponseCache:
             logger.warning("Redis set failed: %s", e)
             return False
 
-    def _set_memory(self, cache_key: str, data: dict[str, Any], ttl: int) -> bool:
+    def _set_memory(self, cache_key: str, data: Dict[str, Any], ttl: int) -> bool:
         """Set in memory cache with LRU eviction."""
         # Evict oldest entries if at capacity
         while len(self._memory_cache) >= self.MAX_MEMORY_ENTRIES:
@@ -191,7 +191,7 @@ class ResponseCache:
         logger.info("Cache cleared: %d entries", count)
         return count
 
-    def stats(self) -> dict[str, Any]:
+    def stats(self) -> Dict[str, Any]:
         """Get cache statistics."""
         stats = {
             "backend": "redis" if self._use_redis else "memory",

@@ -4,7 +4,7 @@ import json
 import logging
 import uuid
 from datetime import datetime, timezone
-from typing import Literal
+from typing import Dict, List, Literal
 
 import httpx
 from openai import AsyncOpenAI
@@ -260,7 +260,7 @@ type must be "text" or "emoji"
         except Exception as e:
             raise ValueError(f"Upstage generation failed: {e}")
 
-    def _parse_messages(self, messages_data: list[dict]) -> list[ChatMessage]:
+    def _parse_messages(self, messages_data: List[dict]) -> List[ChatMessage]:
         """Parse raw message data into ChatMessage objects."""
         messages = []
 

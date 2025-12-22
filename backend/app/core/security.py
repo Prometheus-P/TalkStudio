@@ -2,7 +2,7 @@
 
 import html
 import re
-from typing import Any
+from typing import Any, Dict
 
 
 def sanitize_string(value: str, max_length: int = 10000) -> str:
@@ -27,7 +27,7 @@ def sanitize_string(value: str, max_length: int = 10000) -> str:
     return value
 
 
-def sanitize_dict(data: dict[str, Any], max_string_length: int = 10000) -> dict[str, Any]:
+def sanitize_dict(data: Dict[str, Any], max_string_length: int = 10000) -> Dict[str, Any]:
     """Recursively sanitize all string values in a dictionary."""
     sanitized = {}
     for key, value in data.items():
