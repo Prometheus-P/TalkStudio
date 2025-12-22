@@ -11,6 +11,102 @@ const baseBubble = {
   maxWidthPercent: 70,
 };
 
+// KakaoTalk iOS Mobile 앱 UI 색상
+export const kakaoColors = {
+  // 배경
+  backgroundPrimary: '#B2C7D9',      // 채팅 배경 (하늘색)
+  backgroundHeader: '#3E4A59',       // 헤더 배경 (다크 그레이)
+  backgroundInput: '#FFFFFF',        // 입력창 배경
+
+  // 버블
+  bubbleMe: '#FEE500',               // 내 메시지 (카카오 노란색)
+  bubbleOther: '#FFFFFF',            // 상대 메시지 (흰색)
+  bubbleText: '#1A1A1A',             // 메시지 텍스트
+
+  // 텍스트
+  headerText: '#FFFFFF',
+  timeText: '#666666',
+  nameText: '#666666',
+  statusBarText: '#FFFFFF',
+
+  // 입력창
+  inputBg: '#FFFFFF',
+  inputBorder: '#E5E5E5',
+  inputPlaceholder: '#999999',
+  inputIconColor: '#999999',
+
+  // 아이콘
+  iconColor: '#FFFFFF',
+  iconSecondary: '#A0A0A0',
+
+  // iOS 상태바
+  notchBg: '#000000',
+};
+
+// Telegram iOS Mobile 앱 UI 색상
+export const telegramColors = {
+  // 배경
+  backgroundGradientStart: '#7BA9C9',
+  backgroundGradientEnd: '#A8C4D4',
+  backgroundHeader: '#517DA2',       // 헤더 배경 (파란색)
+  backgroundInput: '#FFFFFF',
+
+  // 버블
+  bubbleMe: '#EEFFDE',               // 내 메시지 (연두색)
+  bubbleOther: '#FFFFFF',            // 상대 메시지 (흰색)
+  bubbleMeText: '#000000',
+  bubbleOtherText: '#000000',
+
+  // 텍스트
+  headerText: '#FFFFFF',
+  subtitleText: 'rgba(255,255,255,0.7)',
+  timeTextMe: '#6AAF5C',             // 내 버블 시간 (녹색)
+  timeTextOther: '#A1AAB3',          // 상대 버블 시간
+
+  // 체크마크
+  checkRead: '#6AAF5C',
+  checkUnread: '#A1AAB3',
+
+  // 입력창
+  inputBg: '#FFFFFF',
+  inputPlaceholder: '#999999',
+  inputIconColor: '#8E8E93',
+
+  // iOS 상태바
+  statusBarText: '#FFFFFF',
+  notchBg: '#000000',
+};
+
+// Instagram DM iOS Mobile 앱 UI 색상
+export const instagramColors = {
+  // 배경
+  backgroundPrimary: '#FFFFFF',
+  backgroundHeader: '#FFFFFF',
+
+  // 버블
+  bubbleMe: '#3797F0',               // 내 메시지 (인스타 파란색)
+  bubbleOther: '#EFEFEF',            // 상대 메시지 (회색)
+  bubbleMeText: '#FFFFFF',
+  bubbleOtherText: '#262626',
+
+  // 텍스트
+  headerText: '#262626',
+  subtitleText: '#8E8E8E',           // "Active now"
+  statusBarText: '#000000',
+
+  // 입력창
+  inputBg: '#FFFFFF',
+  inputBorder: '#DBDBDB',
+  inputPlaceholder: '#999999',
+  inputIconColor: '#262626',
+
+  // 아이콘
+  iconColor: '#262626',
+
+  // iOS 상태바
+  notchBg: '#000000',
+};
+
 // Discord iOS Mobile 앱 UI 색상 - Figma 스펙 기반
 export const discordColors = {
   // CTA Colors (Call-to-Action)

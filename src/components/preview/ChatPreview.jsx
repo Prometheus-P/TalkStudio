@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight, MoreVertical, Search, Phone } from 'lucide-r
 import StatusBar from './StatusBar';
 import MessageBubble from './MessageBubble';
 import useChatStore from '../../store/useChatStore';
-import { discordColors } from '../../themes/presets';
+import { discordColors, kakaoColors, telegramColors, instagramColors } from '../../themes/presets';
 
 // ============================================
 // Discord iOS Mobile SVG Icons (from Figma export)
@@ -180,7 +180,184 @@ const ChatPreview = () => {
     );
   }
 
-  // 기존 플랫폼 레이아웃 (카카오, 텔레그램, 인스타)
+  // KakaoTalk iOS 모바일 레이아웃
+  if (theme.id === 'kakao') {
+    const scale = 0.75;
+    const scaledHeight = theme.canvasHeight * scale;
+    const scaledWidth = theme.canvasWidth * scale;
+
+    return (
+      <div
+        className="relative flex items-center justify-center"
+        style={{ width: scaledWidth, height: scaledHeight }}
+      >
+        <div style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}>
+          <div
+            id="chat-canvas"
+            className="overflow-hidden flex flex-col"
+            style={{
+              width: theme.canvasWidth,
+              height: theme.canvasHeight,
+              fontFamily: theme.fontFamily,
+              backgroundColor: kakaoColors.backgroundPrimary,
+              borderRadius: 44,
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+            }}
+          >
+            {/* iOS 상태바 */}
+            {theme.showStatusBar && <KakaoIOSStatusBar statusBar={statusBar} />}
+
+            {/* 카카오톡 헤더 */}
+            <KakaoMobileNav title={title} avatar={otherAuthor?.avatarUrl} />
+
+            {/* 메시지 영역 */}
+            <div
+              className="flex-1 flex flex-col overflow-hidden justify-end"
+              style={{ padding: '8px 0' }}
+            >
+              {messages.map((message, index) => {
+                const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);
+                const author = getAuthor(message.authorId);
+                return (
+                  <MessageBubble
+                    key={message.id}
+                    message={message}
+                    author={author}
+                    theme={theme}
+                    isFirstInGroup={isFirstInGroup}
+                    isLastInGroup={isLastInGroup}
+                  />
+                );
+              })}
+            </div>
+
+            {/* 카카오톡 입력창 */}
+            <KakaoInputBar />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Telegram iOS 모바일 레이아웃
+  if (theme.id === 'telegram') {
+    const scale = 0.75;
+    const scaledHeight = theme.canvasHeight * scale;
+    const scaledWidth = theme.canvasWidth * scale;
+
+    return (
+      <div
+        className="relative flex items-center justify-center"
+        style={{ width: scaledWidth, height: scaledHeight }}
+      >
+        <div style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}>
+          <div
+            id="chat-canvas"
+            className="overflow-hidden flex flex-col"
+            style={{
+              width: theme.canvasWidth,
+              height: theme.canvasHeight,
+              fontFamily: theme.fontFamily,
+              background: `linear-gradient(180deg, ${telegramColors.backgroundGradientStart} 0%, ${telegramColors.backgroundGradientEnd} 100%)`,
+              borderRadius: 44,
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+            }}
+          >
+            {/* iOS 상태바 */}
+            {theme.showStatusBar && <TelegramIOSStatusBar statusBar={statusBar} />}
+
+            {/* 텔레그램 헤더 */}
+            <TelegramMobileNav title={title} avatar={otherAuthor?.avatarUrl} />
+
+            {/* 메시지 영역 */}
+            <div
+              className="flex-1 flex flex-col overflow-hidden justify-end"
+              style={{ padding: '8px 0' }}
+            >
+              {messages.map((message, index) => {
+                const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);
+                const author = getAuthor(message.authorId);
+                return (
+                  <MessageBubble
+                    key={message.id}
+                    message={message}
+                    author={author}
+                    theme={theme}
+                    isFirstInGroup={isFirstInGroup}
+                    isLastInGroup={isLastInGroup}
+                  />
+                );
+              })}
+            </div>
+
+            {/* 텔레그램 입력창 */}
+            <TelegramInputBar />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Instagram iOS 모바일 레이아웃
+  if (theme.id === 'insta') {
+    const scale = 0.75;
+    const scaledHeight = theme.canvasHeight * scale;
+    const scaledWidth = theme.canvasWidth * scale;
+
+    return (
+      <div
+        className="relative flex items-center justify-center"
+        style={{ width: scaledWidth, height: scaledHeight }}
+      >
+        <div style={{ transform: `scale(${scale})`, transformOrigin: 'center center' }}>
+          <div
+            id="chat-canvas"
+            className="overflow-hidden flex flex-col"
+            style={{
+              width: theme.canvasWidth,
+              height: theme.canvasHeight,
+              fontFamily: theme.fontFamily,
+              backgroundColor: instagramColors.backgroundPrimary,
+              borderRadius: 44,
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+            }}
+          >
+            {/* iOS 상태바 */}
+            {theme.showStatusBar && <InstagramIOSStatusBar statusBar={statusBar} />}
+
+            {/* 인스타그램 헤더 */}
+            <InstagramMobileNav title={title} avatar={otherAuthor?.avatarUrl} />
+
+            {/* 메시지 영역 */}
+            <div
+              className="flex-1 flex flex-col overflow-hidden justify-end"
+              style={{ padding: '8px 0' }}
+            >
+              {messages.map((message, index) => {
+                const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);
+                const author = getAuthor(message.authorId);
+                return (
+                  <MessageBubble
+                    key={message.id}
+                    message={message}
+                    author={author}
+                    theme={theme}
+                    isFirstInGroup={isFirstInGroup}
+                    isLastInGroup={isLastInGroup}
+                  />
+                );
+              })}
+            </div>
+
+            {/* 인스타그램 입력창 */}
+            <InstagramInputBar />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 기본 레이아웃 (fallback)
   return (
     <div
       id="chat-canvas"
@@ -658,7 +835,787 @@ const DiscordMobileBottomNav = ({ title: _title }) => {
 
 
 // ============================================
-// 기존 플랫폼용 컴포넌트 (카카오, 텔레그램, 인스타)
+// KakaoTalk iOS 모바일 전용 컴포넌트
+// ============================================
+
+// KakaoTalk iOS 상태바 (44px)
+const KakaoIOSStatusBar = ({ statusBar }) => {
+  const formatTime = (time) => {
+    if (time.includes('오전') || time.includes('오후')) {
+      return time.replace(/오[전후]\s?/, '');
+    }
+    return time;
+  };
+
+  return (
+    <div
+      className="relative flex items-center justify-between"
+      style={{
+        width: 375,
+        height: 44,
+        padding: '14px 16px 0',
+        backgroundColor: kakaoColors.backgroundHeader,
+      }}
+    >
+      {/* 노치 */}
+      <div
+        className="absolute"
+        style={{
+          width: 150,
+          height: 30,
+          left: 'calc(50% - 75px)',
+          top: -2,
+          backgroundColor: kakaoColors.notchBg,
+          borderRadius: '0 0 18px 18px',
+        }}
+      />
+
+      {/* 시간 (왼쪽) */}
+      <div
+        style={{
+          fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+          fontWeight: 600,
+          fontSize: 15,
+          color: kakaoColors.statusBarText,
+        }}
+      >
+        {formatTime(statusBar.time)}
+      </div>
+
+      {/* 우측 아이콘들 */}
+      <div className="flex items-center gap-1">
+        {/* Mobile Signal */}
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="none">
+          <rect x="0" y="6" width="3" height="5" rx="0.5" fill="rgba(255,255,255,0.5)"/>
+          <rect x="4" y="4" width="3" height="7" rx="0.5" fill="rgba(255,255,255,0.5)"/>
+          <rect x="8" y="2" width="3" height="9" rx="0.5" fill="#FFFFFF"/>
+          <rect x="12" y="0" width="3" height="11" rx="0.5" fill="#FFFFFF"/>
+        </svg>
+
+        {/* WiFi */}
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M8 2C10.5 2 12.5 3 14 5" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M8 5C9.8 5 11.2 5.8 12 7" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="8" cy="10" r="1.5" fill="#FFFFFF"/>
+        </svg>
+
+        {/* Battery */}
+        <div className="flex items-center">
+          <div
+            style={{
+              width: 24,
+              height: 12,
+              border: '1px solid rgba(255,255,255,0.35)',
+              borderRadius: 3,
+              position: 'relative',
+            }}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                left: 1,
+                top: 1,
+                width: `${Math.min(statusBar.battery, 100) * 0.2}px`,
+                height: 8,
+                backgroundColor: '#FFFFFF',
+                borderRadius: 2,
+              }}
+            />
+          </div>
+          <div
+            style={{
+              width: 1.5,
+              height: 4,
+              backgroundColor: 'rgba(255,255,255,0.4)',
+              marginLeft: 1,
+              borderRadius: '0 1px 1px 0',
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// KakaoTalk 모바일 네비게이션 헤더 (56px)
+const KakaoMobileNav = ({ title, avatar }) => {
+  return (
+    <div
+      className="flex items-center justify-between"
+      style={{
+        width: 375,
+        height: 56,
+        padding: '8px 12px',
+        backgroundColor: kakaoColors.backgroundHeader,
+      }}
+    >
+      {/* 왼쪽: 뒤로가기 */}
+      <div className="flex items-center" style={{ gap: 8 }}>
+        <ChevronLeft size={28} color={kakaoColors.iconColor} />
+      </div>
+
+      {/* 중앙: 프로필 + 이름 */}
+      <div className="flex items-center" style={{ gap: 8 }}>
+        {avatar && (
+          <img
+            src={avatar}
+            alt={title}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 12,
+            }}
+          />
+        )}
+        <span
+          style={{
+            fontFamily: "'Apple SD Gothic Neo', sans-serif",
+            fontWeight: 600,
+            fontSize: 17,
+            color: kakaoColors.headerText,
+          }}
+        >
+          {title}
+        </span>
+      </div>
+
+      {/* 오른쪽: 검색, 메뉴 */}
+      <div className="flex items-center" style={{ gap: 16 }}>
+        <Search size={22} color={kakaoColors.iconColor} />
+        <MoreVertical size={22} color={kakaoColors.iconColor} />
+      </div>
+    </div>
+  );
+};
+
+// KakaoTalk 입력창 (56px)
+const KakaoInputBar = () => {
+  return (
+    <div
+      className="flex flex-col"
+      style={{
+        width: 375,
+        backgroundColor: kakaoColors.inputBg,
+        borderTop: `1px solid ${kakaoColors.inputBorder}`,
+      }}
+    >
+      {/* 입력 영역 */}
+      <div
+        className="flex items-center"
+        style={{
+          padding: '8px 12px',
+          gap: 8,
+        }}
+      >
+        {/* + 버튼 */}
+        <div
+          className="flex items-center justify-center"
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            backgroundColor: '#F5F5F5',
+          }}
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 4V16M4 10H16" stroke={kakaoColors.inputIconColor} strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+        </div>
+
+        {/* 텍스트 입력 */}
+        <div
+          className="flex-1 flex items-center"
+          style={{
+            height: 36,
+            backgroundColor: '#F5F5F5',
+            borderRadius: 18,
+            padding: '0 14px',
+          }}
+        >
+          <span
+            style={{
+              fontSize: 14,
+              color: kakaoColors.inputPlaceholder,
+            }}
+          >
+            메시지를 입력하세요
+          </span>
+        </div>
+
+        {/* 이모티콘 */}
+        <div className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke={kakaoColors.inputIconColor} strokeWidth="1.5"/>
+            <circle cx="8" cy="10" r="1.5" fill={kakaoColors.inputIconColor}/>
+            <circle cx="16" cy="10" r="1.5" fill={kakaoColors.inputIconColor}/>
+            <path d="M8 15C9 16.5 11 17 12 17C13 17 15 16.5 16 15" stroke={kakaoColors.inputIconColor} strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </div>
+
+        {/* # 버튼 */}
+        <div className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M4 8H18M4 14H18M8 4V18M14 4V18" stroke={kakaoColors.inputIconColor} strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      {/* 홈 인디케이터 */}
+      <div
+        className="flex items-center justify-center"
+        style={{ height: 20, paddingBottom: 8 }}
+      >
+        <div
+          style={{
+            width: 134,
+            height: 5,
+            backgroundColor: '#000000',
+            borderRadius: 100,
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// Telegram iOS 모바일 전용 컴포넌트
+// ============================================
+
+// Telegram iOS 상태바 (44px)
+const TelegramIOSStatusBar = ({ statusBar }) => {
+  const formatTime = (time) => {
+    if (time.includes('오전') || time.includes('오후')) {
+      return time.replace(/오[전후]\s?/, '');
+    }
+    return time;
+  };
+
+  return (
+    <div
+      className="relative flex items-center justify-between"
+      style={{
+        width: 375,
+        height: 44,
+        padding: '14px 16px 0',
+        backgroundColor: telegramColors.backgroundHeader,
+      }}
+    >
+      {/* 노치 */}
+      <div
+        className="absolute"
+        style={{
+          width: 150,
+          height: 30,
+          left: 'calc(50% - 75px)',
+          top: -2,
+          backgroundColor: telegramColors.notchBg,
+          borderRadius: '0 0 18px 18px',
+        }}
+      />
+
+      {/* 시간 (왼쪽) */}
+      <div
+        style={{
+          fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+          fontWeight: 600,
+          fontSize: 15,
+          color: telegramColors.statusBarText,
+        }}
+      >
+        {formatTime(statusBar.time)}
+      </div>
+
+      {/* 우측 아이콘들 */}
+      <div className="flex items-center gap-1">
+        {/* Mobile Signal */}
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="none">
+          <rect x="0" y="6" width="3" height="5" rx="0.5" fill="rgba(255,255,255,0.5)"/>
+          <rect x="4" y="4" width="3" height="7" rx="0.5" fill="rgba(255,255,255,0.5)"/>
+          <rect x="8" y="2" width="3" height="9" rx="0.5" fill="#FFFFFF"/>
+          <rect x="12" y="0" width="3" height="11" rx="0.5" fill="#FFFFFF"/>
+        </svg>
+
+        {/* WiFi */}
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M8 2C10.5 2 12.5 3 14 5" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M8 5C9.8 5 11.2 5.8 12 7" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="8" cy="10" r="1.5" fill="#FFFFFF"/>
+        </svg>
+
+        {/* Battery */}
+        <div className="flex items-center">
+          <div
+            style={{
+              width: 24,
+              height: 12,
+              border: '1px solid rgba(255,255,255,0.35)',
+              borderRadius: 3,
+              position: 'relative',
+            }}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                left: 1,
+                top: 1,
+                width: `${Math.min(statusBar.battery, 100) * 0.2}px`,
+                height: 8,
+                backgroundColor: '#FFFFFF',
+                borderRadius: 2,
+              }}
+            />
+          </div>
+          <div
+            style={{
+              width: 1.5,
+              height: 4,
+              backgroundColor: 'rgba(255,255,255,0.4)',
+              marginLeft: 1,
+              borderRadius: '0 1px 1px 0',
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Telegram 모바일 네비게이션 헤더 (56px)
+const TelegramMobileNav = ({ title, avatar }) => {
+  return (
+    <div
+      className="flex items-center justify-between"
+      style={{
+        width: 375,
+        height: 56,
+        padding: '8px 12px',
+        backgroundColor: telegramColors.backgroundHeader,
+      }}
+    >
+      {/* 왼쪽: 뒤로가기 */}
+      <div className="flex items-center" style={{ gap: 4 }}>
+        <ChevronLeft size={28} color={telegramColors.headerText} />
+        <span style={{ fontSize: 17, color: telegramColors.headerText }}>Back</span>
+      </div>
+
+      {/* 중앙: 프로필 + 이름 + 상태 */}
+      <div className="flex flex-col items-center">
+        {avatar && (
+          <img
+            src={avatar}
+            alt={title}
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+            }}
+          />
+        )}
+        <span
+          style={{
+            fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+            fontWeight: 600,
+            fontSize: 14,
+            color: telegramColors.headerText,
+          }}
+        >
+          {title}
+        </span>
+        <span
+          style={{
+            fontSize: 11,
+            color: telegramColors.subtitleText,
+          }}
+        >
+          last seen recently
+        </span>
+      </div>
+
+      {/* 오른쪽: 더보기 */}
+      <div className="flex items-center" style={{ width: 60, justifyContent: 'flex-end' }}>
+        <MoreVertical size={22} color={telegramColors.headerText} />
+      </div>
+    </div>
+  );
+};
+
+// Telegram 입력창 (52px)
+const TelegramInputBar = () => {
+  return (
+    <div
+      className="flex flex-col"
+      style={{
+        width: 375,
+        backgroundColor: telegramColors.inputBg,
+      }}
+    >
+      {/* 입력 영역 */}
+      <div
+        className="flex items-center"
+        style={{
+          padding: '6px 8px',
+          gap: 8,
+        }}
+      >
+        {/* 클립 (첨부) */}
+        <div className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"
+              stroke={telegramColors.inputIconColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+
+        {/* 텍스트 입력 */}
+        <div
+          className="flex-1 flex items-center"
+          style={{
+            height: 36,
+            backgroundColor: '#F5F5F5',
+            borderRadius: 18,
+            padding: '0 14px',
+          }}
+        >
+          <span
+            style={{
+              fontSize: 15,
+              color: telegramColors.inputPlaceholder,
+            }}
+          >
+            Message
+          </span>
+        </div>
+
+        {/* 이모티콘 */}
+        <div className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke={telegramColors.inputIconColor} strokeWidth="1.5"/>
+            <circle cx="8" cy="10" r="1.5" fill={telegramColors.inputIconColor}/>
+            <circle cx="16" cy="10" r="1.5" fill={telegramColors.inputIconColor}/>
+            <path d="M8 15C9 16.5 11 17 12 17C13 17 15 16.5 16 15" stroke={telegramColors.inputIconColor} strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </div>
+
+        {/* 마이크 */}
+        <div
+          className="flex items-center justify-center"
+          style={{
+            width: 36,
+            height: 36,
+            backgroundColor: '#64B5F6',
+            borderRadius: '50%',
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" fill="#FFFFFF"/>
+            <path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      {/* 홈 인디케이터 */}
+      <div
+        className="flex items-center justify-center"
+        style={{ height: 20, paddingBottom: 8 }}
+      >
+        <div
+          style={{
+            width: 134,
+            height: 5,
+            backgroundColor: '#000000',
+            borderRadius: 100,
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// Instagram iOS 모바일 전용 컴포넌트
+// ============================================
+
+// Instagram iOS 상태바 (44px)
+const InstagramIOSStatusBar = ({ statusBar }) => {
+  const formatTime = (time) => {
+    if (time.includes('오전') || time.includes('오후')) {
+      return time.replace(/오[전후]\s?/, '');
+    }
+    return time;
+  };
+
+  return (
+    <div
+      className="relative flex items-center justify-between"
+      style={{
+        width: 375,
+        height: 44,
+        padding: '14px 16px 0',
+        backgroundColor: instagramColors.backgroundHeader,
+      }}
+    >
+      {/* 노치 */}
+      <div
+        className="absolute"
+        style={{
+          width: 150,
+          height: 30,
+          left: 'calc(50% - 75px)',
+          top: -2,
+          backgroundColor: instagramColors.notchBg,
+          borderRadius: '0 0 18px 18px',
+        }}
+      />
+
+      {/* 시간 (왼쪽) */}
+      <div
+        style={{
+          fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+          fontWeight: 600,
+          fontSize: 15,
+          color: instagramColors.statusBarText,
+        }}
+      >
+        {formatTime(statusBar.time)}
+      </div>
+
+      {/* 우측 아이콘들 */}
+      <div className="flex items-center gap-1">
+        {/* Mobile Signal */}
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="none">
+          <rect x="0" y="6" width="3" height="5" rx="0.5" fill="rgba(0,0,0,0.3)"/>
+          <rect x="4" y="4" width="3" height="7" rx="0.5" fill="rgba(0,0,0,0.3)"/>
+          <rect x="8" y="2" width="3" height="9" rx="0.5" fill="#000000"/>
+          <rect x="12" y="0" width="3" height="11" rx="0.5" fill="#000000"/>
+        </svg>
+
+        {/* WiFi */}
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+          <path d="M8 2C10.5 2 12.5 3 14 5" stroke="rgba(0,0,0,0.3)" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M8 5C9.8 5 11.2 5.8 12 7" stroke="#000000" strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="8" cy="10" r="1.5" fill="#000000"/>
+        </svg>
+
+        {/* Battery */}
+        <div className="flex items-center">
+          <div
+            style={{
+              width: 24,
+              height: 12,
+              border: '1px solid rgba(0,0,0,0.35)',
+              borderRadius: 3,
+              position: 'relative',
+            }}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                left: 1,
+                top: 1,
+                width: `${Math.min(statusBar.battery, 100) * 0.2}px`,
+                height: 8,
+                backgroundColor: '#000000',
+                borderRadius: 2,
+              }}
+            />
+          </div>
+          <div
+            style={{
+              width: 1.5,
+              height: 4,
+              backgroundColor: 'rgba(0,0,0,0.4)',
+              marginLeft: 1,
+              borderRadius: '0 1px 1px 0',
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Instagram 모바일 네비게이션 헤더 (60px)
+const InstagramMobileNav = ({ title, avatar }) => {
+  return (
+    <div
+      className="flex items-center justify-between"
+      style={{
+        width: 375,
+        height: 60,
+        padding: '8px 16px',
+        backgroundColor: instagramColors.backgroundHeader,
+        borderBottom: `0.5px solid ${instagramColors.inputBorder}`,
+      }}
+    >
+      {/* 왼쪽: 뒤로가기 */}
+      <div className="flex items-center" style={{ width: 40 }}>
+        <ChevronLeft size={28} color={instagramColors.iconColor} />
+      </div>
+
+      {/* 중앙: 프로필 + 이름 + 상태 */}
+      <div className="flex items-center" style={{ gap: 12 }}>
+        {avatar && (
+          <div className="relative">
+            <img
+              src={avatar}
+              alt={title}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+              }}
+            />
+            {/* 온라인 점 */}
+            <div
+              style={{
+                position: 'absolute',
+                right: 0,
+                bottom: 0,
+                width: 10,
+                height: 10,
+                backgroundColor: '#44D62C',
+                border: '2px solid #FFFFFF',
+                borderRadius: '50%',
+              }}
+            />
+          </div>
+        )}
+        <div className="flex flex-col">
+          <span
+            style={{
+              fontFamily: "'-apple-system', sans-serif",
+              fontWeight: 600,
+              fontSize: 16,
+              color: instagramColors.headerText,
+            }}
+          >
+            {title}
+          </span>
+          <span
+            style={{
+              fontSize: 12,
+              color: instagramColors.subtitleText,
+            }}
+          >
+            Active now
+          </span>
+        </div>
+      </div>
+
+      {/* 오른쪽: 전화, 비디오 */}
+      <div className="flex items-center" style={{ gap: 20 }}>
+        <Phone size={24} color={instagramColors.iconColor} />
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="5" width="14" height="14" rx="2" stroke={instagramColors.iconColor} strokeWidth="1.5"/>
+          <path d="M16 10l4-3v10l-4-3v-4z" stroke={instagramColors.iconColor} strokeWidth="1.5" strokeLinejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  );
+};
+
+// Instagram 입력창 (56px)
+const InstagramInputBar = () => {
+  return (
+    <div
+      className="flex flex-col"
+      style={{
+        width: 375,
+        backgroundColor: instagramColors.inputBg,
+        borderTop: `0.5px solid ${instagramColors.inputBorder}`,
+      }}
+    >
+      {/* 입력 영역 */}
+      <div
+        className="flex items-center"
+        style={{
+          padding: '8px 12px',
+          gap: 12,
+        }}
+      >
+        {/* 카메라 */}
+        <div
+          className="flex items-center justify-center"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: '50%',
+            border: `1.5px solid ${instagramColors.inputBorder}`,
+          }}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="4" width="20" height="16" rx="3" stroke={instagramColors.inputIconColor} strokeWidth="1.5"/>
+            <circle cx="12" cy="12" r="4" stroke={instagramColors.inputIconColor} strokeWidth="1.5"/>
+            <circle cx="18" cy="7" r="1" fill={instagramColors.inputIconColor}/>
+          </svg>
+        </div>
+
+        {/* 텍스트 입력 */}
+        <div
+          className="flex-1 flex items-center"
+          style={{
+            height: 40,
+            border: `1px solid ${instagramColors.inputBorder}`,
+            borderRadius: 20,
+            padding: '0 16px',
+          }}
+        >
+          <span
+            style={{
+              fontSize: 15,
+              color: instagramColors.inputPlaceholder,
+            }}
+          >
+            Message...
+          </span>
+        </div>
+
+        {/* 마이크 */}
+        <div className="flex items-center justify-center" style={{ width: 32, height: 32 }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" stroke={instagramColors.inputIconColor} strokeWidth="1.5"/>
+            <path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8" stroke={instagramColors.inputIconColor} strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </div>
+
+        {/* 이미지 */}
+        <div className="flex items-center justify-center" style={{ width: 32, height: 32 }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3" width="18" height="18" rx="2" stroke={instagramColors.inputIconColor} strokeWidth="1.5"/>
+            <circle cx="8.5" cy="8.5" r="1.5" fill={instagramColors.inputIconColor}/>
+            <path d="M21 15l-5-5L5 21" stroke={instagramColors.inputIconColor} strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
+        </div>
+
+        {/* 하트/좋아요 */}
+        <div className="flex items-center justify-center" style={{ width: 32, height: 32 }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
+              stroke={instagramColors.inputIconColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      {/* 홈 인디케이터 */}
+      <div
+        className="flex items-center justify-center"
+        style={{ height: 20, paddingBottom: 8 }}
+      >
+        <div
+          style={{
+            width: 134,
+            height: 5,
+            backgroundColor: '#000000',
+            borderRadius: 100,
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// 기존 플랫폼용 컴포넌트 (fallback용)
 // ============================================
 
 // 채팅 헤더 컴포넌트
