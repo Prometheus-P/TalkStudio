@@ -2,8 +2,8 @@
 /**
  * TalkStudio - Chat Screenshot Generator
  *
- * Copyright (c) 2024-2025 TalkStudio. All rights reserved.
- * Licensed under the MIT License. See LICENSE file for details.
+ * Copyright (c) 2024-2025 TalkStudio. All Rights Reserved.
+ * PROPRIETARY AND CONFIDENTIAL. See LICENSE file for details.
  *
  * 채팅 스타일 대화 이미지 캡처 스크립트
  * Playwright를 사용하여 생성된 대화를 이미지로 캡처합니다.

@@ -2,8 +2,8 @@
 """
 TalkStudio - Chat Data Generator
 
-Copyright (c) 2024-2025 TalkStudio. All rights reserved.
-Licensed under the MIT License. See LICENSE file for details.
+Copyright (c) 2024-2025 TalkStudio. All Rights Reserved.
+PROPRIETARY AND CONFIDENTIAL. See LICENSE file for details.
 
 온라인 게임 아이템 거래 대화 생성 스크립트 (데모용)
 Upstage API를 사용하여 가상의 거래 대화를 생성합니다.
