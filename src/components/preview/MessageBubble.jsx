@@ -145,7 +145,7 @@ const MessageBubble = ({ message, author, theme, isFirstInGroup, isLastInGroup }
 // Discord iOS Mobile DM 메시지 컴포넌트 - Figma 스펙 기반
 // Avatar: 40px, Username: 17px (656 weight), Timestamp: 12px (#9597A3)
 // Message text: 15px (#FFFFFF)
-const DiscordMessage = ({ author, text, time, isMe, isFirstInGroup, theme, bubbleStyle }) => {
+const DiscordMessage = ({ author, text, time, isMe, isFirstInGroup, theme, bubbleStyle: _bubbleStyle }) => {
   // 사용자 이름 색상 (역할에 따라 다름)
   const getUsernameColor = () => {
     if (isMe) return discordColors.blurpleText; // 자신의 메시지는 연보라색

@@ -534,7 +534,7 @@ const DiscordDateDivider = ({ date }) => (
 );
 
 // Discord 모바일 하단 메시지 바 (92px)
-const DiscordMobileBottomNav = ({ title }) => {
+const DiscordMobileBottomNav = ({ title: _title }) => {
   return (
     <div
       className="flex flex-col"
@@ -767,7 +767,7 @@ const InstaHeader = ({ title, theme, avatar }) => (
 );
 
 // 기타 플랫폼 입력창 데코레이션
-const InputAreaDecoration = ({ theme, title }) => {
+const InputAreaDecoration = ({ theme: _theme, title: _title }) => {
   const bgColor = '#FFFFFF';
   const borderColor = '#E5E5E5';
 

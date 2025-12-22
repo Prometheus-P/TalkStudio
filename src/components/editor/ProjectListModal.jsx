@@ -2,7 +2,7 @@
  * ProjectListModal - 프로젝트 목록 모달
  * CLAYMORPHISM DESIGN STYLE
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { X, Plus, Trash2, FolderOpen, Clock, HardDrive } from 'lucide-react';
 import useChatStore from '../../store/useChatStore';
 import { getStorageUsage } from '../../utils/storage';
@@ -15,13 +15,17 @@ const ProjectListModal = ({ isOpen, onClose }) => {
   const createNewProject = useChatStore((s) => s.createNewProject);
   const deleteProject = useChatStore((s) => s.deleteProject);
 
-  const [storageUsage, setStorageUsage] = useState({ percentage: 0, usedMB: '0' });
   const [confirmDelete, setConfirmDelete] = useState(null);
+
+  // Compute storage usage when modal opens (memoized to avoid re-computation)
+  const storageUsage = useMemo(() => {
+    if (!isOpen) return { percentage: 0, usedMB: '0' };
+    return getStorageUsage();
+  }, [isOpen, projects]);
 
   useEffect(() => {
     if (isOpen) {
       loadProjects();
-      setStorageUsage(getStorageUsage());
     }
   }, [isOpen, loadProjects]);
 

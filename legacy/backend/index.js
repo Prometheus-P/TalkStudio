@@ -1,6 +1,5 @@
 // backend/index.js
 import express from 'express';
-import mongoose from 'mongoose';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './src/config/openapi.js'; // Import swaggerSpec
 
@@ -25,20 +24,25 @@ connectDB();
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 logger.info(`Swagger UI available at /api-docs`);
 
-// Routes
+// Routes - Discord integrations
 app.use('/api/v1/integrations/discord', discordConfigRoutes);
 app.use('/api/v1/integrations/discord', discordCaptureRoutes);
 app.use('/api/v1/integrations/discord', intentAnalysisRoutes);
 app.use('/api/v1/content', contentGenerationRoutes);
 
-// Basic error handling middleware
-app.use((err, req, res, next) => {
-  logger.error('Unhandled error:', err);
-  res.status(500).json({ status: 'error', code: 'INTERNAL_SERVER_ERROR', message: 'An unexpected error occurred.' });
-});
+// Routes - AI Conversation Generator (002) with rate limiting
+app.use('/api/v1/conversations', aiGenerationLimiter, conversationRoutes);
+app.use('/api/v1/templates', templateLimiter, templateRoutes);
+app.use('/api/v1/bulk', bulkGenerationLimiter, bulkGenerationRoutes);
+
+// 404 handler for undefined routes
+app.use(notFoundHandler);
+
+// Global error handler (must be last middleware)
+app.use(errorHandler);
 
 // Start the server
-app.listen(config.port, () => {
+app.listen(config.port, async () => {
   logger.info(`Server running on port ${config.port}`);
 
   // Start data retention job (US7/NFR-8)
