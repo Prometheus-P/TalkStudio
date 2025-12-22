@@ -1,7 +1,7 @@
 """Application configuration using Pydantic Settings."""
 
 from functools import lru_cache
-from typing import Literal
+from typing import List, Literal, Optional
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     rate_limit_per_day: int = 500
 
     # Redis (optional)
-    redis_url: str | None = None
+    redis_url: Optional[str] = None
 
     # Logging
     log_level: str = "INFO"
@@ -49,7 +49,7 @@ class Settings(BaseSettings):
         return v
 
     @property
-    def cors_origins_list(self) -> list[str]:
+    def cors_origins_list(self) -> List[str]:
         """Return CORS origins as a list."""
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
 

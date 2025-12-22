@@ -6,7 +6,7 @@ Automatically falls back to in-memory storage if Redis is unavailable.
 import logging
 import time
 from collections import defaultdict
-from typing import Callable
+from typing import Callable, Dict, Optional
 
 from fastapi import HTTPException, Request, status
 from slowapi import Limiter
@@ -75,11 +75,11 @@ class DailyQuotaManager:
     MAX_MEMORY_ENTRIES = 10000  # Maximum in-memory entries to prevent memory leak
     CLEANUP_THRESHOLD = 8000   # Trigger cleanup when entries exceed this
 
-    def __init__(self, daily_limit: int = 500, redis_url: str | None = None):
+    def __init__(self, daily_limit: int = 500, redis_url: Optional[str] = None):
         self.daily_limit = daily_limit
         self._redis_client = None
         self._use_redis = False
-        self._memory_counters: dict[str, dict[str, int]] = defaultdict(
+        self._memory_counters: Dict[str, Dict[str, int]] = defaultdict(
             lambda: {"count": 0, "reset_day": 0}
         )
         self._last_cleanup_day = 0

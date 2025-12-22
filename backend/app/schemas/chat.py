@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Annotated, Literal
+from typing import Annotated, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -41,12 +41,12 @@ class ChatMessage(BaseModel):
 
     id: str = Field(..., min_length=1, max_length=100, description="Unique message ID")
     speaker: SpeakerType = Field(..., description="Who sent the message")
-    speaker_name: str | None = Field(
+    speaker_name: Optional[str] = Field(
         default=None, max_length=50, description="Display name of speaker"
     )
     text: str = Field(..., min_length=1, max_length=5000, description="Message content")
     type: MessageType = Field(default=MessageType.TEXT, description="Message type")
-    timestamp: datetime | None = Field(default=None, description="Message timestamp")
+    timestamp: Optional[datetime] = Field(default=None, description="Message timestamp")
     read: bool = Field(default=True, description="Whether message has been read")
 
     @field_validator("text")
@@ -65,12 +65,12 @@ class ConversationRequest(BaseModel):
 
     theme: Theme = Field(default=Theme.KAKAO, description="Chat theme")
     title: str = Field(default="", max_length=100, description="Conversation title")
-    messages: list[ChatMessage] = Field(
+    messages: List[ChatMessage] = Field(
         default_factory=list,
         max_length=200,
         description="List of messages",
     )
-    profiles: dict[str, dict] = Field(
+    profiles: Dict[str, dict] = Field(
         default_factory=lambda: {
             "me": {"name": "나", "avatar": None},
             "other": {"name": "상대방", "avatar": None},
@@ -80,7 +80,7 @@ class ConversationRequest(BaseModel):
 
     @field_validator("messages")
     @classmethod
-    def validate_messages_count(cls, v: list[ChatMessage]) -> list[ChatMessage]:
+    def validate_messages_count(cls, v: List[ChatMessage]) -> List[ChatMessage]:
         """Validate message count."""
         if len(v) > 200:
             raise ValueError("Maximum 200 messages allowed per conversation")
@@ -93,8 +93,8 @@ class ConversationResponse(BaseModel):
     id: str
     theme: Theme
     title: str
-    messages: list[ChatMessage]
-    profiles: dict[str, dict]
+    messages: List[ChatMessage]
+    profiles: Dict[str, dict]
     created_at: datetime
     updated_at: datetime
 
@@ -126,9 +126,9 @@ class GenerateResponse(BaseModel):
     """Response from AI generation."""
 
     success: bool
-    messages: list[ChatMessage]
-    metadata: dict = Field(default_factory=dict)
-    tokens_used: int | None = None
+    messages: List[ChatMessage]
+    metadata: Dict = Field(default_factory=dict)
+    tokens_used: Optional[int] = None
     provider: str
 
 
@@ -136,7 +136,7 @@ class GenerateResponse(BaseModel):
 class ParseExcelRequest(BaseModel):
     """Request to parse Excel file."""
 
-    column_mapping: dict[str, str] = Field(
+    column_mapping: Dict[str, str] = Field(
         default_factory=lambda: {
             "speaker": "speaker",
             "text": "text",
@@ -145,7 +145,7 @@ class ParseExcelRequest(BaseModel):
         },
         description="Mapping of expected columns to actual column names",
     )
-    sheet_name: str | None = Field(default=None, description="Specific sheet to parse")
+    sheet_name: Optional[str] = Field(default=None, description="Specific sheet to parse")
     skip_rows: int = Field(default=0, ge=0, le=100, description="Rows to skip at start")
 
 
@@ -153,8 +153,55 @@ class ParseExcelResponse(BaseModel):
     """Response from Excel parsing."""
 
     success: bool
-    messages: list[ChatMessage]
+    messages: List[ChatMessage]
     total_rows: int
     parsed_rows: int
-    errors: list[dict] = Field(default_factory=list)
-    warnings: list[str] = Field(default_factory=list)
+    errors: List[dict] = Field(default_factory=list)
+    warnings: List[str] = Field(default_factory=list)
+
+
+# Batch Processing Schemas
+class BatchPromptItem(BaseModel):
+    """Single prompt item from batch Excel file."""
+
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    prompt: str = Field(..., min_length=10, max_length=2000, description="Conversation prompt")
+    message_count: int = Field(default=10, ge=2, le=50, description="Number of messages")
+    style: Literal["casual", "formal", "romantic", "funny", "dramatic"] = Field(
+        default="casual", description="Conversation style"
+    )
+    language: Literal["ko", "en", "ja"] = Field(default="ko", description="Output language")
+    provider: Literal["openai", "upstage"] = Field(default="upstage", description="AI provider")
+    theme: Theme = Field(default=Theme.KAKAO, description="Chat theme")
+
+    @field_validator("prompt")
+    @classmethod
+    def validate_prompt(cls, v: str) -> str:
+        """Validate and clean prompt."""
+        cleaned = v.strip()
+        if len(cleaned) < 10:
+            raise ValueError("Prompt must be at least 10 characters")
+        return cleaned
+
+
+class BatchResultItem(BaseModel):
+    """Result of processing a single prompt in batch."""
+
+    row_number: int = Field(..., description="Excel row number (1-indexed)")
+    prompt: str = Field(..., description="Original prompt")
+    status: Literal["success", "failed", "skipped"] = Field(..., description="Processing status")
+    messages: Optional[List[ChatMessage]] = Field(default=None, description="Generated messages")
+    error: Optional[str] = Field(default=None, description="Error message if failed")
+    tokens_used: int = Field(default=0, description="Tokens consumed")
+
+
+class BatchResponse(BaseModel):
+    """Response from batch processing."""
+
+    success: bool = Field(..., description="Overall success status")
+    total: int = Field(..., description="Total prompts in batch")
+    processed: int = Field(..., description="Successfully processed count")
+    failed: int = Field(..., description="Failed count")
+    results: List[BatchResultItem] = Field(..., description="Individual results")
+    remaining_quota: int = Field(..., description="Remaining daily quota")
