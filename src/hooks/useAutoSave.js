@@ -77,7 +77,7 @@ export const useAutoSave = (project, options = {}) => {
     };
   }, [project, enabled, debounceMs, saveNow]);
 
-  // 컴포넌트 언마운트 시 즉시 저장
+  // 컴포넌트 언마운트 시 즉시 저장 (최신 project를 의도적으로 캡처)
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -89,6 +89,7 @@ export const useAutoSave = (project, options = {}) => {
         saveProject(project);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

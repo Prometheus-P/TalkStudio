@@ -1,5 +1,9 @@
-# Logs
-logs
+# =================================
+# TalkStudio .gitignore
+# =================================
+
+# -------- Logs --------
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,47 +11,65 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# -------- Dependencies --------
+node_modules/
+.pnpm-store/
 
-# Editor directories and files
+# -------- Build outputs --------
+dist/
+dist-ssr/
+build/
+*.local
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.d.ts.map
+
+# -------- IDE/Editor --------
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+!.vscode/settings.json
+.idea/
+.cursor/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-# Build artifacts
-build/
-*.tsbuildinfo
-vite.config.d.ts
-vite.config.d.ts.map
 
-# Environment variables
-.env*
-!.env.example
-!**/.env.example
-
-# Python specific
-__pycache__/
-*.pyc
-.venv/
-venv/
-*.egg-info/
-
-# Universal temporary files
+# -------- OS generated --------
+.DS_Store
 Thumbs.db
 *.tmp
 
-*.png
-backend/coverage/
+# -------- Environment variables --------
+.env
+.env.local
+.env.*.local
+!.env.example
+!**/.env.example
 
-# Legacy code (Discord/Upstage integration - moved for MVP)
+# -------- Python --------
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# -------- Test coverage --------
+coverage/
+*.lcov
+.nyc_output/
+
+# -------- Legacy code --------
 legacy/*/node_modules/
 legacy/*/.venv/
 legacy/*/coverage/
+
+# -------- Project specific --------
+# Keep sample images in scripts/captures/
+# but ignore other generated images
+*.png
+!scripts/captures/*.png
+!public/**/*.png
