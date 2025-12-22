@@ -30,6 +30,8 @@ vite.config.d.ts.map
 
 # Environment variables
 .env*
+!.env.example
+!**/.env.example
 
 # Python specific
 __pycache__/
