@@ -1,2 +1,0 @@
-# Python dependencies for AI Agent Systemdiscord.py>=2.0.0
-upstage-api-python-sdk

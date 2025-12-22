@@ -24,9 +24,14 @@ dist-ssr
 *.sw?
 # Build artifacts
 build/
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.d.ts.map
 
 # Environment variables
 .env*
+!.env.example
+!**/.env.example
 
 # Python specific
 __pycache__/
@@ -38,3 +43,11 @@ venv/
 # Universal temporary files
 Thumbs.db
 *.tmp
+
+*.png
+backend/coverage/
+
+# Legacy code (Discord/Upstage integration - moved for MVP)
+legacy/*/node_modules/
+legacy/*/.venv/
+legacy/*/coverage/

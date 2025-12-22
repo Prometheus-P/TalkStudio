@@ -1,74 +1,91 @@
 # TalkStudio
 
-## 프로젝트 개요
-TalkStudio는 AI Software Factory v4.0 프레임워크를 기반으로 개발된 지능형 대화 및 자동화 플랫폼입니다. 에이전트 기반 AI 애플리케이션을 활용하여 사용자에게 혁신적인 경험과 효율적인 워크플로우를 제공합니다.
+대화 스크린샷 생성기 - 카카오톡, 텔레그램, 인스타그램, 디스코드 스타일의 대화 이미지를 생성합니다.
 
 ## 주요 기능
-- **AI 기반 대화**: 자연어 처리 및 생성을 통한 지능형 대화.
-- **작업 자동화**: 에이전트 오케스트레이션을 통한 복잡한 작업 자동화.
-- **확장 가능한 아키텍처**: 모듈화된 설계로 유연한 기능 추가 및 확장이 가능합니다.
-- **안정적인 컨텍스트 관리**: 에이전트 실행에 필요한 컨텍스트를 효율적으로 관리합니다.
-- **Discord 대화 분석 및 콘텐츠 생성**: 대량의 Discord 대화 내역을 캡쳐하고, 의도를 분석하여 Upstage API를 통해 요약, FAQ, 아이디어 등의 콘텐츠를 자동으로 생성합니다.
+
+- **멀티 플랫폼 지원**: 카카오톡, 텔레그램, 인스타그램, 디스코드 테마
+- **실시간 미리보기**: 편집 내용이 즉시 iPhone 프레임에 반영
+- **메시지 관리**: 추가, 수정, 삭제, 순서 변경
+- **발화자 커스터마이징**: 이름, 프로필 이미지 설정 (최대 10명)
+- **프로젝트 저장**: localStorage 기반 자동/수동 저장
+- **PNG 내보내기**: 고품질 이미지로 저장
 
 ## 기술 스택
-- **Frontend**: React, Tailwind CSS
-- **Backend**: Node.js (Express.js), MongoDB (with Mongoose)
-- **AI/Agent Framework**: Python (v3.10+), 경량 Agent SDK, `discord.py`, `Upstage API Python SDK`, `PyMongo`, `Pydantic`
-- **Testing**: Jest (Frontend, Backend), Pytest (AI Agent System)
 
-## 시작하기
+- **Frontend**: React 19 + Vite 7 (Rolldown)
+- **상태 관리**: Zustand 5
+- **스타일링**: Tailwind CSS 4
+- **이미지 생성**: html2canvas
+- **아이콘**: Lucide React
 
-### 1. 전제 조건
-- Node.js (v20 이상) 및 npm/yarn 설치
-- Python (v3.10 이상) 및 pip 설치
-- Git 설치
-- Discord 개발자 포털에서 봇 생성 및 토큰 발급
-- Upstage API 키 발급
+## 빠른 시작
 
-### 2. 프로젝트 클론
 ```bash
-git clone [YOUR_REPOSITORY_URL]
-cd TalkStudio
-```
-
-### 3. 의존성 설치 및 환경 변수 설정
-
-**a. Frontend 설정**
-```bash
-cd frontend
+# 의존성 설치
 npm install
+
 # 개발 서버 실행
-npm run dev # (예정)
+npm run dev
+
+# 브라우저에서 http://localhost:5173 접속
 ```
 
-**b. Backend 설정**
-```bash
-cd backend
-npm install
-# 개발 서버 실행
-npm run start # (예정)
+## 스크립트
+
+| 명령어 | 설명 |
+|--------|------|
+| `npm run dev` | 개발 서버 실행 (http://localhost:5173) |
+| `npm run build` | 프로덕션 빌드 |
+| `npm run preview` | 빌드 결과물 미리보기 |
+| `npm run lint` | ESLint 검사 |
+| `npm run test` | Vitest 테스트 실행 |
+
+## 프로젝트 구조
+
 ```
-- `backend/` 디렉토리의 `.env` 파일에 `DATABASE_URL`, `JWT_SECRET`, `ENCRYPTION_SECRET` 등을 설정합니다.
-
-**c. AI Agent System 설정**
-```bash
-cd ai_agent_system
-python -m venv venv
-source venv/bin/activate # macOS/Linux
-# 또는 venv\Scripts\activate # Windows
-pip install -r requirements.txt
+src/
+├── components/
+│   ├── editor/           # 에디터 컴포넌트
+│   │   ├── LeftPanel.jsx       # 탭 기반 편집 패널
+│   │   ├── MessageEditor.jsx   # 메시지 편집기
+│   │   ├── ProfileEditor.jsx   # 프로필 편집기
+│   │   ├── ThemeControls.jsx   # 테마/상태바 설정
+│   │   ├── ExportButton.jsx    # 이미지 내보내기
+│   │   └── ProjectListModal.jsx # 프로젝트 관리 모달
+│   ├── preview/          # 미리보기 컴포넌트
+│   │   ├── ChatPreview.jsx     # 플랫폼별 미리보기
+│   │   ├── MessageBubble.jsx   # 메시지 버블
+│   │   └── StatusBar.jsx       # 상태바
+│   └── layout/           # 레이아웃 컴포넌트
+│       └── Sidebar.jsx         # 플랫폼 선택 사이드바
+├── store/
+│   └── useChatStore.js   # Zustand 전역 상태
+├── themes/
+│   └── presets.js        # 플랫폼별 테마 프리셋
+├── hooks/
+│   └── useAutoSave.js    # 자동 저장 훅
+├── utils/
+│   ├── storage.js        # localStorage 유틸리티
+│   └── timeValidation.js # 시간 검증 유틸리티
+└── App.jsx               # 3-Column 레이아웃
 ```
-- `ai_agent_system/` 디렉토리의 `.env` 파일에 `DISCORD_BOT_TOKEN`, `UPSTAGE_API_KEY`, `DATABASE_URL` 등을 설정합니다.
 
-### 4. Discord 봇 권한 설정
-Discord 개발자 포털에서 봇에 다음 권한(Permissions)을 부여해야 합니다.
-- `Message Content Intent` 활성화
-- `Read Message History`
-- `Send Messages` (콘텐츠를 다시 Discord에 전송하는 경우)
-봇을 원하는 Discord 서버에 초대합니다.
+## 사용 방법
 
-## 기여 (예정)
-TalkStudio 프로젝트에 기여하고 싶으시다면, `CONTRIBUTING.md` 파일을 참조해 주세요.
+1. **플랫폼 선택**: 좌측 사이드바에서 원하는 플랫폼 테마 선택
+2. **메시지 작성**: 에디터에서 발화자 선택 후 메시지 입력
+3. **미리보기 확인**: 우측 iPhone 프레임에서 실시간 확인
+4. **이미지 저장**: "PNG 저장" 버튼 클릭
 
-## 라이선스 (예정)
-본 프로젝트는 [라이선스 종류]에 따라 배포됩니다.
+## 디자인 스타일
+
+Claymorphism 디자인 시스템 적용:
+- 부드러운 그라데이션 배경
+- 입체적인 박스 섀도우
+- 둥근 모서리 (16px ~ 32px)
+- 파스텔 톤 색상 팔레트
+
+## 라이선스
+
+MIT License

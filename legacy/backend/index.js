@@ -1,0 +1,50 @@
+// backend/index.js
+import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './src/config/openapi.js'; // Import swaggerSpec
+
+import connectDB from './src/db/index.js';
+import config from './src/config/index.js';
+import logger from './src/utils/logger.js';
+import discordConfigRoutes from './src/api/integrations/discord_config_routes.js';
+import discordCaptureRoutes from './src/api/integrations/discord_capture_routes.js';
+import intentAnalysisRoutes from './src/api/integrations/intent_analysis_routes.js';
+import contentGenerationRoutes from './src/api/integrations/content_generation_routes.js';
+import { startRetentionJob } from './src/jobs/data_retention_job.js';
+
+const app = express();
+
+// Middleware
+app.use(express.json());
+
+// Connect to MongoDB
+connectDB();
+
+// Serve Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+logger.info(`Swagger UI available at /api-docs`);
+
+// Routes - Discord integrations
+app.use('/api/v1/integrations/discord', discordConfigRoutes);
+app.use('/api/v1/integrations/discord', discordCaptureRoutes);
+app.use('/api/v1/integrations/discord', intentAnalysisRoutes);
+app.use('/api/v1/content', contentGenerationRoutes);
+
+// Routes - AI Conversation Generator (002) with rate limiting
+app.use('/api/v1/conversations', aiGenerationLimiter, conversationRoutes);
+app.use('/api/v1/templates', templateLimiter, templateRoutes);
+app.use('/api/v1/bulk', bulkGenerationLimiter, bulkGenerationRoutes);
+
+// 404 handler for undefined routes
+app.use(notFoundHandler);
+
+// Global error handler (must be last middleware)
+app.use(errorHandler);
+
+// Start the server
+app.listen(config.port, async () => {
+  logger.info(`Server running on port ${config.port}`);
+
+  // Start data retention job (US7/NFR-8)
+  startRetentionJob();
+});
