@@ -8,7 +8,7 @@ import ScenarioInput from '../components/ConversationGenerator/ScenarioInput';
 import ParameterPanel from '../components/ConversationGenerator/ParameterPanel';
 import TemplateSelector from '../components/ConversationGenerator/TemplateSelector';
 import ExcelUploader from '../components/BulkGeneration/ExcelUploader';
-import ProgressTracker from '../components/BulkGeneration/ProgressTracker';
+import BatchResultsViewer from '../components/BulkGeneration/ProgressTracker';
 import { generateConversation } from '../services/conversationApi';
 import useChatStore from '../store/useChatStore';
 
@@ -17,8 +17,8 @@ const AIGenerator = ({ onClose, onGenerated }) => {
   const [activeTab, setActiveTab] = useState('template');
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
-  // Bulk generation state
-  const [bulkJobId, setBulkJobId] = useState(null);
+  // Batch generation state
+  const [batchResult, setBatchResult] = useState(null);
 
   // Form state
   const [scenario, setScenario] = useState('');
@@ -52,10 +52,35 @@ const AIGenerator = ({ onClose, onGenerated }) => {
     setSelectedTemplate(null);
   }, []);
 
-  // Handle bulk job started
-  const handleBulkJobStarted = useCallback((job) => {
-    setBulkJobId(job.id);
+  // Handle batch completion
+  const handleBatchComplete = useCallback((result) => {
+    setBatchResult(result);
   }, []);
+
+  // Handle selecting a batch result to load into editor
+  const handleSelectBatchResult = useCallback((result) => {
+    if (result.messages && result.messages.length > 0) {
+      // Convert to TalkStudio format
+      const talkStudioMessages = result.messages.map((msg, idx) => ({
+        id: `batch-${Date.now()}-${idx}`,
+        sender: msg.speaker === 'me' ? 'me' : 'other',
+        type: msg.type || 'text',
+        text: msg.text,
+        time: msg.timestamp || new Date().toISOString(),
+      }));
+
+      setMessages(talkStudioMessages);
+      setSuccess(true);
+
+      if (onGenerated) {
+        onGenerated({ messages: result.messages });
+      }
+
+      setTimeout(() => {
+        if (onClose) onClose();
+      }, 1500);
+    }
+  }, [setMessages, onGenerated, onClose]);
 
   // Validate form
   const isValid = activeTab === 'template'
@@ -341,26 +366,21 @@ const AIGenerator = ({ onClose, onGenerated }) => {
             </>
           ) : activeTab === 'bulk' ? (
             <>
-              {/* Bulk Generation */}
-              {bulkJobId ? (
-                <ProgressTracker
-                  jobId={bulkJobId}
-                  onComplete={() => {
-                    // Job completed - could show success message
-                  }}
-                  onError={(err) => {
-                    setError(err.message);
-                  }}
+              {/* Batch Generation */}
+              {batchResult ? (
+                <BatchResultsViewer
+                  batchResult={batchResult}
+                  onSelectResult={handleSelectBatchResult}
                 />
               ) : (
                 <ExcelUploader
-                  onJobStarted={handleBulkJobStarted}
+                  onBatchComplete={handleBatchComplete}
                   disabled={isGenerating}
                 />
               )}
 
-              {/* Bulk Generation Info */}
-              {!bulkJobId && (
+              {/* Batch Generation Info */}
+              {!batchResult && (
                 <div
                   style={{
                     padding: '12px',
@@ -370,11 +390,11 @@ const AIGenerator = ({ onClose, onGenerated }) => {
                     color: '#6B21A8',
                   }}
                 >
-                  <strong>대량 생성 안내</strong>
+                  <strong>배치 생성 안내</strong>
                   <ul className="mt-2 space-y-1 text-xs" style={{ color: '#7C3AED' }}>
                     <li>• Excel 템플릿을 다운로드하여 시나리오를 입력하세요</li>
                     <li>• 한 번에 최대 100개 시나리오까지 처리 가능</li>
-                    <li>• 완료 후 ZIP 파일로 결과를 다운로드할 수 있습니다</li>
+                    <li>• 완료 후 결과를 JSON으로 내보내거나 에디터로 불러올 수 있습니다</li>
                   </ul>
                 </div>
               )}
@@ -446,7 +466,7 @@ const AIGenerator = ({ onClose, onGenerated }) => {
               transition: 'all 0.2s',
             }}
           >
-            {activeTab === 'bulk' && bulkJobId ? '닫기' : '취소'}
+            {activeTab === 'bulk' && batchResult ? '닫기' : '취소'}
           </button>
           {activeTab !== 'bulk' && (
             <button

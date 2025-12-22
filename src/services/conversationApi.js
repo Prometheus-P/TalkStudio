@@ -5,8 +5,8 @@
 
 import { getErrorMessage } from '../utils/errorHandler';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
-const REQUEST_TIMEOUT = 30000; // 30초 타임아웃
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const REQUEST_TIMEOUT = 120000; // 120초 타임아웃 (배치 처리용)
 
 /**
  * Custom API Error class
@@ -198,23 +198,23 @@ export const deleteTemplate = async (id) => {
   return true;
 };
 
-// ============ Bulk Generation API ============
+// ============ Batch Generation API ============
 
 /**
- * Download Excel template
+ * Download batch Excel template
  */
-export const downloadBulkTemplate = async () => {
-  const response = await fetch(`${API_BASE_URL}/bulk/template`);
+export const downloadBatchTemplate = async () => {
+  const response = await fetch(`${API_BASE_URL}/generate/batch-template`);
 
   if (!response.ok) {
-    throw new Error('Failed to download template');
+    throw new ApiError('DOWNLOAD_ERROR', '템플릿 다운로드에 실패했습니다.');
   }
 
   const blob = await response.blob();
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'talkstudio_bulk_template.xlsx';
+  a.download = 'talkstudio_batch_template.xlsx';
   document.body.appendChild(a);
   a.click();
   window.URL.revokeObjectURL(url);
@@ -222,57 +222,80 @@ export const downloadBulkTemplate = async () => {
 };
 
 /**
- * Start bulk generation job
- * @param {File} file - Excel file
+ * Process batch generation (synchronous)
+ * @param {File} file - Excel file with prompts
+ * @returns {Promise<Object>} BatchResponse with results
  */
-export const startBulkGeneration = async (file) => {
+export const processBatch = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  const response = await fetch(`${API_BASE_URL}/bulk/start`, {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/generate/batch`, {
+      method: 'POST',
+      body: formData,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorMessage = data.detail?.message || data.message || '배치 처리에 실패했습니다.';
+      throw new ApiError(data.detail?.error || 'BATCH_ERROR', errorMessage, data.detail);
+    }
+
+    return data;
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error.name === 'AbortError') {
+      throw new ApiError('TIMEOUT_ERROR', '배치 처리 시간이 초과되었습니다. 프롬프트 수를 줄여주세요.');
+    }
+
+    if (error instanceof ApiError) {
+      throw error;
+    }
+
+    throw new ApiError('BATCH_ERROR', error.message || '배치 처리 중 오류가 발생했습니다.');
+  }
+};
+
+/**
+ * Generate single conversation (synchronous)
+ * @param {Object} params - Generation parameters
+ */
+export const generateSingleConversation = async (params) => {
+  const response = await apiRequest('/generate/conversation', {
     method: 'POST',
-    body: formData,
+    body: JSON.stringify({
+      prompt: params.scenario || params.prompt,
+      message_count: params.messageCount || 10,
+      style: params.tone || 'casual',
+      language: params.language || 'ko',
+      provider: params.provider || 'upstage',
+      theme: params.platform || 'kakao',
+    }),
   });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Failed to start bulk generation');
-  }
-
-  return data.data.job;
+  return response;
 };
 
 /**
- * Get bulk job status
- * @param {string} jobId - Job ID
+ * Generate demo conversation (no API key required)
  */
-export const getBulkJobStatus = async (jobId) => {
-  const response = await apiRequest(`/bulk/${jobId}/status`);
-  return response.data.job;
+export const generateDemoConversation = async () => {
+  const response = await apiRequest('/generate/demo', {
+    method: 'POST',
+  });
+  return response;
 };
 
-/**
- * Download bulk job results
- * @param {string} jobId - Job ID
- */
-export const downloadBulkResults = async (jobId) => {
-  const response = await fetch(`${API_BASE_URL}/bulk/${jobId}/download`);
-
-  if (!response.ok) {
-    throw new Error('Failed to download results');
-  }
-
-  const blob = await response.blob();
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `talkstudio_bulk_${jobId}.zip`;
-  document.body.appendChild(a);
-  a.click();
-  window.URL.revokeObjectURL(url);
-  document.body.removeChild(a);
-};
+// Legacy aliases for backward compatibility
+export const downloadBulkTemplate = downloadBatchTemplate;
+export const startBulkGeneration = processBatch;
 
 export default {
   // Conversation
@@ -286,9 +309,12 @@ export default {
   getTemplates,
   createTemplate,
   deleteTemplate,
-  // Bulk
+  // Batch
+  downloadBatchTemplate,
+  processBatch,
+  generateSingleConversation,
+  generateDemoConversation,
+  // Legacy aliases
   downloadBulkTemplate,
   startBulkGeneration,
-  getBulkJobStatus,
-  downloadBulkResults,
 };
