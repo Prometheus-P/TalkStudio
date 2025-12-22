@@ -129,7 +129,7 @@
 - [x] T057 Swagger/OpenAPI 문서 - 각 라우트 파일에 JSDoc 주석으로 정의 ✅
 - [x] T058 README 가이드 - `docs/DATA_RETENTION.md`, 스펙 문서로 대체 ✅
 - [x] T059 최종 코드 리뷰 및 리팩토링 ✅
-- [ ] T060 성능 테스트 (단일 생성 < 5초, 대량 100건 < 5분 검증) - **수동 테스트 필요**
+- [x] T060 성능 테스트 (단일 생성 < 5초, 대량 100건 < 5분 검증) ✅
 
 ## User Story Dependencies
 
