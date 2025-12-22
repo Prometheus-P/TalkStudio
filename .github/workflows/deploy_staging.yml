@@ -10,7 +10,7 @@ on:
       - 'ai_agent_system/**'
       - 'package.json'
       - 'frontend/package.json'
-      - 'backend/package.json'
+      - 'backend/requirements.txt'
       - 'ai_agent_system/requirements.txt'
       - '.github/workflows/ci.yml'
       - '.github/workflows/deploy_staging.yml'
@@ -37,25 +37,20 @@ jobs:
       - name: Build Frontend
         run: npm run build --prefix frontend
 
-      - name: Set up Backend Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: 'backend/package-lock.json'
-
-      - name: Install Backend Dependencies
-        run: npm install --prefix backend
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
           cache: 'pip'
-          cache-dependency-path: 'ai_agent_system/requirements.txt'
+          cache-dependency-path: |
+            backend/requirements.txt
+            ai_agent_system/requirements.txt
+
+      - name: Install Backend Dependencies
+        run: pip install -r backend/requirements.txt
 
       - name: Install Python Dependencies (AI Agent System)
-        run: python -m pip install -r ai_agent_system/requirements.txt
+        run: pip install -r ai_agent_system/requirements.txt
 
       - name: Deploy to Staging (Placeholder)
         run: |
