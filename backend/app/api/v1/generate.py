@@ -1,10 +1,14 @@
 """AI conversation generation endpoints."""
 
+import io
 import uuid
 from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile, status
+from fastapi.responses import StreamingResponse
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
 from app.core.config import settings
 from app.core.rate_limiter import check_daily_quota, limiter
@@ -221,4 +225,129 @@ async def generate_demo(request: Request) -> GenerateResponse:
         metadata={"source": "demo", "generated_at": datetime.now(timezone.utc).isoformat()},
         tokens_used=0,
         provider="demo",
+    )
+
+
+@router.get(
+    "/template",
+    summary="Download Excel template",
+    description="Download an Excel template for bulk conversation import.",
+    response_class=StreamingResponse,
+)
+async def download_template() -> StreamingResponse:
+    """
+    Download an Excel template for bulk conversation import.
+
+    The template includes:
+    - Messages sheet with example data
+    - Instructions sheet with usage guide
+    """
+    workbook = Workbook()
+
+    # === Messages Sheet ===
+    messages_sheet = workbook.active
+    messages_sheet.title = "Messages"
+
+    # Header style
+    header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+    header_font = Font(bold=True, color="FFFFFF")
+    header_alignment = Alignment(horizontal="center", vertical="center")
+    thin_border = Border(
+        left=Side(style="thin"),
+        right=Side(style="thin"),
+        top=Side(style="thin"),
+        bottom=Side(style="thin"),
+    )
+
+    # Headers
+    headers = [
+        ("speaker", "발신자 (필수)"),
+        ("text", "메시지 내용 (필수)"),
+        ("name", "표시 이름 (선택)"),
+        ("type", "타입 (선택)"),
+        ("time", "시간 (선택)"),
+    ]
+
+    for col, (_, header_text) in enumerate(headers, 1):
+        cell = messages_sheet.cell(row=1, column=col, value=header_text)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = header_alignment
+        cell.border = thin_border
+
+    # Example data
+    example_data = [
+        ("me", "안녕! 오늘 뭐해?", "나", "text", "14:30"),
+        ("other", "나 지금 집에서 쉬고 있어~", "친구", "text", "14:31"),
+        ("me", "심심하면 나와! 카페 갈래?", "나", "text", "14:32"),
+        ("other", "오 좋아! 어디로 갈까?", "친구", "text", "14:33"),
+        ("me", "강남역 스타벅스 어때?", "나", "text", "14:34"),
+        ("other", "ㅋㅋ 완전 좋아~ 30분 뒤에 볼까?", "친구", "text", "14:35"),
+        ("me", "응 그래! 이따 봐~", "나", "text", "14:36"),
+        ("other", "👍", "친구", "emoji", "14:36"),
+    ]
+
+    for row_idx, row_data in enumerate(example_data, 2):
+        for col_idx, value in enumerate(row_data, 1):
+            cell = messages_sheet.cell(row=row_idx, column=col_idx, value=value)
+            cell.border = thin_border
+
+    # Set column widths
+    messages_sheet.column_dimensions["A"].width = 15
+    messages_sheet.column_dimensions["B"].width = 40
+    messages_sheet.column_dimensions["C"].width = 15
+    messages_sheet.column_dimensions["D"].width = 12
+    messages_sheet.column_dimensions["E"].width = 12
+
+    # === Instructions Sheet ===
+    instructions_sheet = workbook.create_sheet("사용법")
+
+    instructions = [
+        ("TalkStudio 엑셀 템플릿 사용법", True),
+        ("", False),
+        ("■ 필수 열", True),
+        ("speaker: 발신자 구분", False),
+        ("  - me, 나, 본인, 1 → 내가 보낸 메시지", False),
+        ("  - other, 상대방, 친구 → 상대방 메시지", False),
+        ("  - system, 시스템 → 시스템 메시지", False),
+        ("", False),
+        ("text: 메시지 내용 (최대 5000자)", False),
+        ("", False),
+        ("■ 선택 열", True),
+        ("name: 채팅방에 표시될 이름", False),
+        ("type: 메시지 타입 (text, emoji, image, system)", False),
+        ("time: 메시지 시간 (HH:MM 또는 YYYY-MM-DD HH:MM)", False),
+        ("", False),
+        ("■ 제한사항", True),
+        ("- 최대 파일 크기: 5MB", False),
+        ("- 최대 행 수: 1,000행", False),
+        ("- 지원 형식: .xlsx, .xls, .xlsm", False),
+        ("", False),
+        ("■ 팁", True),
+        ("- 예시 데이터를 삭제하고 실제 데이터를 입력하세요", False),
+        ("- 열 이름은 한글/영어 모두 인식됩니다", False),
+        ("  (speaker = 발신자 = 보낸사람 = who = from)", False),
+        ("  (text = 내용 = 메시지 = message = content)", False),
+    ]
+
+    for row_idx, (text, is_header) in enumerate(instructions, 1):
+        cell = instructions_sheet.cell(row=row_idx, column=1, value=text)
+        if is_header:
+            cell.font = Font(bold=True, size=12)
+        else:
+            cell.font = Font(size=11)
+
+    instructions_sheet.column_dimensions["A"].width = 60
+
+    # Save to BytesIO
+    output = io.BytesIO()
+    workbook.save(output)
+    output.seek(0)
+
+    filename = f"talkstudio_template_{datetime.now().strftime('%Y%m%d')}.xlsx"
+
+    return StreamingResponse(
+        output,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
     )
