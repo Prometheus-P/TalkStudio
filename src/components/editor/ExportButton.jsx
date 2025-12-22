@@ -41,7 +41,30 @@ const ExportButton = () => {
     setExporting(true);
     setShowFormatMenu(false);
 
+    // 캡처를 위해 transform 임시 해제
+    const scaleWrapper = canvas.parentElement;
+    const outerWrapper = scaleWrapper?.parentElement;
+    const originalScaleTransform = scaleWrapper?.style.transform;
+    const originalOuterStyle = outerWrapper ? {
+      width: outerWrapper.style.width,
+      height: outerWrapper.style.height,
+      overflow: outerWrapper.style.overflow,
+    } : null;
+
     try {
+      // Scale transform 제거 및 원본 크기로 표시
+      if (scaleWrapper && originalScaleTransform?.includes('scale')) {
+        scaleWrapper.style.transform = 'none';
+        if (outerWrapper) {
+          outerWrapper.style.width = 'auto';
+          outerWrapper.style.height = 'auto';
+          outerWrapper.style.overflow = 'visible';
+        }
+      }
+
+      // 레이아웃 재계산 대기
+      await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 100)));
+
       const result = await html2canvas(canvas, {
         scale: 2,
         useCORS: true,
@@ -55,6 +78,15 @@ const ExportButton = () => {
       console.error('이미지 내보내기 실패:', error);
       alert('이미지 내보내기에 실패했습니다.');
     } finally {
+      // Transform 복원
+      if (scaleWrapper && originalScaleTransform) {
+        scaleWrapper.style.transform = originalScaleTransform;
+        if (outerWrapper && originalOuterStyle) {
+          outerWrapper.style.width = originalOuterStyle.width;
+          outerWrapper.style.height = originalOuterStyle.height;
+          outerWrapper.style.overflow = originalOuterStyle.overflow;
+        }
+      }
       setExporting(false);
     }
   };
