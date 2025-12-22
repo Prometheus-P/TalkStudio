@@ -1,7 +1,24 @@
 #!/usr/bin/env python3
 """
-메이플스토리 아이템 거래 대화 생성 스크립트
-Upstage API를 사용하여 5개의 거래 대화를 생성합니다.
+TalkStudio - Chat Data Generator
+
+Copyright (c) 2024-2025 TalkStudio. All rights reserved.
+Licensed under the MIT License. See LICENSE file for details.
+
+온라인 게임 아이템 거래 대화 생성 스크립트 (데모용)
+Upstage API를 사용하여 가상의 거래 대화를 생성합니다.
+
+⚠️ DISCLAIMER / 면책조항:
+- 이 스크립트로 생성된 대화는 데모/테스트 목적으로만 사용됩니다.
+- 실제 대화가 아닌 AI가 생성한 가상의 샘플 데이터입니다.
+- 사기, 허위 증거 조작 등 불법적인 용도로 사용을 금지합니다.
+- 모든 게임명, 아이템명, 닉네임은 가상이며 실제와 무관합니다.
+
+⚠️ COPYRIGHT NOTICE:
+- This is a sample chat generator for demonstration purposes only.
+- All game names, item names, and nicknames are fictional.
+- Not affiliated with any game companies.
+- "TalkStudio" is a trademark of the TalkStudio project.
 """
 
 import os
@@ -11,25 +28,27 @@ import asyncio
 from datetime import datetime, timedelta
 import random
 
-# API 설정
-UPSTAGE_API_KEY = os.getenv("UPSTAGE_API_KEY", "up_s6jaSOWL3snV5H57lLvyBgKMtsAIf")
+# API 설정 (환경변수에서만 로드 - 하드코딩 금지)
+UPSTAGE_API_KEY = os.getenv("UPSTAGE_API_KEY")
+if not UPSTAGE_API_KEY:
+    raise ValueError("UPSTAGE_API_KEY 환경변수가 설정되지 않았습니다.")
 UPSTAGE_BASE_URL = "https://api.upstage.ai/v1/solar"
 
 # 거래 설정
 TRADE_AMOUNTS = [50000, 70000, 100000, 100000, 100000]  # 5만, 7만, 10만, 10만, 10만원
 
-# 메이플 아이템 목록
-MAPLE_ITEMS = [
-    {"name": "아케인셰이드 튜너", "type": "무기", "stats": "17성 공격력 30%"},
-    {"name": "앱솔랩스 나이트케이프", "type": "망토", "stats": "22성 올스탯 12%"},
-    {"name": "아케인셰이드 아처후드", "type": "모자", "stats": "유니크 3줄 덱스 33%"},
-    {"name": "제네시스 보우", "type": "활", "stats": "8성 레전 공퍼 2줄"},
-    {"name": "칠흑의 보스셋", "type": "세트템", "stats": "귀고리+펜던트+얼장"}
+# 가상 게임 아이템 목록 (실제 게임과 무관한 가상의 아이템)
+GAME_ITEMS = [
+    {"name": "전설의 검 [데모]", "type": "무기", "stats": "강화+17 공격력 30%"},
+    {"name": "신비의 망토 [데모]", "type": "망토", "stats": "강화+22 올스탯 12%"},
+    {"name": "마법사 모자 [데모]", "type": "모자", "stats": "레어 3옵션"},
+    {"name": "영웅의 활 [데모]", "type": "활", "stats": "강화+8 공격력 2옵션"},
+    {"name": "보스 세트 [데모]", "type": "세트템", "stats": "귀걸이+목걸이+반지"}
 ]
 
-# 닉네임 목록
-NICKNAMES_SELLER = ["레전드헌터", "메이플상인", "거래왕김씨", "다크나이트99", "히어로전사"]
-NICKNAMES_BUYER = ["초보모험가", "불독마법사", "윈드슈터쨩", "아크메이지", "나이트워커"]
+# 가상 닉네임 목록 (실제와 무관)
+NICKNAMES_SELLER = ["판매자A_demo", "상인B_demo", "거래자C_demo", "유저D_demo", "플레이어E_demo"]
+NICKNAMES_BUYER = ["구매자1_demo", "유저2_demo", "신규3_demo", "모험가4_demo", "초보5_demo"]
 
 
 def get_random_date():
@@ -57,17 +76,19 @@ def format_korean_date(dt: datetime):
 
 
 async def generate_chat_with_upstage(item: dict, amount: int, trade_date: datetime):
-    """Upstage API를 사용하여 대화 생성"""
+    """Upstage API를 사용하여 가상 대화 생성 (데모용)"""
 
     amount_display = f"{amount // 10000}만원"
 
-    prompt = f"""당신은 메이플스토리 게임 아이템 거래 대화를 생성하는 AI입니다.
-디스코드에서 이루어지는 자연스러운 대화를 JSON 형식으로 생성해주세요.
+    prompt = f"""당신은 가상의 온라인 게임 아이템 거래 대화를 생성하는 AI입니다.
+채팅 앱에서 이루어지는 자연스러운 대화를 JSON 형식으로 생성해주세요.
+
+[데모 목적 - 실제 거래가 아님]
 
 거래 정보:
 - 아이템: {item['name']} ({item['type']}, {item['stats']})
-- 거래 금액: {amount_display} (현금거래)
-- 거래 날짜: {format_korean_date(trade_date)}
+- 거래 금액: {amount_display} (가상 거래)
+- 거래 날짜: {format_korean_date(trade_date)} (가상 날짜)
 
 대화 규칙:
 1. 구매자가 먼저 아이템 구매 의사를 밝힘
@@ -77,7 +98,7 @@ async def generate_chat_with_upstage(item: dict, amount: int, trade_date: dateti
 5. 거래 장소/방법 약속
 6. 6-10개의 메시지로 구성
 7. 자연스러운 반말/존댓말 혼용
-8. 메이플 용어 사용 (메소, 현거래, 정보, 등)
+8. 일반적인 온라인 게임 용어 사용 (골드, 현거래, 강화 등)
 
 JSON 형식으로만 응답하세요:
 {{"messages": [
@@ -211,13 +232,14 @@ def build_chat_store_data(
 
 async def main():
     print("=" * 50)
-    print("메이플스토리 거래 대화 생성 시작")
+    print("가상 게임 아이템 거래 대화 생성 (데모용)")
+    print("⚠️  이 데이터는 실제 거래가 아닌 샘플입니다.")
     print("=" * 50)
 
     all_chats = []
 
     for i, amount in enumerate(TRADE_AMOUNTS):
-        item = MAPLE_ITEMS[i]
+        item = GAME_ITEMS[i]
         trade_date = get_random_date()
         seller = NICKNAMES_SELLER[i]
         buyer = NICKNAMES_BUYER[i]
@@ -241,6 +263,8 @@ async def main():
         chat_data["metadata"]["item"] = item
         chat_data["metadata"]["amount"] = amount
         chat_data["metadata"]["amount_display"] = f"{amount // 10000}만원"
+        chat_data["metadata"]["disclaimer"] = "SAMPLE DATA - 데모용 가상 대화. 실제 거래가 아님."
+        chat_data["metadata"]["is_sample"] = True
 
         all_chats.append(chat_data)
 

@@ -1,7 +1,24 @@
 #!/usr/bin/env node
 /**
- * 디스코드 스타일 대화 이미지 캡처 스크립트
+ * TalkStudio - Chat Screenshot Generator
+ *
+ * Copyright (c) 2024-2025 TalkStudio. All rights reserved.
+ * Licensed under the MIT License. See LICENSE file for details.
+ *
+ * 채팅 스타일 대화 이미지 캡처 스크립트
  * Playwright를 사용하여 생성된 대화를 이미지로 캡처합니다.
+ *
+ * ⚠️ DISCLAIMER / 면책조항:
+ * - 이 스크립트로 생성된 이미지는 데모/테스트 목적으로만 사용됩니다.
+ * - 실제 대화가 아닌 AI가 생성한 가상의 샘플 데이터입니다.
+ * - 사기, 허위 증거 조작 등 불법적인 용도로 사용을 금지합니다.
+ * - 모든 게임명, 아이템명, 닉네임은 가상이며 실제와 무관합니다.
+ *
+ * ⚠️ COPYRIGHT NOTICE:
+ * - This is a sample chat generator for demonstration purposes only.
+ * - All game names, item names, and nicknames are fictional.
+ * - Not affiliated with any game companies or chat platforms.
+ * - "TalkStudio" is a trademark of the TalkStudio project.
  */
 
 const { chromium } = require('playwright');
@@ -158,13 +175,6 @@ function generateDiscordHTML(chatData) {
     .message-continuation {
       padding: 2px 16px 2px 72px;
     }
-    .watermark {
-      text-align: center;
-      padding: 8px;
-      color: #4f545c;
-      font-size: 10px;
-      background: #2f3136;
-    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -172,16 +182,13 @@ function generateDiscordHTML(chatData) {
   <div class="discord-container">
     <div class="channel-header">
       <span class="channel-icon">#</span>
-      <span class="channel-name">메이플-거래</span>
+      <span class="channel-name">game-trade-demo</span>
     </div>
     <div class="date-divider">
       <span>${metadata.trade_date_korean}</span>
     </div>
     <div class="messages-container">
       ${messagesHTML}
-    </div>
-    <div class="watermark">
-      TalkStudio - Discord Style
     </div>
   </div>
 </body>

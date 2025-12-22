@@ -5,20 +5,20 @@
       "capturedImage": null
     },
     "statusBar": {
-      "time": "오후 9:56",
-      "battery": 87,
+      "time": "오후 5:54",
+      "battery": 47,
       "isWifi": true
     },
     "profiles": {
       "me": {
         "id": "me",
-        "name": "레전드헌터",
-        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=레전드헌터"
+        "name": "판매자A_demo",
+        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=판매자A_demo"
       },
       "other": {
         "id": "other",
-        "name": "초보모험가",
-        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=초보모험가"
+        "name": "구매자1_demo",
+        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=구매자1_demo"
       }
     },
     "messages": [
@@ -26,331 +26,71 @@
         "id": 1,
         "sender": "other",
         "type": "text",
-        "text": "형 아케인셰이드 튜너 17성 팔아요? 가격 얼마나?",
-        "time": "오후 9:56"
-      },
-      {
-        "id": 2,
-        "sender": "me",
-        "type": "text",
-        "text": "오 7만인데 17성 30% 공격력 빵빵함. 현거래만 해요",
-        "time": "오후 9:57"
-      },
-      {
-        "id": 3,
-        "sender": "other",
-        "type": "text",
-        "text": "6만에 안되나? 다른 딜 보면 6.5까지 본 것 같은데",
-        "time": "오후 9:58"
-      },
-      {
-        "id": 4,
-        "sender": "me",
-        "type": "text",
-        "text": "6.5는 힘들거 같고 6만8까지는 생각해볼게. 메소도 받지만 현거래 가성비 더 좋아",
-        "time": "오후 9:59"
-      },
-      {
-        "id": 5,
-        "sender": "other",
-        "type": "text",
-        "text": "6만5는? 일단 톡방에 정보 올릴 수 있게 허락해줘",
-        "time": "오후 10:00"
-      },
-      {
-        "id": 6,
-        "sender": "me",
-        "type": "text",
-        "text": "그럼 5만에 바로 딜 접수? 11월 7일까지 엘린항구 포스 모아줄게",
-        "time": "오후 10:01"
-      },
-      {
-        "id": 7,
-        "sender": "other",
-        "type": "text",
-        "text": "5만은 너무 낮지 않냐... 5만5로 가자",
-        "time": "오후 10:02"
-      },
-      {
-        "id": 8,
-        "sender": "me",
-        "type": "text",
-        "text": "5만5는 내가 손해 보는 거라... 5만에 바로 거래원하시면 오늘 중으로 계좌 보내드림",
-        "time": "오후 10:03"
-      },
-      {
-        "id": 9,
-        "sender": "other",
-        "type": "text",
-        "text": "알겠어 5만하자. 계좌번호랑 거래 시간 언제 가능?",
-        "time": "오후 10:04"
-      }
-    ],
-    "metadata": {
-      "trade_date": "2025-11-07",
-      "trade_date_korean": "11월 7일",
-      "item": {
-        "name": "아케인셰이드 튜너",
-        "type": "무기",
-        "stats": "17성 공격력 30%"
-      },
-      "amount": 50000,
-      "amount_display": "5만원"
-    }
-  },
-  {
-    "config": {
-      "theme": "discord",
-      "capturedImage": null
-    },
-    "statusBar": {
-      "time": "오후 6:51",
-      "battery": 43,
-      "isWifi": true
-    },
-    "profiles": {
-      "me": {
-        "id": "me",
-        "name": "메이플상인",
-        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=메이플상인"
-      },
-      "other": {
-        "id": "other",
-        "name": "불독마법사",
-        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=불독마법사"
-      }
-    },
-    "messages": [
-      {
-        "id": 1,
-        "sender": "other",
-        "type": "text",
-        "text": "앱솔랩스 케이프 22성 있는 사람 있나요? 급함 ㅜ",
-        "time": "오후 6:51"
-      },
-      {
-        "id": 2,
-        "sender": "me",
-        "type": "text",
-        "text": "형 앱솔랩스 나이트케이프 22성 올스탯 12% 지금 보유 중인데 7만원 어때요? 정보 올리실래요?",
-        "time": "오후 6:52"
-      },
-      {
-        "id": 3,
-        "sender": "other",
-        "type": "text",
-        "text": "6만5에 안 되냐... 다른 딜 보고 있는데 여기 좀 높은 거 같아",
-        "time": "오후 6:53"
-      },
-      {
-        "id": 4,
-        "sender": "me",
-        "type": "text",
-        "text": "현재 시세 6.8~7인데 6.8은 어때요? 대신 오늘 중으로 입급 가능한 경우",
-        "time": "오후 6:54"
-      },
-      {
-        "id": 5,
-        "sender": "other",
-        "type": "text",
-        "text": "7만원으로 합시다. 다른 판매자들보다 컨디션 좋은 거 같아서. 오늘 입금 가능!",
-        "time": "오후 6:55"
-      },
-      {
-        "id": 6,
-        "sender": "me",
-        "type": "text",
-        "text": "좋아! 그럼 11월 5일 오후 8시에 리엔나 광장에서 거래하자. 거래 인증샷도 부탁해요",
-        "time": "오후 6:56"
-      },
-      {
-        "id": 7,
-        "sender": "other",
-        "type": "text",
-        "text": "네, 인증샷 필수겠죠. 계좌번호 보내주시면 바로 입금할게요!",
-        "time": "오후 6:57"
-      }
-    ],
-    "metadata": {
-      "trade_date": "2025-11-05",
-      "trade_date_korean": "11월 5일",
-      "item": {
-        "name": "앱솔랩스 나이트케이프",
-        "type": "망토",
-        "stats": "22성 올스탯 12%"
-      },
-      "amount": 70000,
-      "amount_display": "7만원"
-    }
-  },
-  {
-    "config": {
-      "theme": "discord",
-      "capturedImage": null
-    },
-    "statusBar": {
-      "time": "오후 2:49",
-      "battery": 40,
-      "isWifi": true
-    },
-    "profiles": {
-      "me": {
-        "id": "me",
-        "name": "거래왕김씨",
-        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=거래왕김씨"
-      },
-      "other": {
-        "id": "other",
-        "name": "윈드슈터쨩",
-        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=윈드슈터쨩"
-      }
-    },
-    "messages": [
-      {
-        "id": 1,
-        "sender": "other",
-        "type": "text",
-        "text": "아크셰이드 아처후드 파시는 분 계신가요? 덱스 33% 필요한데 현거래 가능한가요?",
-        "time": "오후 2:49"
-      },
-      {
-        "id": 2,
-        "sender": "me",
-        "type": "text",
-        "text": "지금 보유하고 있습니다! 유니크 3줄짜리 12만 원이에요. 메소로도 거래 가능합니다^^",
-        "time": "오후 2:50"
-      },
-      {
-        "id": 3,
-        "sender": "other",
-        "type": "text",
-        "text": "11만 원에 어떻게 안 될까요? 다른 판매자분은 11에 파는 것 같아서ㅠ",
-        "time": "오후 2:51"
-      },
-      {
-        "id": 4,
-        "sender": "me",
-        "type": "text",
-        "text": "그럼 10만 5천 원에 양보해 드릴게요. 제 아이템은 등록한지 얼마 안 된 따끈한 정보랍니다!",
-        "time": "오후 2:52"
-      },
-      {
-        "id": 5,
-        "sender": "other",
-        "type": "text",
-        "text": "알겠습니다! 10만 원에 마무리하시죠~ 11월 10일 오후 8시에 거래하시면 되니까!",
-        "time": "오후 2:53"
-      },
-      {
-        "id": 6,
-        "sender": "me",
-        "type": "text",
-        "text": "네, 10만 원 확정! 10일 20시에 자유게시판 1435번에서 뵐게요. 계좌번호 알려드릴게요.",
-        "time": "오후 2:54"
-      }
-    ],
-    "metadata": {
-      "trade_date": "2025-11-10",
-      "trade_date_korean": "11월 10일",
-      "item": {
-        "name": "아케인셰이드 아처후드",
-        "type": "모자",
-        "stats": "유니크 3줄 덱스 33%"
-      },
-      "amount": 100000,
-      "amount_display": "10만원"
-    }
-  },
-  {
-    "config": {
-      "theme": "discord",
-      "capturedImage": null
-    },
-    "statusBar": {
-      "time": "오후 5:50",
-      "battery": 68,
-      "isWifi": true
-    },
-    "profiles": {
-      "me": {
-        "id": "me",
-        "name": "다크나이트99",
-        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=다크나이트99"
-      },
-      "other": {
-        "id": "other",
-        "name": "아크메이지",
-        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=아크메이지"
-      }
-    },
-    "messages": [
-      {
-        "id": 1,
-        "sender": "other",
-        "type": "text",
-        "text": "제네시스 보우 8성 공구 2줄 있는 분 계신가요? 급히 구해요",
-        "time": "오후 5:50"
-      },
-      {
-        "id": 2,
-        "sender": "me",
-        "type": "text",
-        "text": "저 있어요 8성 레전 공퍼 2줄 완성품인데 12만원 생각중입니다. 거래내역 있으니까 정보 드려요",
-        "time": "오후 5:51"
-      },
-      {
-        "id": 3,
-        "sender": "other",
-        "type": "text",
-        "text": "12은 좀 높은데... 10에 하실 수 없나여? 메소로 드릴라면 2억까지인데 현거래 원하시는 것 같아서",
-        "time": "오후 5:52"
-      },
-      {
-        "id": 4,
-        "sender": "me",
-        "type": "text",
-        "text": "10은 너무 짜요 ㅠㅠ 11만원 반반으로 하시죠. 메소 1억 + 현금 1만원 어때요?",
-        "time": "오후 5:53"
-      },
-      {
-        "id": 5,
-        "sender": "other",
-        "type": "text",
-        "text": "흠... 그럼 10만 5천은 어때요? 제가 메소 5천 추가로 드릴게요",
+        "text": "형 전설의 검 파실 생각 있으신가요? 데모 버전인거 같은데 팔아요?",
         "time": "오후 5:54"
       },
       {
+        "id": 2,
+        "sender": "me",
+        "type": "text",
+        "text": "오 데모 검? 강화+17에 공격력 30% 오옵션인데 6만 생각중임",
+        "time": "오후 5:55"
+      },
+      {
+        "id": 3,
+        "sender": "other",
+        "type": "text",
+        "text": "헐 그 정도면 좋은데... 5만5에 하실 수 있나? 저 골드도 모자라서...",
+        "time": "오후 5:56"
+      },
+      {
+        "id": 4,
+        "sender": "me",
+        "type": "text",
+        "text": "5만5는 좀 어려운데... 5만8이면 어때? 오늘까지만 하고 내일은 가격 올릴 예정이야",
+        "time": "오후 5:57"
+      },
+      {
+        "id": 5,
+        "sender": "other",
+        "type": "text",
+        "text": "알겠어... 5만8은 좀 세긴 한데. 그럼 5만에 하시죠? 여기다 1만8천 골드 추가 드리겠음",
+        "time": "오후 5:58"
+      },
+      {
         "id": 6,
         "sender": "me",
         "type": "text",
-        "text": "오케이 10만 5천 하시죠. 거래날은 10월 25일 금요일 저녁 8시, 케릭 정보랑 계좌번호 교환하실라우?",
-        "time": "오후 5:55"
+        "text": "ㅋㅋ 현거래면 5만 딱이야. 골드는 이미 충분해서... 10월 29일 오후 8시 길드창고에서 거래하자",
+        "time": "오후 5:59"
       },
       {
         "id": 7,
         "sender": "other",
         "type": "text",
-        "text": "10만 5천은 좀 부담스러워서... 10만원으로 최종 제안드릴게요. 정보 확인 후 바로 입금할게요",
-        "time": "오후 5:56"
+        "text": "그래요! 약속 지킬테니까 계좌번호 좀 알려주십쇼~ 거래후 인증할게임",
+        "time": "오후 6:00"
       },
       {
         "id": 8,
         "sender": "me",
         "type": "text",
-        "text": "알겠읍니다... 10만원 받겠습니다. 25일 오후 8시 엘린피아 거점에서 거래해요. 계좌번호 알려드릴테니 입금 확인 후 인게임으로 드릴게요",
-        "time": "오후 5:57"
+        "text": "인증필수 ㅋㅋ 계좌는 123-456-7890-01. 거래 후 검 인수하면 딜 완료처리",
+        "time": "오후 6:01"
       }
     ],
     "metadata": {
-      "trade_date": "2025-10-25",
-      "trade_date_korean": "10월 25일",
+      "trade_date": "2025-10-29",
+      "trade_date_korean": "10월 29일",
       "item": {
-        "name": "제네시스 보우",
-        "type": "활",
-        "stats": "8성 레전 공퍼 2줄"
+        "name": "전설의 검 [데모]",
+        "type": "무기",
+        "stats": "강화+17 공격력 30%"
       },
-      "amount": 100000,
-      "amount_display": "10만원"
+      "amount": 50000,
+      "amount_display": "5만원",
+      "disclaimer": "SAMPLE DATA - 데모용 가상 대화. 실제 거래가 아님.",
+      "is_sample": true
     }
   },
   {
@@ -359,20 +99,20 @@
       "capturedImage": null
     },
     "statusBar": {
-      "time": "오후 6:54",
-      "battery": 69,
+      "time": "오후 2:11",
+      "battery": 83,
       "isWifi": true
     },
     "profiles": {
       "me": {
         "id": "me",
-        "name": "히어로전사",
-        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=히어로전사"
+        "name": "상인B_demo",
+        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=상인B_demo"
       },
       "other": {
         "id": "other",
-        "name": "나이트워커",
-        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=나이트워커"
+        "name": "유저2_demo",
+        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=유저2_demo"
       }
     },
     "messages": [
@@ -380,62 +120,346 @@
         "id": 1,
         "sender": "other",
         "type": "text",
-        "text": "야 칠흑 보스셋 세트 팔 사람 없냐? 귀고리+펜던트+얼장 다 필요한데",
-        "time": "오후 6:54"
+        "text": "신비의 망토 [데모] 판매하시나요? 강화+22 올스탯 12%인 거 있는지 확인 중이에요",
+        "time": "오후 2:11"
       },
       {
         "id": 2,
         "sender": "me",
         "type": "text",
-        "text": "저 있어요! 10만원에 싹 드리죠. 인증은 당연히 해드릴게용~",
-        "time": "오후 6:55"
+        "text": "네, 저 방금 올린 거 맞아요. 강화 22에 올스탯 12% 적용된 상태라 옵션도 최상급이에요. 8만원에 넘길 생각 중인데 어떠세요?",
+        "time": "오후 2:12"
       },
       {
         "id": 3,
         "sender": "other",
         "type": "text",
-        "text": "10만? 좀 세보이는데... 9만5에 어때?",
-        "time": "오후 6:56"
+        "text": "음... 7만 5천원까지는 가능한가요? 현거래 후기 보고 결정할게요",
+        "time": "오후 2:13"
       },
       {
         "id": 4,
         "sender": "me",
         "type": "text",
-        "text": "9만7까지 가능한데 그 아래로 못 내려요 ㅠ 언니는 메소로 구매하면 1억5천인데 현거래 할인된 가격임",
-        "time": "오후 6:57"
+        "text": "흠... 7만 5는 좀 그렇고요. 7만 8에 드리면 오늘 바로 거래 가능해요. 다른 분들도 관심 있어서 서둘러야 할 것 같아요",
+        "time": "오후 2:14"
       },
       {
         "id": 5,
         "sender": "other",
         "type": "text",
-        "text": "알겠어 10만원 할게. 정보는 어떻게 보내주실 거죠?",
-        "time": "오후 6:58"
+        "text": "알겠어요. 7만원에 거래하시면 바로 입금할게요. 거래 약속드립니다",
+        "time": "오후 2:15"
       },
       {
         "id": 6,
         "sender": "me",
         "type": "text",
-        "text": "거래 당일 디아블로1 채널에서 드릴게요! 11월 15일 오후 8시 괜찮으세요?",
-        "time": "오후 6:59"
+        "text": "오늘만 특별히 7만원 받겠습니다! 10월 24일 오후 8시 게임 내 [거래 광장이] 에서 만나요. 캐릭터명 [판매자ID]로 검색해주세요",
+        "time": "오후 2:16"
       },
       {
         "id": 7,
         "sender": "other",
         "type": "text",
-        "text": "좋아. 계좌번호랑 닉네임 미리 보내줄 수 있나요?",
-        "time": "오후 7:00"
+        "text": "네~ 7만원 입금 확인하고 거래 광장에서 기다릴게요! 거래 후기도 바로 올려드릴게요",
+        "time": "오후 2:17"
       }
     ],
     "metadata": {
-      "trade_date": "2025-11-15",
-      "trade_date_korean": "11월 15일",
+      "trade_date": "2025-10-24",
+      "trade_date_korean": "10월 24일",
       "item": {
-        "name": "칠흑의 보스셋",
-        "type": "세트템",
-        "stats": "귀고리+펜던트+얼장"
+        "name": "신비의 망토 [데모]",
+        "type": "망토",
+        "stats": "강화+22 올스탯 12%"
+      },
+      "amount": 70000,
+      "amount_display": "7만원",
+      "disclaimer": "SAMPLE DATA - 데모용 가상 대화. 실제 거래가 아님.",
+      "is_sample": true
+    }
+  },
+  {
+    "config": {
+      "theme": "discord",
+      "capturedImage": null
+    },
+    "statusBar": {
+      "time": "오후 10:54",
+      "battery": 59,
+      "isWifi": true
+    },
+    "profiles": {
+      "me": {
+        "id": "me",
+        "name": "거래자C_demo",
+        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=거래자C_demo"
+      },
+      "other": {
+        "id": "other",
+        "name": "신규3_demo",
+        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=신규3_demo"
+      }
+    },
+    "messages": [
+      {
+        "id": 1,
+        "sender": "other",
+        "type": "text",
+        "text": "마법사 모자 판매하시나요? 레어 3옵션 찾고 있어서요",
+        "time": "오후 10:54"
+      },
+      {
+        "id": 2,
+        "sender": "me",
+        "type": "text",
+        "text": "네, 레어 3옵션 마법사 모자 있어요! 마공 +15/마력 +20/행운 +8 옵션입니다 12만 원이에요",
+        "time": "오후 10:55"
+      },
+      {
+        "id": 3,
+        "sender": "other",
+        "type": "text",
+        "text": "12만원은 좀 높은데 10만 원에 어떠세요? 데모아이라 합리적 가격이 좋을 것 같아요",
+        "time": "오후 10:56"
+      },
+      {
+        "id": 4,
+        "sender": "me",
+        "type": "text",
+        "text": "데모 아이템이라면 10만 5천원까지 가능하겠는데... 최저가 보장 해드릴게요",
+        "time": "오후 10:57"
+      },
+      {
+        "id": 5,
+        "sender": "other",
+        "type": "text",
+        "text": "10만 5천이면 다른 곳에서 찾는 게 나을 것 같아요 ㅠㅠ 10만원에 바로 거래 가능하시면 바로 구매할게요!",
+        "time": "오후 10:58"
+      },
+      {
+        "id": 6,
+        "sender": "me",
+        "type": "text",
+        "text": "알겠습니다! 10만원 받겠습니다. 오늘 10월 30일 오후 8시에 게임 내 거래소에서 거래할까요?",
+        "time": "오후 10:59"
+      },
+      {
+        "id": 7,
+        "sender": "other",
+        "type": "text",
+        "text": "넵! 8시에 게임 내 거래소에서 뵐게요. 확정인증 번호도 보내주세요!",
+        "time": "오후 11:00"
+      },
+      {
+        "id": 8,
+        "sender": "me",
+        "type": "text",
+        "text": "당연하죠! 거래 후 바로 골드 입금 도와드리겠습니다~",
+        "time": "오후 11:01"
+      }
+    ],
+    "metadata": {
+      "trade_date": "2025-10-30",
+      "trade_date_korean": "10월 30일",
+      "item": {
+        "name": "마법사 모자 [데모]",
+        "type": "모자",
+        "stats": "레어 3옵션"
       },
       "amount": 100000,
-      "amount_display": "10만원"
+      "amount_display": "10만원",
+      "disclaimer": "SAMPLE DATA - 데모용 가상 대화. 실제 거래가 아님.",
+      "is_sample": true
+    }
+  },
+  {
+    "config": {
+      "theme": "discord",
+      "capturedImage": null
+    },
+    "statusBar": {
+      "time": "오후 8:19",
+      "battery": 78,
+      "isWifi": true
+    },
+    "profiles": {
+      "me": {
+        "id": "me",
+        "name": "유저D_demo",
+        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=유저D_demo"
+      },
+      "other": {
+        "id": "other",
+        "name": "모험가4_demo",
+        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=모험가4_demo"
+      }
+    },
+    "messages": [
+      {
+        "id": 1,
+        "sender": "other",
+        "type": "text",
+        "text": "영웅의 활 [데모] 팔 생각 있으신가요?",
+        "time": "오후 8:19"
+      },
+      {
+        "id": 2,
+        "sender": "me",
+        "type": "text",
+        "text": "네, 강화+8에 공격력 2옵션 붙은 개체로 12만원 생각 중이에요",
+        "time": "오후 8:20"
+      },
+      {
+        "id": 3,
+        "sender": "other",
+        "type": "text",
+        "text": "10만원에 해주시면 바로 구매하려는데 어때요? 오늘 안에 골드 받을 수 있게요",
+        "time": "오후 8:21"
+      },
+      {
+        "id": 4,
+        "sender": "me",
+        "type": "text",
+        "text": "11만5천까지 가능한가요? 현거래 기준이라 조금 깎기 어렵네",
+        "time": "오후 8:22"
+      },
+      {
+        "id": 5,
+        "sender": "other",
+        "type": "text",
+        "text": "알겠어요. 10만5천으로 하시죠. 거래 후 바로 강화 확인 가능해요?",
+        "time": "오후 8:23"
+      },
+      {
+        "id": 6,
+        "sender": "me",
+        "type": "text",
+        "text": "네, 11월 16일 오후 8시 게임 내 거래소에서 진행합시다. 인장 준비하세요!",
+        "time": "오후 8:24"
+      },
+      {
+        "id": 7,
+        "sender": "other",
+        "type": "text",
+        "text": "10만원에 하시죠. 오늘 바로 골드 보내드릴게요. 약속 장소 어디로?",
+        "time": "오후 8:25"
+      },
+      {
+        "id": 8,
+        "sender": "me",
+        "type": "text",
+        "text": "알았어유~ 10만원에 합의! 에린숲 중앙 거래소에서 10분 후 봐요!",
+        "time": "오후 8:26"
+      }
+    ],
+    "metadata": {
+      "trade_date": "2025-11-16",
+      "trade_date_korean": "11월 16일",
+      "item": {
+        "name": "영웅의 활 [데모]",
+        "type": "활",
+        "stats": "강화+8 공격력 2옵션"
+      },
+      "amount": 100000,
+      "amount_display": "10만원",
+      "disclaimer": "SAMPLE DATA - 데모용 가상 대화. 실제 거래가 아님.",
+      "is_sample": true
+    }
+  },
+  {
+    "config": {
+      "theme": "discord",
+      "capturedImage": null
+    },
+    "statusBar": {
+      "time": "오후 5:41",
+      "battery": 77,
+      "isWifi": true
+    },
+    "profiles": {
+      "me": {
+        "id": "me",
+        "name": "플레이어E_demo",
+        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=플레이어E_demo"
+      },
+      "other": {
+        "id": "other",
+        "name": "초보5_demo",
+        "avatar": "https://api.dicebear.com/7.x/pixel-art/svg?seed=초보5_demo"
+      }
+    },
+    "messages": [
+      {
+        "id": 1,
+        "sender": "other",
+        "type": "text",
+        "text": "보스 세트 [데모] 팔아요? 귀걸이+목걸이+반지 세트 있는 거 봤는데 가격 얼마예요?",
+        "time": "오후 5:41"
+      },
+      {
+        "id": 2,
+        "sender": "me",
+        "type": "text",
+        "text": "넵, 12만원 생각했는데요? 전부 강화 5까지 되어있는 최상급 세트예요. 골드 100m도 함께 드립니다!",
+        "time": "오후 5:42"
+      },
+      {
+        "id": 3,
+        "sender": "other",
+        "type": "text",
+        "text": "오, 강화 상태 좋네요. 그런데 11만원에 안 될까요? 다른 사람한테는 10.5에 판다는 거 봤는데...",
+        "time": "오후 5:43"
+      },
+      {
+        "id": 4,
+        "sender": "me",
+        "type": "text",
+        "text": "음... 11만원은 조금 어렵고, 10만5천에 드릴게요! 현거래 가능하신가요? 거래내역 남겨드립니다.",
+        "time": "오후 5:44"
+      },
+      {
+        "id": 5,
+        "sender": "other",
+        "type": "text",
+        "text": "알겠다. 10만5도 괜찮긴 한데, 보스 세트 [데모]는 다른 서버에서도 10만원에 많이 거래되던데... 10만원으로 부탁드려요!",
+        "time": "오후 5:45"
+      },
+      {
+        "id": 6,
+        "sender": "me",
+        "type": "text",
+        "text": "그럼 10만원에 합시다! 다만 거래 장소는 '뤼드 밀라노' 1구역으로 오셔야 해요. 안전한 현거래 센터 앞에서 할게요.",
+        "time": "오후 5:46"
+      },
+      {
+        "id": 7,
+        "sender": "other",
+        "type": "text",
+        "text": "오키! 11일 오후 8시에 뵐게요~ 계좌번호 알려주세요!",
+        "time": "오후 5:47"
+      },
+      {
+        "id": 8,
+        "sender": "me",
+        "type": "text",
+        "text": "계좌번호는 123-456-789001 김게임입니다. 11일 8시 정각에 뵐게요. 거래 완료 후 인벤 보여드릴게요!",
+        "time": "오후 5:48"
+      }
+    ],
+    "metadata": {
+      "trade_date": "2025-11-11",
+      "trade_date_korean": "11월 11일",
+      "item": {
+        "name": "보스 세트 [데모]",
+        "type": "세트템",
+        "stats": "귀걸이+목걸이+반지"
+      },
+      "amount": 100000,
+      "amount_display": "10만원",
+      "disclaimer": "SAMPLE DATA - 데모용 가상 대화. 실제 거래가 아님.",
+      "is_sample": true
     }
   }
 ]
