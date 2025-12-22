@@ -208,7 +208,7 @@ TalkStudio는 사용자가 브라우저에서 가상의 메신저 대화 UI를 �
 
 ### Hard Constraints (하드 룰)
 
-1. **Python 절대 금지**: Python 런타임, 패키지, 코드 신규 생성 금지. 기존 Python 코드는 `legacy/`로 이동하여 MVP 실행 플로우에서 완전 분리
+1. **Python 금지 (MVP 범위)**: 이 기능(002-chat-editor-mvp) 내에서는 Python 런타임, 패키지, 코드 신규 생성 금지. 기존 Python 코드는 `legacy/`로 이동하여 MVP 실행 플로우에서 완전 분리. (참고: Constitution에 따라 AI/ML 서브시스템에서는 Python 허용됨)
 2. **단일 JS/TS 스택**: 프론트/백엔드 모두 TypeScript + Node.js 기반으로 통일
 3. **MVP는 프론트엔드 SPA만**: 백엔드/DB는 클라우드 저장, 공유 링크가 필요해질 때 추가
 
