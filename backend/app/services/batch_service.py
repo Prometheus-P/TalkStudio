@@ -16,7 +16,6 @@ from app.schemas.chat import (
     BatchPromptItem,
     BatchResponse,
     BatchResultItem,
-    ChatMessage,
     Theme,
 )
 from app.services.ai_service import AIService

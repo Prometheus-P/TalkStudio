@@ -4,7 +4,7 @@ import json
 import logging
 import uuid
 from datetime import datetime, timezone
-from typing import Dict, List, Literal
+from typing import List, Literal
 
 import httpx
 from openai import AsyncOpenAI
