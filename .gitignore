@@ -73,3 +73,6 @@ legacy/*/coverage/
 *.png
 !scripts/captures/*.png
 !public/**/*.png
+
+# Vercel
+.vercel
