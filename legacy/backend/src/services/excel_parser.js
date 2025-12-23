@@ -1,7 +1,7 @@
 // backend/src/services/excel_parser.js
 // Excel file parsing service (FR-6.1)
 
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import { createModuleLogger } from '../utils/logger.js';
 
 const logger = createModuleLogger('excel-parser');
@@ -22,34 +22,50 @@ export const TEMPLATE_COLUMNS = {
  * Parse Excel file buffer to JSON array
  * @param {Buffer} buffer - Excel file buffer
  * @param {Object} options - Parsing options
- * @returns {Object} { data: Array, headers: Array, sheetName: string }
+ * @returns {Promise<Object>} { data: Array, headers: Array, sheetName: string }
  */
-export const parseExcelBuffer = (buffer, options = {}) => {
+export const parseExcelBuffer = async (buffer, options = {}) => {
   const { sheetIndex = 0, headerRow = 1 } = options;
 
   try {
     // Read workbook from buffer
-    const workbook = XLSX.read(buffer, { type: 'buffer', cellDates: true });
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(buffer);
 
-    // Get sheet name
-    const sheetName = workbook.SheetNames[sheetIndex];
-    if (!sheetName) {
+    // Get worksheet
+    const worksheet = workbook.worksheets[sheetIndex];
+    if (!worksheet) {
       throw new Error(`Sheet at index ${sheetIndex} not found`);
     }
 
-    // Get worksheet
-    const worksheet = workbook.Sheets[sheetName];
-
-    // Convert to JSON with header row
-    const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-      header: headerRow,
-      defval: null,
-      raw: false,
-      dateNF: 'yyyy-mm-dd hh:mm:ss',
-    });
+    const sheetName = worksheet.name;
 
     // Extract headers from first row
-    const headers = jsonData.length > 0 ? Object.keys(jsonData[0]) : [];
+    const headerRowData = worksheet.getRow(1);
+    const headers = [];
+    headerRowData.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+      headers[colNumber - 1] = cell.value ? String(cell.value) : null;
+    });
+
+    // Convert worksheet to JSON array
+    const jsonData = [];
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber === 1) return; // Skip header row
+
+      const rowData = {};
+      row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+        const headerName = headers[colNumber - 1];
+        if (headerName) {
+          // Handle date values
+          let value = cell.value;
+          if (value instanceof Date) {
+            value = value.toISOString().replace('T', ' ').substring(0, 19);
+          }
+          rowData[headerName] = value;
+        }
+      });
+      jsonData.push(rowData);
+    });
 
     // Remove header row from data if using row number
     const data = headerRow === 1 ? jsonData : jsonData.slice(1);
@@ -57,12 +73,12 @@ export const parseExcelBuffer = (buffer, options = {}) => {
     logger.info('Excel parsed successfully', {
       sheetName,
       rowCount: data.length,
-      columnCount: headers.length,
+      columnCount: headers.filter(Boolean).length,
     });
 
     return {
       data,
-      headers,
+      headers: headers.filter(Boolean),
       sheetName,
       rowCount: data.length,
     };
@@ -75,10 +91,10 @@ export const parseExcelBuffer = (buffer, options = {}) => {
 /**
  * Parse Excel file and convert to DiscordMessage format
  * @param {Buffer} buffer - Excel file buffer
- * @returns {Object} { messages: Array, errors: Array }
+ * @returns {Promise<Object>} { messages: Array, errors: Array }
  */
-export const parseMessagesFromExcel = (buffer) => {
-  const { data, headers } = parseExcelBuffer(buffer);
+export const parseMessagesFromExcel = async (buffer) => {
+  const { data, headers } = await parseExcelBuffer(buffer);
   const messages = [];
   const errors = [];
 

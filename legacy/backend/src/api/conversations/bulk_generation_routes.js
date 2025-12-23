@@ -64,7 +64,7 @@ router.get('/template', async (req, res) => {
   logger.info('Bulk template download request', { requestId });
 
   try {
-    const buffer = generateExcelTemplate();
+    const buffer = await generateExcelTemplate();
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', 'attachment; filename=talkstudio_bulk_template.xlsx');

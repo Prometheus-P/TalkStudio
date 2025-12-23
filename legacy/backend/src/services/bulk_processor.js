@@ -82,7 +82,8 @@ export const createBulkJob = async (fileBuffer, fileName) => {
   logger.info('Creating bulk job', { fileName });
 
   // Parse Excel file
-  const rows = parseExcel(fileBuffer);
+  const parseResult = await parseExcel(fileBuffer);
+  const rows = parseResult.data || [];
 
   // Validate data
   const validation = validateExcelData(rows);

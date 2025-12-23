@@ -2,7 +2,7 @@
  * Excel Parser - Excel 파싱 유틸리티
  * 대량 생성용 Excel 템플릿 파싱 및 검증
  */
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import logger from './logger.js';
 
 // 유효한 톤 옵션
@@ -22,40 +22,34 @@ const TEMPLATE_COLUMNS = [
 
 /**
  * Generate Excel template buffer for download
- * @returns {Buffer} - Excel file buffer
+ * @returns {Promise<Buffer>} - Excel file buffer
  */
-export const generateTemplate = () => {
+export const generateTemplate = async () => {
   // Create workbook and worksheet
-  const wb = XLSX.utils.book_new();
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Scenarios');
 
-  // Header row
-  const headers = TEMPLATE_COLUMNS.map(col => col.header);
+  // Set columns with headers and widths
+  worksheet.columns = [
+    { header: 'scenario', key: 'scenario', width: 60 },
+    { header: 'participants', key: 'participants', width: 12 },
+    { header: 'message_count', key: 'message_count', width: 15 },
+    { header: 'tone', key: 'tone', width: 12 },
+    { header: 'platform', key: 'platform', width: 12 },
+  ];
 
   // Example data rows
   const exampleData = [
-    ['게임 아이템 거래 협상. 희귀 아이템을 팔려는 판매자와 사려는 구매자의 대화.', 2, 10, 'casual', 'kakaotalk'],
-    ['친구들이 주말 모임 장소를 정하는 그룹 채팅. 여러 의견 조율.', 4, 15, 'casual', 'discord'],
-    ['고객이 배송 지연에 대해 문의하는 고객센터 상담.', 2, 8, 'formal', 'telegram'],
+    { scenario: '게임 아이템 거래 협상. 희귀 아이템을 팔려는 판매자와 사려는 구매자의 대화.', participants: 2, message_count: 10, tone: 'casual', platform: 'kakaotalk' },
+    { scenario: '친구들이 주말 모임 장소를 정하는 그룹 채팅. 여러 의견 조율.', participants: 4, message_count: 15, tone: 'casual', platform: 'discord' },
+    { scenario: '고객이 배송 지연에 대해 문의하는 고객센터 상담.', participants: 2, message_count: 8, tone: 'formal', platform: 'telegram' },
   ];
 
-  // Combine headers and data
-  const wsData = [headers, ...exampleData];
-
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-  // Set column widths
-  ws['!cols'] = [
-    { wch: 60 },  // scenario
-    { wch: 12 },  // participants
-    { wch: 15 },  // message_count
-    { wch: 12 },  // tone
-    { wch: 12 },  // platform
-  ];
-
-  XLSX.utils.book_append_sheet(wb, ws, 'Scenarios');
+  // Add example rows
+  worksheet.addRows(exampleData);
 
   // Generate buffer
-  const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
+  const buffer = await workbook.xlsx.writeBuffer();
 
   return buffer;
 };
@@ -63,30 +57,36 @@ export const generateTemplate = () => {
 /**
  * Parse Excel file and validate content
  * @param {Buffer} fileBuffer - Excel file buffer
- * @returns {{valid: boolean, data?: Array, errors?: Array}}
+ * @returns {Promise<{valid: boolean, data?: Array, errors?: Array}>}
  */
-export const parseExcel = (fileBuffer) => {
+export const parseExcel = async (fileBuffer) => {
   try {
     // Read workbook
-    const wb = XLSX.read(fileBuffer, { type: 'buffer' });
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(fileBuffer);
 
     // Get first sheet
-    const sheetName = wb.SheetNames[0];
-    if (!sheetName) {
+    const worksheet = workbook.worksheets[0];
+    if (!worksheet) {
       return { valid: false, errors: [{ row: 0, message: 'Excel 파일에 시트가 없습니다.' }] };
     }
 
-    const ws = wb.Sheets[sheetName];
-
-    // Convert to JSON
-    const rawData = XLSX.utils.sheet_to_json(ws, { header: 1 });
+    // Convert worksheet to array of arrays
+    const rawData = [];
+    worksheet.eachRow((row, rowNumber) => {
+      const rowValues = [];
+      row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+        rowValues[colNumber - 1] = cell.value;
+      });
+      rawData.push(rowValues);
+    });
 
     if (rawData.length < 2) {
       return { valid: false, errors: [{ row: 0, message: '데이터가 없습니다. 최소 1개 행이 필요합니다.' }] };
     }
 
     // Validate headers
-    const headers = rawData[0].map(h => String(h).toLowerCase().trim());
+    const headers = rawData[0].map(h => String(h || '').toLowerCase().trim());
     const expectedHeaders = TEMPLATE_COLUMNS.map(col => col.header);
 
     const missingHeaders = expectedHeaders.filter(h => !headers.includes(h));
