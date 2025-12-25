@@ -85,6 +85,15 @@ const useChatStore = create((set, get) => ({
   },
 
   // ============================================
+  // 5. 시퀀스 렌더링 상태
+  // ============================================
+  sequence: {
+    isRendering: false,
+    progress: 0,
+    visibleMessageCount: null, // null = 전체 표시, 숫자 = 해당 개수만 표시
+  },
+
+  // ============================================
   // 액션 - 테마 & 플랫폼
   // ============================================
 
@@ -286,6 +295,30 @@ const useChatStore = create((set, get) => ({
   /** Export 상태 설정 */
   setExporting: (isExporting) => set((state) => ({
     ui: { ...state.ui, isExporting },
+  })),
+
+  // ============================================
+  // 액션 - 시퀀스 렌더링
+  // ============================================
+
+  /** 시퀀스 렌더링 시작 */
+  startSequenceRendering: () => set((state) => ({
+    sequence: { ...state.sequence, isRendering: true, progress: 0 },
+  })),
+
+  /** 시퀀스 렌더링 진행률 업데이트 */
+  setSequenceProgress: (progress) => set((state) => ({
+    sequence: { ...state.sequence, progress },
+  })),
+
+  /** 표시할 메시지 수 설정 (시퀀스 캡처용) */
+  setVisibleMessageCount: (count) => set((state) => ({
+    sequence: { ...state.sequence, visibleMessageCount: count },
+  })),
+
+  /** 시퀀스 렌더링 완료/취소 */
+  stopSequenceRendering: () => set(() => ({
+    sequence: { isRendering: false, progress: 0, visibleMessageCount: null },
   })),
 
   // ============================================

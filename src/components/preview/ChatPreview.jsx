@@ -7,6 +7,8 @@ import React from 'react';
 import { ChevronLeft, ChevronRight, MoreVertical, Search, Phone } from 'lucide-react';
 import StatusBar from './StatusBar';
 import MessageBubble from './MessageBubble';
+import DateDivider from './DateDivider';
+import { isSameDay, parseDatetime } from '../../utils/dateUtils';
 import useChatStore from '../../store/useChatStore';
 import { discordColors, kakaoColors, telegramColors, instagramColors } from '../../themes/presets';
 
@@ -75,8 +77,14 @@ const ChatPreview = () => {
   const theme = useChatStore((s) => s.theme);
   const statusBar = useChatStore((s) => s.statusBar);
   const getAuthor = useChatStore((s) => s.getAuthor);
+  const visibleMessageCount = useChatStore((s) => s.sequence.visibleMessageCount);
 
-  const { messages, title, authors } = conversation;
+  const { messages: allMessages, title, authors } = conversation;
+
+  // 시퀀스 렌더링 시 visibleMessageCount만큼만 표시
+  const messages = visibleMessageCount !== null
+    ? allMessages.slice(0, visibleMessageCount)
+    : allMessages;
   const otherAuthor = authors.find((a) => a.id === 'other');
 
   // 연속 메시지 그룹 판별
@@ -180,9 +188,10 @@ const ChatPreview = () => {
     );
   }
 
-  // KakaoTalk iOS 모바일 레이아웃
-  if (theme.id === 'kakao') {
-    const scale = 0.75;
+  // KakaoTalk iOS 모바일 레이아웃 (kakao, kakao-shorts 공통)
+  if (theme.id === 'kakao' || theme.id === 'kakao-shorts') {
+    // 쇼츠 프리셋은 더 작게 스케일 (1080px → 에디터에 맞춤)
+    const scale = theme.id === 'kakao-shorts' ? 0.35 : 0.75;
     const scaledHeight = theme.canvasHeight * scale;
     const scaledWidth = theme.canvasWidth * scale;
 
@@ -218,15 +227,29 @@ const ChatPreview = () => {
               {messages.map((message, index) => {
                 const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);
                 const author = getAuthor(message.authorId);
+                const prevMessage = messages[index - 1];
+
+                // 날짜 변경 시 DateDivider 표시
+                const showDateDivider = message.datetime && (
+                  index === 0 || !isSameDay(message.datetime, prevMessage?.datetime)
+                );
+
                 return (
-                  <MessageBubble
-                    key={message.id}
-                    message={message}
-                    author={author}
-                    theme={theme}
-                    isFirstInGroup={isFirstInGroup}
-                    isLastInGroup={isLastInGroup}
-                  />
+                  <React.Fragment key={message.id}>
+                    {showDateDivider && (
+                      <DateDivider
+                        date={parseDatetime(message.datetime)}
+                        theme={theme}
+                      />
+                    )}
+                    <MessageBubble
+                      message={message}
+                      author={author}
+                      theme={theme}
+                      isFirstInGroup={isFirstInGroup}
+                      isLastInGroup={isLastInGroup}
+                    />
+                  </React.Fragment>
                 );
               })}
             </div>
@@ -239,9 +262,9 @@ const ChatPreview = () => {
     );
   }
 
-  // Telegram iOS 모바일 레이아웃
+  // Telegram iOS 모바일 레이아웃 - Figma 스펙 기반
   if (theme.id === 'telegram') {
-    const scale = 0.75;
+    const scale = 0.7;
     const scaledHeight = theme.canvasHeight * scale;
     const scaledWidth = theme.canvasWidth * scale;
 
@@ -258,21 +281,27 @@ const ChatPreview = () => {
               width: theme.canvasWidth,
               height: theme.canvasHeight,
               fontFamily: theme.fontFamily,
-              background: `linear-gradient(180deg, ${telegramColors.backgroundGradientStart} 0%, ${telegramColors.backgroundGradientEnd} 100%)`,
-              borderRadius: 44,
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+              background: theme.backgroundValue,
+              borderRadius: 47,
+              boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.1)',
             }}
           >
-            {/* iOS 상태바 */}
+            {/* iOS 상태바 (47px) */}
             {theme.showStatusBar && <TelegramIOSStatusBar statusBar={statusBar} />}
 
-            {/* 텔레그램 헤더 */}
-            <TelegramMobileNav title={title} avatar={otherAuthor?.avatarUrl} />
+            {/* 텔레그램 네비게이션 헤더 (44px) */}
+            <TelegramMobileNav
+              title={title}
+              avatar={otherAuthor?.avatarUrl}
+              subtitle="last seen recently"
+            />
 
-            {/* 메시지 영역 */}
+            {/* 메시지 영역 - 채팅 배경 */}
             <div
               className="flex-1 flex flex-col overflow-hidden justify-end"
-              style={{ padding: '8px 0' }}
+              style={{
+                padding: '4px 0',
+              }}
             >
               {messages.map((message, index) => {
                 const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);
@@ -290,7 +319,7 @@ const ChatPreview = () => {
               })}
             </div>
 
-            {/* 텔레그램 입력창 */}
+            {/* 텔레그램 입력창 (52px) + 홈 인디케이터 (34px) */}
             <TelegramInputBar />
           </div>
         </div>
@@ -835,10 +864,10 @@ const DiscordMobileBottomNav = ({ title: _title }) => {
 
 
 // ============================================
-// KakaoTalk iOS 모바일 전용 컴포넌트
+// KakaoTalk iOS 모바일 전용 컴포넌트 - Figma 스펙 기반
 // ============================================
 
-// KakaoTalk iOS 상태바 (44px)
+// KakaoTalk iOS 상태바 (47px) - Figma 스펙 기반
 const KakaoIOSStatusBar = ({ statusBar }) => {
   const formatTime = (time) => {
     if (time.includes('오전') || time.includes('오후')) {
@@ -851,22 +880,22 @@ const KakaoIOSStatusBar = ({ statusBar }) => {
     <div
       className="relative flex items-center justify-between"
       style={{
-        width: 375,
-        height: 44,
-        padding: '14px 16px 0',
+        width: 390,
+        height: 47,
+        padding: '14px 24px 0',
         backgroundColor: kakaoColors.backgroundHeader,
       }}
     >
-      {/* 노치 */}
+      {/* Dynamic Island 스타일 노치 */}
       <div
         className="absolute"
         style={{
-          width: 150,
-          height: 30,
-          left: 'calc(50% - 75px)',
-          top: -2,
+          width: 126,
+          height: 37,
+          left: 'calc(50% - 63px)',
+          top: 0,
           backgroundColor: kakaoColors.notchBg,
-          borderRadius: '0 0 18px 18px',
+          borderRadius: '0 0 24px 24px',
         }}
       />
 
@@ -875,60 +904,63 @@ const KakaoIOSStatusBar = ({ statusBar }) => {
         style={{
           fontFamily: "'SF Pro Text', -apple-system, sans-serif",
           fontWeight: 600,
-          fontSize: 15,
+          fontSize: 16,
+          letterSpacing: -0.3,
           color: kakaoColors.statusBarText,
+          zIndex: 1,
         }}
       >
         {formatTime(statusBar.time)}
       </div>
 
       {/* 우측 아이콘들 */}
-      <div className="flex items-center gap-1">
-        {/* Mobile Signal */}
-        <svg width="17" height="11" viewBox="0 0 17 11" fill="none">
-          <rect x="0" y="6" width="3" height="5" rx="0.5" fill="rgba(255,255,255,0.5)"/>
-          <rect x="4" y="4" width="3" height="7" rx="0.5" fill="rgba(255,255,255,0.5)"/>
-          <rect x="8" y="2" width="3" height="9" rx="0.5" fill="#FFFFFF"/>
-          <rect x="12" y="0" width="3" height="11" rx="0.5" fill="#FFFFFF"/>
+      <div className="flex items-center gap-1.5" style={{ zIndex: 1 }}>
+        {/* Mobile Signal - iOS 스타일 */}
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+          <rect x="0" y="7" width="3" height="5" rx="1" fill="rgba(255,255,255,0.4)"/>
+          <rect x="4.5" y="5" width="3" height="7" rx="1" fill="rgba(255,255,255,0.4)"/>
+          <rect x="9" y="3" width="3" height="9" rx="1" fill="#FFFFFF"/>
+          <rect x="13.5" y="0" width="3" height="12" rx="1" fill="#FFFFFF"/>
         </svg>
 
-        {/* WiFi */}
-        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
-          <path d="M8 2C10.5 2 12.5 3 14 5" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M8 5C9.8 5 11.2 5.8 12 7" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="8" cy="10" r="1.5" fill="#FFFFFF"/>
+        {/* WiFi - iOS 스타일 */}
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+          <path d="M1.5 4.5C4.5 1.5 12.5 1.5 15.5 4.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M3.5 7C5.5 5 11.5 5 13.5 7" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M6 9.5C7 8.5 10 8.5 11 9.5" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="8.5" cy="11" r="1" fill="#FFFFFF"/>
         </svg>
 
-        {/* Battery */}
+        {/* Battery - iOS 스타일 */}
         <div className="flex items-center">
           <div
             style={{
-              width: 24,
+              width: 25,
               height: 12,
-              border: '1px solid rgba(255,255,255,0.35)',
-              borderRadius: 3,
+              border: '1.5px solid rgba(255,255,255,0.35)',
+              borderRadius: 4,
               position: 'relative',
             }}
           >
             <div
               style={{
                 position: 'absolute',
-                left: 1,
-                top: 1,
-                width: `${Math.min(statusBar.battery, 100) * 0.2}px`,
-                height: 8,
+                left: 2,
+                top: 2,
+                width: `${Math.min(statusBar.battery, 100) * 0.19}px`,
+                height: 6,
                 backgroundColor: '#FFFFFF',
-                borderRadius: 2,
+                borderRadius: 1.5,
               }}
             />
           </div>
           <div
             style={{
-              width: 1.5,
-              height: 4,
+              width: 2,
+              height: 5,
               backgroundColor: 'rgba(255,255,255,0.4)',
               marginLeft: 1,
-              borderRadius: '0 1px 1px 0',
+              borderRadius: '0 2px 2px 0',
             }}
           />
         </div>
@@ -937,42 +969,52 @@ const KakaoIOSStatusBar = ({ statusBar }) => {
   );
 };
 
-// KakaoTalk 모바일 네비게이션 헤더 (56px)
+// KakaoTalk 모바일 네비게이션 헤더 (56px) - Figma 스펙 기반
 const KakaoMobileNav = ({ title, avatar }) => {
   return (
     <div
       className="flex items-center justify-between"
       style={{
-        width: 375,
+        width: 390,
         height: 56,
-        padding: '8px 12px',
+        padding: '8px 14px',
         backgroundColor: kakaoColors.backgroundHeader,
       }}
     >
       {/* 왼쪽: 뒤로가기 */}
-      <div className="flex items-center" style={{ gap: 8 }}>
-        <ChevronLeft size={28} color={kakaoColors.iconColor} />
+      <div className="flex items-center" style={{ minWidth: 40 }}>
+        <svg width="12" height="20" viewBox="0 0 12 20" fill="none">
+          <path
+            d="M10 2L2 10L10 18"
+            stroke={kakaoColors.iconColor}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </div>
 
       {/* 중앙: 프로필 + 이름 */}
-      <div className="flex items-center" style={{ gap: 8 }}>
+      <div className="flex items-center" style={{ gap: 10 }}>
         {avatar && (
           <img
             src={avatar}
             alt={title}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 12,
+              width: 38,
+              height: 38,
+              borderRadius: 13,
+              objectFit: 'cover',
             }}
           />
         )}
         <span
           style={{
-            fontFamily: "'Apple SD Gothic Neo', sans-serif",
+            fontFamily: "'Pretendard', 'Apple SD Gothic Neo', sans-serif",
             fontWeight: 600,
             fontSize: 17,
             color: kakaoColors.headerText,
+            letterSpacing: -0.3,
           }}
         >
           {title}
@@ -980,45 +1022,48 @@ const KakaoMobileNav = ({ title, avatar }) => {
       </div>
 
       {/* 오른쪽: 검색, 메뉴 */}
-      <div className="flex items-center" style={{ gap: 16 }}>
+      <div className="flex items-center" style={{ gap: 18, minWidth: 60, justifyContent: 'flex-end' }}>
         <Search size={22} color={kakaoColors.iconColor} />
-        <MoreVertical size={22} color={kakaoColors.iconColor} />
+        <svg width="4" height="20" viewBox="0 0 4 20" fill="none">
+          <circle cx="2" cy="2" r="2" fill={kakaoColors.iconColor}/>
+          <circle cx="2" cy="10" r="2" fill={kakaoColors.iconColor}/>
+          <circle cx="2" cy="18" r="2" fill={kakaoColors.iconColor}/>
+        </svg>
       </div>
     </div>
   );
 };
 
-// KakaoTalk 입력창 (56px)
+// KakaoTalk 입력창 (52px + 34px 홈 인디케이터) - Figma 스펙 기반
 const KakaoInputBar = () => {
   return (
     <div
       className="flex flex-col"
       style={{
-        width: 375,
-        backgroundColor: kakaoColors.inputBg,
-        borderTop: `1px solid ${kakaoColors.inputBorder}`,
+        width: 390,
+        backgroundColor: kakaoColors.backgroundInputBar,
       }}
     >
-      {/* 입력 영역 */}
+      {/* 입력 영역 (52px) */}
       <div
         className="flex items-center"
         style={{
-          padding: '8px 12px',
-          gap: 8,
+          height: 52,
+          padding: '8px 10px',
+          gap: 6,
         }}
       >
         {/* + 버튼 */}
         <div
-          className="flex items-center justify-center"
+          className="flex items-center justify-center flex-shrink-0"
           style={{
             width: 36,
             height: 36,
             borderRadius: 18,
-            backgroundColor: '#F5F5F5',
           }}
         >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M10 4V16M4 10H16" stroke={kakaoColors.inputIconColor} strokeWidth="2" strokeLinecap="round"/>
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M11 4V18M4 11H18" stroke={kakaoColors.addButtonColor} strokeWidth="2.5" strokeLinecap="round"/>
           </svg>
         </div>
 
@@ -1027,14 +1072,16 @@ const KakaoInputBar = () => {
           className="flex-1 flex items-center"
           style={{
             height: 36,
-            backgroundColor: '#F5F5F5',
+            backgroundColor: kakaoColors.inputBg,
+            border: `1px solid ${kakaoColors.inputBorder}`,
             borderRadius: 18,
             padding: '0 14px',
           }}
         >
           <span
             style={{
-              fontSize: 14,
+              fontFamily: "'Pretendard', sans-serif",
+              fontSize: 15,
               color: kakaoColors.inputPlaceholder,
             }}
           >
@@ -1043,27 +1090,31 @@ const KakaoInputBar = () => {
         </div>
 
         {/* 이모티콘 */}
-        <div className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke={kakaoColors.inputIconColor} strokeWidth="1.5"/>
-            <circle cx="8" cy="10" r="1.5" fill={kakaoColors.inputIconColor}/>
-            <circle cx="16" cy="10" r="1.5" fill={kakaoColors.inputIconColor}/>
-            <path d="M8 15C9 16.5 11 17 12 17C13 17 15 16.5 16 15" stroke={kakaoColors.inputIconColor} strokeWidth="1.5" strokeLinecap="round"/>
+        <div className="flex items-center justify-center flex-shrink-0" style={{ width: 36, height: 36 }}>
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+            <circle cx="13" cy="13" r="11" stroke={kakaoColors.iconSecondary} strokeWidth="1.5"/>
+            <circle cx="9" cy="11" r="1.5" fill={kakaoColors.iconSecondary}/>
+            <circle cx="17" cy="11" r="1.5" fill={kakaoColors.iconSecondary}/>
+            <path d="M8.5 16C9.5 17.5 11 18.5 13 18.5C15 18.5 16.5 17.5 17.5 16" stroke={kakaoColors.iconSecondary} strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
         </div>
 
         {/* # 버튼 */}
-        <div className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-            <path d="M4 8H18M4 14H18M8 4V18M14 4V18" stroke={kakaoColors.inputIconColor} strokeWidth="1.5" strokeLinecap="round"/>
+        <div className="flex items-center justify-center flex-shrink-0" style={{ width: 36, height: 36 }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M5 9H19M5 15H19M9 5V19M15 5V19" stroke={kakaoColors.iconSecondary} strokeWidth="1.8" strokeLinecap="round"/>
           </svg>
         </div>
       </div>
 
-      {/* 홈 인디케이터 */}
+      {/* 홈 인디케이터 영역 (34px) */}
       <div
-        className="flex items-center justify-center"
-        style={{ height: 20, paddingBottom: 8 }}
+        className="flex items-end justify-center"
+        style={{
+          height: 34,
+          paddingBottom: 8,
+          backgroundColor: kakaoColors.backgroundInputBar,
+        }}
       >
         <div
           style={{
@@ -1082,7 +1133,7 @@ const KakaoInputBar = () => {
 // Telegram iOS 모바일 전용 컴포넌트
 // ============================================
 
-// Telegram iOS 상태바 (44px)
+// Telegram iOS 상태바 (47px) - Figma 스펙 기반
 const TelegramIOSStatusBar = ({ statusBar }) => {
   const formatTime = (time) => {
     if (time.includes('오전') || time.includes('오후')) {
@@ -1095,22 +1146,22 @@ const TelegramIOSStatusBar = ({ statusBar }) => {
     <div
       className="relative flex items-center justify-between"
       style={{
-        width: 375,
-        height: 44,
-        padding: '14px 16px 0',
+        width: 390,
+        height: 47,
+        padding: '14px 24px 0',
         backgroundColor: telegramColors.backgroundHeader,
       }}
     >
-      {/* 노치 */}
+      {/* 노치 - Dynamic Island 스타일 */}
       <div
         className="absolute"
         style={{
-          width: 150,
-          height: 30,
-          left: 'calc(50% - 75px)',
-          top: -2,
-          backgroundColor: telegramColors.notchBg,
-          borderRadius: '0 0 18px 18px',
+          width: 126,
+          height: 37,
+          left: 'calc(50% - 63px)',
+          top: 0,
+          backgroundColor: '#000000',
+          borderRadius: '0 0 24px 24px',
         }}
       />
 
@@ -1119,60 +1170,63 @@ const TelegramIOSStatusBar = ({ statusBar }) => {
         style={{
           fontFamily: "'SF Pro Text', -apple-system, sans-serif",
           fontWeight: 600,
-          fontSize: 15,
+          fontSize: 16,
+          letterSpacing: -0.3,
           color: telegramColors.statusBarText,
+          zIndex: 1,
         }}
       >
         {formatTime(statusBar.time)}
       </div>
 
       {/* 우측 아이콘들 */}
-      <div className="flex items-center gap-1">
-        {/* Mobile Signal */}
-        <svg width="17" height="11" viewBox="0 0 17 11" fill="none">
-          <rect x="0" y="6" width="3" height="5" rx="0.5" fill="rgba(255,255,255,0.5)"/>
-          <rect x="4" y="4" width="3" height="7" rx="0.5" fill="rgba(255,255,255,0.5)"/>
-          <rect x="8" y="2" width="3" height="9" rx="0.5" fill="#FFFFFF"/>
-          <rect x="12" y="0" width="3" height="11" rx="0.5" fill="#FFFFFF"/>
+      <div className="flex items-center gap-1.5" style={{ zIndex: 1 }}>
+        {/* Mobile Signal - iOS 스타일 */}
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none">
+          <rect x="0" y="7" width="3" height="5" rx="1" fill="rgba(255,255,255,0.4)"/>
+          <rect x="4.5" y="5" width="3" height="7" rx="1" fill="rgba(255,255,255,0.4)"/>
+          <rect x="9" y="3" width="3" height="9" rx="1" fill="#FFFFFF"/>
+          <rect x="13.5" y="0" width="3" height="12" rx="1" fill="#FFFFFF"/>
         </svg>
 
-        {/* WiFi */}
-        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
-          <path d="M8 2C10.5 2 12.5 3 14 5" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round"/>
-          <path d="M8 5C9.8 5 11.2 5.8 12 7" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round"/>
-          <circle cx="8" cy="10" r="1.5" fill="#FFFFFF"/>
+        {/* WiFi - iOS 스타일 */}
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
+          <path d="M1.5 4.5C4.5 1.5 12.5 1.5 15.5 4.5" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M3.5 7C5.5 5 11.5 5 13.5 7" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M6 9.5C7 8.5 10 8.5 11 9.5" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round"/>
+          <circle cx="8.5" cy="11" r="1" fill="#FFFFFF"/>
         </svg>
 
-        {/* Battery */}
+        {/* Battery - iOS 스타일 */}
         <div className="flex items-center">
           <div
             style={{
-              width: 24,
+              width: 25,
               height: 12,
-              border: '1px solid rgba(255,255,255,0.35)',
-              borderRadius: 3,
+              border: '1.5px solid rgba(255,255,255,0.35)',
+              borderRadius: 4,
               position: 'relative',
             }}
           >
             <div
               style={{
                 position: 'absolute',
-                left: 1,
-                top: 1,
-                width: `${Math.min(statusBar.battery, 100) * 0.2}px`,
-                height: 8,
+                left: 2,
+                top: 2,
+                width: `${Math.min(statusBar.battery, 100) * 0.19}px`,
+                height: 6,
                 backgroundColor: '#FFFFFF',
-                borderRadius: 2,
+                borderRadius: 1.5,
               }}
             />
           </div>
           <div
             style={{
-              width: 1.5,
-              height: 4,
+              width: 2,
+              height: 5,
               backgroundColor: 'rgba(255,255,255,0.4)',
               marginLeft: 1,
-              borderRadius: '0 1px 1px 0',
+              borderRadius: '0 2px 2px 0',
             }}
           />
         </div>
@@ -1181,104 +1235,178 @@ const TelegramIOSStatusBar = ({ statusBar }) => {
   );
 };
 
-// Telegram 모바일 네비게이션 헤더 (56px)
-const TelegramMobileNav = ({ title, avatar }) => {
+// Telegram 모바일 네비게이션 헤더 (44px) - Figma 스펙 기반
+const TelegramMobileNav = ({ title, avatar, subtitle = 'last seen recently' }) => {
   return (
     <div
-      className="flex items-center justify-between"
+      className="flex items-center"
       style={{
-        width: 375,
-        height: 56,
-        padding: '8px 12px',
+        width: 390,
+        height: 44,
+        padding: '0 8px',
         backgroundColor: telegramColors.backgroundHeader,
       }}
     >
-      {/* 왼쪽: 뒤로가기 */}
-      <div className="flex items-center" style={{ gap: 4 }}>
-        <ChevronLeft size={28} color={telegramColors.headerText} />
-        <span style={{ fontSize: 17, color: telegramColors.headerText }}>Back</span>
+      {/* 왼쪽: 뒤로가기 버튼 */}
+      <div
+        className="flex items-center"
+        style={{
+          gap: 2,
+          minWidth: 70,
+        }}
+      >
+        <svg width="12" height="20" viewBox="0 0 12 20" fill="none">
+          <path
+            d="M10 2L2 10L10 18"
+            stroke={telegramColors.headerText}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <span
+          style={{
+            fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+            fontSize: 17,
+            color: telegramColors.headerText,
+          }}
+        >
+          Back
+        </span>
       </div>
 
-      {/* 중앙: 프로필 + 이름 + 상태 */}
-      <div className="flex flex-col items-center">
-        {avatar && (
+      {/* 중앙: 아바타 + 이름/상태 */}
+      <div
+        className="flex-1 flex items-center justify-center"
+        style={{ gap: 10 }}
+      >
+        {/* 아바타 */}
+        {avatar ? (
           <img
             src={avatar}
             alt={title}
             style={{
-              width: 32,
-              height: 32,
+              width: 36,
+              height: 36,
               borderRadius: '50%',
+              objectFit: 'cover',
             }}
           />
+        ) : (
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              backgroundColor: telegramColors.primary,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <span
+              style={{
+                color: '#FFFFFF',
+                fontSize: 16,
+                fontWeight: 500,
+              }}
+            >
+              {title.charAt(0).toUpperCase()}
+            </span>
+          </div>
         )}
-        <span
-          style={{
-            fontFamily: "'SF Pro Text', -apple-system, sans-serif",
-            fontWeight: 600,
-            fontSize: 14,
-            color: telegramColors.headerText,
-          }}
-        >
-          {title}
-        </span>
-        <span
-          style={{
-            fontSize: 11,
-            color: telegramColors.subtitleText,
-          }}
-        >
-          last seen recently
-        </span>
+
+        {/* 이름 + 상태 */}
+        <div className="flex flex-col" style={{ gap: 0 }}>
+          <span
+            style={{
+              fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+              fontWeight: 600,
+              fontSize: 16,
+              color: telegramColors.headerText,
+              lineHeight: 1.2,
+            }}
+          >
+            {title}
+          </span>
+          <span
+            style={{
+              fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+              fontSize: 13,
+              color: telegramColors.subtitleText,
+              lineHeight: 1.2,
+            }}
+          >
+            {subtitle}
+          </span>
+        </div>
       </div>
 
       {/* 오른쪽: 더보기 */}
-      <div className="flex items-center" style={{ width: 60, justifyContent: 'flex-end' }}>
-        <MoreVertical size={22} color={telegramColors.headerText} />
+      <div
+        className="flex items-center justify-end"
+        style={{ minWidth: 70 }}
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="4" r="2" fill={telegramColors.headerText}/>
+          <circle cx="10" cy="10" r="2" fill={telegramColors.headerText}/>
+          <circle cx="10" cy="16" r="2" fill={telegramColors.headerText}/>
+        </svg>
       </div>
     </div>
   );
 };
 
-// Telegram 입력창 (52px)
+// Telegram 입력창 (52px + 34px 홈 인디케이터) - Figma 스펙 기반
 const TelegramInputBar = () => {
   return (
     <div
       className="flex flex-col"
       style={{
-        width: 375,
-        backgroundColor: telegramColors.inputBg,
+        width: 390,
+        backgroundColor: telegramColors.backgroundInputBar,
       }}
     >
-      {/* 입력 영역 */}
+      {/* 입력 영역 (52px) */}
       <div
         className="flex items-center"
         style={{
-          padding: '6px 8px',
-          gap: 8,
+          height: 52,
+          padding: '8px 6px',
+          gap: 4,
         }}
       >
-        {/* 클립 (첨부) */}
-        <div className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
+        {/* 클립 (첨부) 버튼 */}
+        <div
+          className="flex items-center justify-center"
+          style={{ width: 40, height: 36 }}
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"
-              stroke={telegramColors.inputIconColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path
+              d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"
+              stroke={telegramColors.attachButton}
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </div>
 
-        {/* 텍스트 입력 */}
+        {/* 텍스트 입력 필드 */}
         <div
           className="flex-1 flex items-center"
           style={{
             height: 36,
-            backgroundColor: '#F5F5F5',
+            backgroundColor: telegramColors.inputBg,
+            border: `1px solid ${telegramColors.inputBorder}`,
             borderRadius: 18,
-            padding: '0 14px',
+            padding: '0 16px',
           }}
         >
           <span
             style={{
-              fontSize: 15,
+              fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+              fontSize: 17,
               color: telegramColors.inputPlaceholder,
             }}
           >
@@ -1286,37 +1414,53 @@ const TelegramInputBar = () => {
           </span>
         </div>
 
-        {/* 이모티콘 */}
-        <div className="flex items-center justify-center" style={{ width: 36, height: 36 }}>
+        {/* 스티커/이모지 버튼 */}
+        <div
+          className="flex items-center justify-center"
+          style={{ width: 36, height: 36 }}
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke={telegramColors.inputIconColor} strokeWidth="1.5"/>
-            <circle cx="8" cy="10" r="1.5" fill={telegramColors.inputIconColor}/>
-            <circle cx="16" cy="10" r="1.5" fill={telegramColors.inputIconColor}/>
-            <path d="M8 15C9 16.5 11 17 12 17C13 17 15 16.5 16 15" stroke={telegramColors.inputIconColor} strokeWidth="1.5" strokeLinecap="round"/>
+            <circle cx="12" cy="12" r="10" stroke={telegramColors.iconSecondary} strokeWidth="1.5"/>
+            <circle cx="9" cy="10" r="1.5" fill={telegramColors.iconSecondary}/>
+            <circle cx="15" cy="10" r="1.5" fill={telegramColors.iconSecondary}/>
+            <path d="M8 14.5C9 16 10.5 17 12 17C13.5 17 15 16 16 14.5" stroke={telegramColors.iconSecondary} strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
         </div>
 
-        {/* 마이크 */}
+        {/* 마이크/전송 버튼 */}
         <div
           className="flex items-center justify-center"
           style={{
             width: 36,
             height: 36,
-            backgroundColor: '#64B5F6',
+            backgroundColor: telegramColors.sendButton,
             borderRadius: '50%',
           }}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" fill="#FFFFFF"/>
-            <path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path
+              d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"
+              fill="#FFFFFF"
+            />
+            <path
+              d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"
+              stroke="#FFFFFF"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </div>
       </div>
 
-      {/* 홈 인디케이터 */}
+      {/* 홈 인디케이터 영역 (34px) */}
       <div
-        className="flex items-center justify-center"
-        style={{ height: 20, paddingBottom: 8 }}
+        className="flex items-end justify-center"
+        style={{
+          height: 34,
+          paddingBottom: 8,
+          backgroundColor: telegramColors.backgroundInputBar,
+        }}
       >
         <div
           style={{
