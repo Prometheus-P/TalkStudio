@@ -149,13 +149,9 @@ function App() {
           </div>
         </div>
 
-        {/* 3. 미리보기 영역 (우측) - Clay Style */}
+        {/* 3. 미리보기 영역 (우측) - 간소화된 레이아웃 */}
         <div className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-auto m-4 ml-2 bg-clay-preview rounded-clay shadow-clay-blue">
-          {/* 배경 데코레이션 */}
-          <div className="absolute top-8 left-8 w-24 h-24 rounded-full bg-clay-deco-pink opacity-30 blur-[40px]" />
-          <div className="absolute bottom-12 right-12 w-32 h-32 rounded-full bg-clay-deco-green opacity-30 blur-[50px]" />
-
-          {/* 플랫폼 레이블 - Clay Pill */}
+          {/* 플랫폼 레이블 */}
           <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-3 px-5 py-2 z-10 bg-clay-card-white rounded-clay-md shadow-clay-neutral-sm">
             <span className="text-sm font-semibold text-gray-500">
               미리보기
@@ -165,36 +161,14 @@ function App() {
             </span>
           </div>
 
-          {/* Discord: 폰 프레임 없이 직접 렌더링 */}
-          {platformSkin === 'discord' ? (
-            <div className="flex-1 flex items-center justify-center w-full pt-12 pb-4">
+          {/* 채팅 미리보기 - 프레임 없이 직접 렌더링 */}
+          <div className="flex-1 flex items-center justify-center w-full pt-12 pb-4">
+            <div className="overflow-hidden rounded-lg shadow-lg">
               <ChatPreview />
             </div>
-          ) : (
-            /* 기타 플랫폼: Clay Style Phone 프레임 */
-            <div className="relative">
-              {/* 폰 외곽 - Claymorphism */}
-              <div className="relative p-3 bg-clay-phone rounded-clay-xl shadow-clay-phone">
-                {/* 노치 */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-8 z-20 bg-clay-phone rounded-b-clay-md" />
+          </div>
 
-                {/* 스크린 영역 */}
-                <div className="overflow-hidden rounded-clay-lg shadow-clay-neutral-sm">
-                  <ChatPreview />
-                </div>
-              </div>
-
-              {/* 반사광 효과 - Clay highlight */}
-              <div
-                className="absolute -top-1 -left-1 right-20 h-16 pointer-events-none rounded-clay-xl"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 100%)',
-                }}
-              />
-            </div>
-          )}
-
-          {/* 안내 텍스트 - Clay Style */}
+          {/* 안내 텍스트 */}
           <div className="absolute bottom-4 px-5 py-2 bg-clay-card-light rounded-clay-sm shadow-clay-neutral-md text-gray-500 font-semibold text-[13px]">
             메시지를 편집하고 PNG로 저장하세요
           </div>
