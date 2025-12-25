@@ -50,15 +50,11 @@ export async function renderSequence(
     const canvas = await html2canvas(container, {
       scale,
       useCORS: true,
+      allowTaint: true,
       backgroundColor: null,
       logging: false,
-      // 외부 이미지 허용
-      allowTaint: false,
-      // 폰트 렌더링 대기
-      onclone: () => {
-        // 폰트 로딩 완료 대기
-        return document.fonts.ready;
-      },
+      // SVG foreignObject 렌더링 비활성화 (호환성)
+      foreignObjectRendering: false,
     });
 
     // 4. Blob으로 변환
@@ -161,8 +157,10 @@ export function renderSequenceWithCancel(container, messages, setVisibleCount, o
       const canvas = await html2canvas(container, {
         scale,
         useCORS: true,
+        allowTaint: true,
         backgroundColor: null,
         logging: false,
+        foreignObjectRendering: false,
       });
 
       const blob = await canvasToBlob(canvas, 'image/png');
