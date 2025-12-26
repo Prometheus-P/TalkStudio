@@ -1253,15 +1253,30 @@ const TelegramMobileNav = ({ title, avatar }) => {
       {/* 중앙: 프로필 + 이름 + 상태 (가로 배치) */}
       <div className="flex-1 flex items-center justify-center" style={{ gap: 10 }}>
         {avatar && (
-          <img
-            src={avatar}
-            alt={title}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: '50%',
-            }}
-          />
+          <div className="relative">
+            <img
+              src={avatar}
+              alt={title}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+              }}
+            />
+            {/* 온라인 상태 점 */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                width: 12,
+                height: 12,
+                backgroundColor: telegramColors.onlineIndicator,
+                borderRadius: '50%',
+                border: `2px solid ${telegramColors.backgroundHeader}`,
+              }}
+            />
+          </div>
         )}
         <div className="flex flex-col">
           <span
@@ -1282,7 +1297,7 @@ const TelegramMobileNav = ({ title, avatar }) => {
               lineHeight: 1.2,
             }}
           >
-            last seen recently
+            online
           </span>
         </div>
       </div>
