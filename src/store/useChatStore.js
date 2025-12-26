@@ -205,6 +205,43 @@ const useChatStore = create((set, get) => ({
     };
   }),
 
+  /** 날짜 구분선 추가 */
+  addDateDivider: (dateText) => set((state) => ({
+    conversation: {
+      ...state.conversation,
+      messages: [
+        ...state.conversation.messages,
+        {
+          id: `divider-${Date.now()}`,
+          type: 'dateDivider',
+          text: dateText || new Date().toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
+        },
+      ],
+    },
+  })),
+
+  /** 특정 위치에 날짜 구분선 삽입 */
+  insertDateDividerAt: (index, dateText) => set((state) => {
+    const messages = [...state.conversation.messages];
+    const newDivider = {
+      id: `divider-${Date.now()}`,
+      type: 'dateDivider',
+      text: dateText || new Date().toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
+    };
+    messages.splice(index, 0, newDivider);
+    return {
+      conversation: { ...state.conversation, messages },
+    };
+  }),
+
   /** 메시지 위로 이동 */
   moveMessageUp: (id) => set((state) => {
     const messages = [...state.conversation.messages];
