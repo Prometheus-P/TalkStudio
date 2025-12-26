@@ -41,7 +41,7 @@ export const kakaoColors = {
   headerText: '#FFFFFF',
   timeText: '#999999',                    // kt/baloonTime
   nameText: '#666666',                    // kt/msgName
-  readCountText: '#FFD700',               // 읽음 수 (노란색)
+  readCountText: '#A0A0A0',               // 읽음 수 (회색 - 실제 카톡과 동일)
   statusBarText: '#FFFFFF',
 
   // 시스템 메시지
