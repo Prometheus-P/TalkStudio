@@ -719,10 +719,11 @@ const KakaoMessage = ({
   );
 };
 
-// Instagram iOS 모바일 메시지 컴포넌트 - Seen 읽음 표시 포함
+// Instagram iOS 모바일 메시지 컴포넌트 - Seen 읽음 표시 + 타임스탬프 포함
 const InstagramMessage = ({
   author,
   text,
+  time,
   isMe,
   isFirstInGroup,
   isLastInGroup,
@@ -730,6 +731,12 @@ const InstagramMessage = ({
   bubbleStyle,
 }) => {
   const align = isMe ? 'justify-end' : 'justify-start';
+
+  // 시간 포맷 (오전/오후 HH:MM 유지)
+  const formatTime = (t) => {
+    if (!t) return '';
+    return t;
+  };
 
   // 인스타그램 스타일 border-radius 계산
   const getInstagramRadius = () => {
@@ -757,6 +764,25 @@ const InstagramMessage = ({
         marginBottom: isLastInGroup ? 8 : 2,
       }}
     >
+      {/* 타임스탬프 (첫 번째 메시지 위에 표시) */}
+      {isFirstInGroup && time && (
+        <div
+          className="flex justify-center w-full"
+          style={{ marginBottom: 8 }}
+        >
+          <span
+            style={{
+              fontFamily: theme.fontFamily,
+              fontSize: 11,
+              color: '#8E8E8E',
+              textTransform: 'uppercase',
+            }}
+          >
+            {formatTime(time)}
+          </span>
+        </div>
+      )}
+
       {/* 상대방 아바타 + 메시지 행 */}
       <div className={`flex ${align} items-end gap-2`}>
         {/* 상대방 아바타 (왼쪽) */}
