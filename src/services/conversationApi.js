@@ -1,12 +1,16 @@
 /**
  * Conversation API Client - 대화 생성 API 클라이언트
- * Backend API와 통신하는 프론트엔드 서비스
+ *
+ * 변경사항:
+ * - 백엔드 API → Vercel Edge Function (/api/generate)
+ * - Excel 처리는 excelParser.js로 이전됨
  */
 
 import { getErrorMessage } from '../utils/errorHandler';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
-const REQUEST_TIMEOUT = 120000; // 120초 타임아웃 (배치 처리용)
+// Vercel Edge Function 엔드포인트 (개발 시에는 Vite proxy 사용)
+const API_BASE_URL = '/api';
+const REQUEST_TIMEOUT = 60000; // 60초 타임아웃
 
 /**
  * Custom API Error class
@@ -198,99 +202,62 @@ export const deleteTemplate = async (id) => {
   return true;
 };
 
-// ============ Batch Generation API ============
+// ============ Batch Generation (Deprecated - 프론트엔드 excelParser.js 사용) ============
 
 /**
- * Download batch Excel template
+ * @deprecated excelParser.js의 downloadTemplate() 사용
  */
 export const downloadBatchTemplate = async () => {
-  const response = await fetch(`${API_BASE_URL}/generate/batch-template`);
-
-  if (!response.ok) {
-    throw new ApiError('DOWNLOAD_ERROR', '템플릿 다운로드에 실패했습니다.');
-  }
-
-  const blob = await response.blob();
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'talkstudio_batch_template.xlsx';
-  document.body.appendChild(a);
-  a.click();
-  window.URL.revokeObjectURL(url);
-  document.body.removeChild(a);
+  console.warn('downloadBatchTemplate is deprecated. Use excelParser.downloadTemplate() instead.');
+  const { downloadTemplate } = await import('./excelParser');
+  return downloadTemplate();
 };
 
 /**
- * Process batch generation (synchronous)
- * @param {File} file - Excel file with prompts
- * @returns {Promise<Object>} BatchResponse with results
+ * @deprecated excelParser.js의 parseExcel() 사용
  */
 export const processBatch = async (file) => {
-  const formData = new FormData();
-  formData.append('file', file);
-
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/generate/batch`, {
-      method: 'POST',
-      body: formData,
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      const errorMessage = data.detail?.message || data.message || '배치 처리에 실패했습니다.';
-      throw new ApiError(data.detail?.error || 'BATCH_ERROR', errorMessage, data.detail);
-    }
-
-    return data;
-  } catch (error) {
-    clearTimeout(timeoutId);
-
-    if (error.name === 'AbortError') {
-      throw new ApiError('TIMEOUT_ERROR', '배치 처리 시간이 초과되었습니다. 프롬프트 수를 줄여주세요.');
-    }
-
-    if (error instanceof ApiError) {
-      throw error;
-    }
-
-    throw new ApiError('BATCH_ERROR', error.message || '배치 처리 중 오류가 발생했습니다.');
-  }
+  console.warn('processBatch is deprecated. Use excelParser.parseExcel() instead.');
+  const { parseExcel } = await import('./excelParser');
+  return parseExcel(file);
 };
 
 /**
- * Generate single conversation (synchronous)
+ * Generate single conversation (Vercel Edge Function 사용)
  * @param {Object} params - Generation parameters
  */
 export const generateSingleConversation = async (params) => {
-  const response = await apiRequest('/generate/conversation', {
+  const response = await apiRequest('/generate', {
     method: 'POST',
     body: JSON.stringify({
       prompt: params.scenario || params.prompt,
-      message_count: params.messageCount || 10,
+      messageCount: params.messageCount || 10,
       style: params.tone || 'casual',
       language: params.language || 'ko',
-      provider: params.provider || 'upstage',
-      theme: params.platform || 'kakao',
     }),
   });
   return response;
 };
 
 /**
- * Generate demo conversation (no API key required)
+ * Generate demo conversation (하드코딩된 예시 반환)
+ * API 키 없이 사용 가능
  */
 export const generateDemoConversation = async () => {
-  const response = await apiRequest('/generate/demo', {
-    method: 'POST',
-  });
-  return response;
+  // 데모용 하드코딩된 대화 반환
+  return {
+    success: true,
+    data: {
+      messages: [
+        { id: 'demo-1', role: 'other', authorId: 'other', text: '안녕! 요즘 어떻게 지내?', datetime: '오후 2:30' },
+        { id: 'demo-2', role: 'me', authorId: 'me', text: '나 요즘 TalkStudio 써보고 있는데 대박이야 ㅋㅋ', datetime: '오후 2:31' },
+        { id: 'demo-3', role: 'other', authorId: 'other', text: '오 그거 카톡 스크린샷 만드는 거?', datetime: '오후 2:31' },
+        { id: 'demo-4', role: 'me', authorId: 'me', text: '응응 진짜 카톡이랑 똑같아서 놀람', datetime: '오후 2:32' },
+        { id: 'demo-5', role: 'other', authorId: 'other', text: '나도 한번 써봐야겠다! 링크 좀 보내줘', datetime: '오후 2:32' },
+      ],
+      metadata: { model: 'demo', generatedAt: new Date().toISOString() },
+    },
+  };
 };
 
 // Legacy aliases for backward compatibility

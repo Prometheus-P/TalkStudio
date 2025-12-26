@@ -1,6 +1,8 @@
 /**
  * ExcelUploader - Excel 파일 업로드 컴포넌트
  * T040: 대량 생성을 위한 Excel 파일 업로드 UI
+ *
+ * 변경: 백엔드 API 대신 브라우저 기반 excelParser 사용
  */
 import React, { useCallback, useState, useRef } from 'react';
 import {
@@ -12,7 +14,7 @@ import {
   X,
   Loader2,
 } from 'lucide-react';
-import { downloadBatchTemplate, processBatch } from '../../services/conversationApi';
+import { parseExcel, downloadTemplate, ExcelParseError } from '../../services/excelParser';
 
 const ExcelUploader = ({ onBatchComplete, disabled = false }) => {
   const [file, setFile] = useState(null);
@@ -77,13 +79,13 @@ const ExcelUploader = ({ onBatchComplete, disabled = false }) => {
     }
   }, [handleFileSelect]);
 
-  // Download template
+  // Download template (브라우저에서 직접 생성)
   const handleDownloadTemplate = async () => {
     setIsDownloadingTemplate(true);
     setError(null);
 
     try {
-      await downloadBatchTemplate();
+      await downloadTemplate();
     } catch (err) {
       setError(err.message || '템플릿 다운로드에 실패했습니다.');
     } finally {
@@ -91,7 +93,7 @@ const ExcelUploader = ({ onBatchComplete, disabled = false }) => {
     }
   };
 
-  // Upload and process batch (synchronous)
+  // Upload and process batch (브라우저에서 직접 파싱)
   const handleUpload = async () => {
     if (!file || isUploading || disabled) return;
 
@@ -99,16 +101,20 @@ const ExcelUploader = ({ onBatchComplete, disabled = false }) => {
     setError(null);
 
     try {
-      const batchResponse = await processBatch(file);
+      const result = await parseExcel(file);
       setFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
       if (onBatchComplete) {
-        onBatchComplete(batchResponse);
+        onBatchComplete(result);
       }
     } catch (err) {
-      setError(err.message || '배치 처리에 실패했습니다.');
+      if (err instanceof ExcelParseError) {
+        setError(err.formatMessage());
+      } else {
+        setError(err.message || '배치 처리에 실패했습니다.');
+      }
     } finally {
       setIsUploading(false);
     }
