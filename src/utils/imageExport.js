@@ -7,12 +7,17 @@
 import { toPng, toBlob } from 'html-to-image';
 
 export const DEVICE_SIZES = {
+  // 일반 모바일
   iphone14ProMax: { width: 430, height: 932 },
   iphone14: { width: 390, height: 844 },
   iphoneSE: { width: 375, height: 667 },
   androidFHD: { width: 411, height: 915 },
+  // 정사각형
   square: { width: 600, height: 600 },
+  // 쇼츠/릴스/스토리 (9:16)
+  shorts: { width: 1080, height: 1920 },
   igStory: { width: 1080, height: 1920 },
+  // 기본값
   default: { width: 390, height: 844 },
 };
 

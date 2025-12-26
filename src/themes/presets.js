@@ -11,6 +11,18 @@ const baseBubble = {
   maxWidthPercent: 70,
 };
 
+// 쇼츠용 버블 스타일 (1080x1920, ~2.77x 스케일)
+const shortsBubble = {
+  paddingX: 33,
+  paddingY: 22,
+  maxWidthPercent: 70,
+};
+
+// 쇼츠 해상도 설정
+const SHORTS_WIDTH = 1080;
+const SHORTS_HEIGHT = 1920;
+const SHORTS_SCALE = 2.77; // 390 → 1080
+
 // KakaoTalk iOS Mobile 앱 UI 색상
 export const kakaoColors = {
   // 배경
@@ -440,6 +452,274 @@ export const themePresets = {
 
     showAvatar: true,
     avatarSize: 28,
+    avatarShape: 'circle',
+  },
+
+  // ===== 쇼츠/릴스용 프리셋 (1080x1920) =====
+
+  'kakao-shorts': {
+    id: 'kakao-shorts',
+    name: '카카오톡 (쇼츠)',
+
+    canvasWidth: SHORTS_WIDTH,
+    canvasHeight: SHORTS_HEIGHT,
+
+    backgroundType: 'solid',
+    backgroundValue: '#B2C7D9',
+
+    showHeader: true,
+    headerBg: '#3E4A59',
+    headerTitleAlign: 'center',
+    headerTitleColor: '#FFFFFF',
+    headerTitleSize: 44,
+    showStatusBar: true,
+
+    statusBarHeight: 130,
+    navHeight: 152,
+    bottomNavHeight: 255,
+    homeIndicatorHeight: 36,
+
+    bubble: {
+      me: {
+        ...shortsBubble,
+        bg: '#FEE500',
+        textColor: '#1A1A1A',
+        radius: 44,
+        tail: 'small',
+        align: 'right',
+      },
+      other: {
+        ...shortsBubble,
+        bg: '#FFFFFF',
+        textColor: '#1A1A1A',
+        radius: 44,
+        tail: 'small',
+        align: 'left',
+      },
+      system: {
+        ...shortsBubble,
+        bg: 'rgba(0,0,0,0.3)',
+        textColor: '#FFFFFF',
+        radius: 55,
+        tail: 'none',
+        align: 'center',
+        maxWidthPercent: 80,
+      },
+    },
+
+    fontFamily: "'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif",
+    fontSize: 39,
+    lineHeight: 1.4,
+
+    showName: true,
+    showTime: true,
+    showReadStatus: true,
+    timeColor: '#666666',
+    nameColor: '#666666',
+
+    showAvatar: true,
+    avatarSize: 111,
+    avatarShape: 'rounded',
+  },
+
+  'discord-shorts': {
+    id: 'discord-shorts',
+    name: '디스코드 (쇼츠)',
+
+    canvasWidth: SHORTS_WIDTH,
+    canvasHeight: SHORTS_HEIGHT,
+
+    backgroundType: 'solid',
+    backgroundValue: discordColors.backgroundPrimary,
+
+    showHeader: true,
+    headerBg: discordColors.backgroundPrimary,
+    headerTitleAlign: 'left',
+    headerTitleColor: discordColors.headerPrimary,
+    headerTitleSize: 50,
+    showStatusBar: true,
+
+    statusBarHeight: 130,
+    navHeight: 152,
+    bottomNavHeight: 255,
+    homeIndicatorHeight: 36,
+
+    bubble: {
+      me: {
+        ...shortsBubble,
+        bg: 'transparent',
+        textColor: discordColors.textNormal,
+        radius: 0,
+        tail: 'none',
+        align: 'left',
+      },
+      other: {
+        ...shortsBubble,
+        bg: 'transparent',
+        textColor: discordColors.textNormal,
+        radius: 0,
+        tail: 'none',
+        align: 'left',
+      },
+      system: {
+        ...shortsBubble,
+        bg: 'rgba(88, 101, 242, 0.1)',
+        textColor: discordColors.textMuted,
+        radius: 11,
+        tail: 'none',
+        align: 'center',
+      },
+    },
+
+    fontFamily: "'SF Compact', 'SF Pro Text', -apple-system, sans-serif",
+    fontSize: 42,
+    lineHeight: 1.2,
+
+    showName: true,
+    showTime: true,
+    showReadStatus: false,
+    timeColor: discordColors.textMuted,
+    nameColor: discordColors.headerSecondary,
+
+    showAvatar: true,
+    avatarSize: 111,
+    avatarShape: 'circle',
+
+    messageHoverBg: discordColors.backgroundModifierHover,
+    usernameColors: {
+      default: discordColors.headerSecondary,
+      bot: discordColors.blurple,
+      owner: '#F47FFF',
+      admin: '#FF7373',
+      moderator: '#57F287',
+    },
+  },
+
+  'telegram-shorts': {
+    id: 'telegram-shorts',
+    name: '텔레그램 (쇼츠)',
+
+    canvasWidth: SHORTS_WIDTH,
+    canvasHeight: SHORTS_HEIGHT,
+
+    backgroundType: 'gradient',
+    backgroundValue: 'linear-gradient(180deg, #7BA9C9 0%, #A8C4D4 100%)',
+
+    showHeader: true,
+    headerBg: '#517DA2',
+    headerTitleAlign: 'center',
+    headerTitleColor: '#FFFFFF',
+    headerTitleSize: 47,
+    showStatusBar: true,
+
+    statusBarHeight: 130,
+    navHeight: 152,
+    bottomNavHeight: 255,
+    homeIndicatorHeight: 36,
+
+    bubble: {
+      me: {
+        ...shortsBubble,
+        bg: '#EEFFDE',
+        textColor: '#000000',
+        radius: 50,
+        tail: 'big',
+        align: 'right',
+      },
+      other: {
+        ...shortsBubble,
+        bg: '#FFFFFF',
+        textColor: '#000000',
+        radius: 50,
+        tail: 'big',
+        align: 'left',
+      },
+      system: {
+        ...shortsBubble,
+        bg: 'rgba(0,0,0,0.15)',
+        textColor: '#FFFFFF',
+        radius: 44,
+        tail: 'none',
+        align: 'center',
+      },
+    },
+
+    fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+    fontSize: 44,
+    lineHeight: 1.35,
+
+    showName: false,
+    showTime: true,
+    showReadStatus: true,
+    timeColor: '#8FAF9F',
+    nameColor: '#3390EC',
+
+    showAvatar: false,
+    avatarSize: 100,
+    avatarShape: 'circle',
+  },
+
+  'insta-shorts': {
+    id: 'insta-shorts',
+    name: '인스타그램 (쇼츠)',
+
+    canvasWidth: SHORTS_WIDTH,
+    canvasHeight: SHORTS_HEIGHT,
+
+    backgroundType: 'solid',
+    backgroundValue: '#FFFFFF',
+
+    showHeader: true,
+    headerBg: '#FFFFFF',
+    headerTitleAlign: 'center',
+    headerTitleColor: '#262626',
+    headerTitleSize: 44,
+    showStatusBar: true,
+
+    statusBarHeight: 130,
+    navHeight: 152,
+    bottomNavHeight: 255,
+    homeIndicatorHeight: 36,
+
+    bubble: {
+      me: {
+        ...shortsBubble,
+        bg: '#3797F0',
+        textColor: '#FFFFFF',
+        radius: 61,
+        tail: 'none',
+        align: 'right',
+      },
+      other: {
+        ...shortsBubble,
+        bg: '#EFEFEF',
+        textColor: '#262626',
+        radius: 61,
+        tail: 'none',
+        align: 'left',
+      },
+      system: {
+        ...shortsBubble,
+        bg: '#FAFAFA',
+        textColor: '#8E8E8E',
+        radius: 33,
+        tail: 'none',
+        align: 'center',
+      },
+    },
+
+    fontFamily: "'-apple-system', 'Segoe UI', sans-serif",
+    fontSize: 39,
+    lineHeight: 1.4,
+
+    showName: false,
+    showTime: false,
+    showReadStatus: false,
+    timeColor: '#8E8E8E',
+    nameColor: '#262626',
+
+    showAvatar: true,
+    avatarSize: 78,
     avatarShape: 'circle',
   },
 };

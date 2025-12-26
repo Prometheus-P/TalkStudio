@@ -7,6 +7,7 @@ import React from 'react';
 import { ChevronLeft, ChevronRight, MoreVertical, Search, Phone } from 'lucide-react';
 import StatusBar from './StatusBar';
 import MessageBubble from './MessageBubble';
+import DateDivider from './DateDivider';
 import useChatStore from '../../store/useChatStore';
 import { discordColors, kakaoColors, telegramColors, instagramColors } from '../../themes/presets';
 
@@ -149,12 +150,21 @@ const ChatPreview = () => {
           className="flex-1 flex flex-col overflow-hidden"
           style={{ padding: '10px' }}
         >
-          {/* 날짜 구분선 */}
-          <DiscordDateDivider date="November 10" />
-
           {/* 메시지 리스트 */}
           <div className="flex-1 flex flex-col gap-0">
             {messages.map((message, index) => {
+              // 날짜 구분선 메시지 처리
+              if (message.type === 'dateDivider') {
+                return (
+                  <DateDivider
+                    key={message.id}
+                    date={message.text}
+                    themeId={theme.id}
+                    theme={theme}
+                  />
+                );
+              }
+
               const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);
               const author = getAuthor(message.authorId);
 
@@ -216,6 +226,18 @@ const ChatPreview = () => {
               style={{ padding: '8px 0' }}
             >
               {messages.map((message, index) => {
+                // 날짜 구분선 메시지 처리
+                if (message.type === 'dateDivider') {
+                  return (
+                    <DateDivider
+                      key={message.id}
+                      date={message.text}
+                      themeId={theme.id}
+                      theme={theme}
+                    />
+                  );
+                }
+
                 const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);
                 const author = getAuthor(message.authorId);
                 return (
@@ -275,6 +297,18 @@ const ChatPreview = () => {
               style={{ padding: '8px 0' }}
             >
               {messages.map((message, index) => {
+                // 날짜 구분선 메시지 처리
+                if (message.type === 'dateDivider') {
+                  return (
+                    <DateDivider
+                      key={message.id}
+                      date={message.text}
+                      themeId={theme.id}
+                      theme={theme}
+                    />
+                  );
+                }
+
                 const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);
                 const author = getAuthor(message.authorId);
                 return (
@@ -334,6 +368,18 @@ const ChatPreview = () => {
               style={{ padding: '8px 0' }}
             >
               {messages.map((message, index) => {
+                // 날짜 구분선 메시지 처리
+                if (message.type === 'dateDivider') {
+                  return (
+                    <DateDivider
+                      key={message.id}
+                      date={message.text}
+                      themeId={theme.id}
+                      theme={theme}
+                    />
+                  );
+                }
+
                 const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);
                 const author = getAuthor(message.authorId);
                 return (
@@ -394,6 +440,18 @@ const ChatPreview = () => {
         }}
       >
         {messages.map((message, index) => {
+          // 날짜 구분선 메시지 처리
+          if (message.type === 'dateDivider') {
+            return (
+              <DateDivider
+                key={message.id}
+                date={message.text}
+                themeId={theme.id}
+                theme={theme}
+              />
+            );
+          }
+
           const { isFirstInGroup, isLastInGroup } = getMessageGroupInfo(index);
           const author = getAuthor(message.authorId);
 
