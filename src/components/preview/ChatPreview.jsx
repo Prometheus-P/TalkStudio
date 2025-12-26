@@ -138,6 +138,9 @@ const ChatPreview = () => {
             }}
           >
 
+        {/* iOS 상태바 (47px) - 노치 포함 */}
+        <DiscordIOSStatusBar statusBar={statusBar} />
+
         {/* 네비게이션 헤더 (55px) */}
         <DiscordMobileNav title={title} avatar={otherAuthor?.avatarUrl} unreadCount={conversation.unreadCount} />
 
