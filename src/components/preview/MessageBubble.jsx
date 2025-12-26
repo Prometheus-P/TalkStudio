@@ -4,7 +4,7 @@
  * Discord UI Kit 디자인 시스템 적용
  */
 import React from 'react';
-import { discordColors } from '../../themes/presets';
+import { discordColors, telegramColors, kakaoColors } from '../../themes/presets';
 
 // datetime에서 시간만 추출하는 헬퍼 함수
 const extractTimeFromDatetime = (datetime) => {
@@ -56,7 +56,39 @@ const MessageBubble = ({ message, author, theme, isFirstInGroup, isLastInGroup }
     );
   }
 
-  // 카카오/텔레그램/인스타 스타일 (버블 형식)
+  // 텔레그램 스타일 - Figma 스펙 기반
+  if (theme.id === 'telegram') {
+    return (
+      <TelegramMessage
+        author={author}
+        text={text}
+        time={time}
+        isMe={isMe}
+        isFirstInGroup={isFirstInGroup}
+        isLastInGroup={isLastInGroup}
+        theme={theme}
+        bubbleStyle={bubbleStyle}
+      />
+    );
+  }
+
+  // 카카오톡 스타일 - Figma 스펙 기반
+  if (theme.id === 'kakao') {
+    return (
+      <KakaoMessage
+        author={author}
+        text={text}
+        time={time}
+        isMe={isMe}
+        isFirstInGroup={isFirstInGroup}
+        isLastInGroup={isLastInGroup}
+        theme={theme}
+        bubbleStyle={bubbleStyle}
+      />
+    );
+  }
+
+  // 인스타 스타일 (버블 형식)
   const align = isMe ? 'justify-end' : 'justify-start';
 
   return (
@@ -260,6 +292,393 @@ const DiscordMessage = ({ author, text, time, isMe, isFirstInGroup, theme, bubbl
         </p>
       </div>
     </div>
+  );
+};
+
+// Telegram iOS 모바일 메시지 컴포넌트 - Figma 스펙 기반
+// 시간과 체크마크가 버블 내부에 표시됨
+const TelegramMessage = ({
+  author: _author,
+  text,
+  time,
+  isMe,
+  isFirstInGroup,
+  isLastInGroup,
+  theme,
+  bubbleStyle,
+}) => {
+  const align = isMe ? 'justify-end' : 'justify-start';
+
+  // 시간 포맷 (오전/오후 제거, HH:MM만 표시)
+  const formatTime = (t) => {
+    if (!t) return '';
+    return t.replace(/오[전후]\s?/, '');
+  };
+
+  // 텔레그램 스타일 border-radius 계산
+  const getTelegramRadius = () => {
+    const r = 17;
+    const small = 4;
+
+    if (isMe) {
+      // 오른쪽 정렬 메시지
+      if (isFirstInGroup && isLastInGroup) {
+        return `${r}px ${r}px ${small}px ${r}px`; // 우하단만 작게
+      }
+      if (isFirstInGroup) return `${r}px ${r}px ${small}px ${r}px`;
+      if (isLastInGroup) return `${r}px ${small}px ${small}px ${r}px`;
+      return `${r}px ${small}px ${small}px ${r}px`;
+    } else {
+      // 왼쪽 정렬 메시지
+      if (isFirstInGroup && isLastInGroup) {
+        return `${r}px ${r}px ${r}px ${small}px`; // 좌하단만 작게
+      }
+      if (isFirstInGroup) return `${r}px ${r}px ${r}px ${small}px`;
+      if (isLastInGroup) return `${small}px ${r}px ${r}px ${small}px`;
+      return `${small}px ${r}px ${r}px ${small}px`;
+    }
+  };
+
+  return (
+    <div
+      className={`flex ${align} px-2`}
+      style={{
+        marginBottom: isLastInGroup ? 8 : 2,
+      }}
+    >
+      <div
+        className="relative"
+        style={{
+          backgroundColor: bubbleStyle.bg,
+          borderRadius: getTelegramRadius(),
+          padding: '6px 10px',
+          maxWidth: '75%',
+          boxShadow: '0 1px 0.5px rgba(0,0,0,0.08)',
+        }}
+      >
+        {/* 텔레그램 꼬리 (SVG) */}
+        {isLastInGroup && (
+          <TelegramBubbleTail isMe={isMe} color={bubbleStyle.bg} />
+        )}
+
+        {/* 메시지 텍스트 + 시간/체크마크 */}
+        <div className="flex flex-wrap items-end gap-1">
+          <span
+            className="whitespace-pre-wrap break-words"
+            style={{
+              fontFamily: theme.fontFamily,
+              fontSize: 17,
+              lineHeight: 1.29,
+              color: bubbleStyle.textColor,
+              wordBreak: 'break-word',
+            }}
+          >
+            {text}
+          </span>
+
+          {/* 시간 + 체크마크 (버블 내부) */}
+          <span
+            className="flex items-center gap-0.5 ml-1"
+            style={{
+              fontSize: 11,
+              color: isMe ? telegramColors.timeTextMe : telegramColors.timeTextOther,
+              whiteSpace: 'nowrap',
+              alignSelf: 'flex-end',
+              marginBottom: -2,
+            }}
+          >
+            {formatTime(time)}
+            {/* 읽음 체크마크 (내 메시지만) */}
+            {isMe && theme.showReadStatus && (
+              <TelegramCheckmark read={true} />
+            )}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// 텔레그램 버블 꼬리 (SVG)
+const TelegramBubbleTail = ({ isMe, color }) => {
+  if (isMe) {
+    return (
+      <svg
+        className="absolute bottom-0"
+        style={{ right: -6 }}
+        width="9"
+        height="17"
+        viewBox="0 0 9 17"
+        fill="none"
+      >
+        <path
+          d="M0 17C0 17 0.5 10 2 6C3.5 2 8.5 0 8.5 0C8.5 0 3 2 1 6C-1 10 0 17 0 17Z"
+          fill={color}
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      className="absolute bottom-0"
+      style={{ left: -6 }}
+      width="9"
+      height="17"
+      viewBox="0 0 9 17"
+      fill="none"
+    >
+      <path
+        d="M9 17C9 17 8.5 10 7 6C5.5 2 0.5 0 0.5 0C0.5 0 6 2 8 6C10 10 9 17 9 17Z"
+        fill={color}
+      />
+    </svg>
+  );
+};
+
+// 텔레그램 체크마크 (읽음/안읽음)
+const TelegramCheckmark = ({ read }) => {
+  const color = read ? telegramColors.checkRead : telegramColors.checkUnread;
+
+  // 더블 체크마크 (읽음)
+  if (read) {
+    return (
+      <svg width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <path
+          d="M1 5.5L4.5 9L11 2"
+          stroke={color}
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M5 5.5L8.5 9L15 2"
+          stroke={color}
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  // 싱글 체크마크 (전송됨)
+  return (
+    <svg width="12" height="9" viewBox="0 0 12 9" fill="none">
+      <path
+        d="M1 4L4.5 7.5L11 1"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+// 카카오톡 iOS 모바일 메시지 컴포넌트 - Figma 스펙 기반
+// Avatar: 38x38, borderRadius: 13
+// Name: Pretendard, 12px (kt/chatBaloonName)
+// Message: 15px, lineHeight: 1.2
+// Time: Pretendard 10px (kt/smallest)
+// ReadCount: 11px, yellow (#FFD700)
+const KakaoMessage = ({
+  author,
+  text,
+  time,
+  isMe,
+  isFirstInGroup,
+  isLastInGroup,
+  theme,
+  bubbleStyle,
+}) => {
+  const align = isMe ? 'justify-end' : 'justify-start';
+
+  // 시간 포맷 (오전/오후 HH:MM 형식 유지)
+  const formatTime = (t) => {
+    if (!t) return '';
+    return t;
+  };
+
+  // 카카오톡 스타일 border-radius 계산
+  const getKakaoRadius = () => {
+    const r = kakaoColors.bubbleRadius; // 13.5px
+    const small = 4;
+
+    if (isMe) {
+      // 오른쪽 정렬 메시지 (꼬리가 오른쪽 하단)
+      if (isFirstInGroup && isLastInGroup) {
+        return `${r}px ${r}px ${small}px ${r}px`;
+      }
+      if (isFirstInGroup) return `${r}px ${r}px ${small}px ${r}px`;
+      if (isLastInGroup) return `${r}px ${small}px ${small}px ${r}px`;
+      return `${r}px ${small}px ${small}px ${r}px`;
+    } else {
+      // 왼쪽 정렬 메시지 (꼬리가 왼쪽 하단)
+      if (isFirstInGroup && isLastInGroup) {
+        return `${r}px ${r}px ${r}px ${small}px`;
+      }
+      if (isFirstInGroup) return `${r}px ${r}px ${r}px ${small}px`;
+      if (isLastInGroup) return `${small}px ${r}px ${r}px ${small}px`;
+      return `${small}px ${r}px ${r}px ${small}px`;
+    }
+  };
+
+  return (
+    <div
+      className={`flex ${align} items-end`}
+      style={{
+        padding: '0 12px',
+        marginBottom: isLastInGroup ? 8 : 2,
+      }}
+    >
+      {/* 상대방 아바타 (왼쪽) - 첫 메시지만 표시 */}
+      {!isMe && isFirstInGroup && (
+        <img
+          src={author?.avatarUrl}
+          alt={author?.name}
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: 13,
+            marginRight: 8,
+            flexShrink: 0,
+          }}
+        />
+      )}
+      {/* 아바타 없을 때 간격 유지 */}
+      {!isMe && !isFirstInGroup && (
+        <div style={{ width: 38, marginRight: 8, flexShrink: 0 }} />
+      )}
+
+      {/* 메시지 컨테이너 */}
+      <div
+        className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
+        style={{ maxWidth: '70%' }}
+      >
+        {/* 상대방 이름 (첫 메시지만) */}
+        {!isMe && isFirstInGroup && (
+          <span
+            style={{
+              fontFamily: `'${kakaoColors.fontFamily}', 'Apple SD Gothic Neo', sans-serif`,
+              fontSize: kakaoColors.fontSizeName,
+              fontWeight: 400,
+              color: kakaoColors.nameText,
+              marginBottom: 4,
+              marginLeft: 2,
+            }}
+          >
+            {author?.name}
+          </span>
+        )}
+
+        {/* 버블 + 시간/읽음 행 */}
+        <div className={`flex items-end gap-1 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
+          {/* 메시지 버블 */}
+          <div
+            className="relative"
+            style={{
+              backgroundColor: bubbleStyle.bg,
+              borderRadius: getKakaoRadius(),
+              padding: `${bubbleStyle.paddingY}px ${bubbleStyle.paddingX}px`,
+              boxShadow: '0 1px 1px rgba(0,0,0,0.05)',
+            }}
+          >
+            {/* 카카오톡 버블 꼬리 */}
+            {isLastInGroup && (
+              <KakaoBubbleTail isMe={isMe} color={bubbleStyle.bg} />
+            )}
+
+            {/* 메시지 텍스트 */}
+            <span
+              className="whitespace-pre-wrap break-words"
+              style={{
+                fontFamily: `'${kakaoColors.fontFamily}', 'Apple SD Gothic Neo', sans-serif`,
+                fontSize: kakaoColors.fontSizeMessage,
+                lineHeight: 1.2,
+                color: bubbleStyle.textColor,
+                wordBreak: 'break-word',
+                overflowWrap: 'anywhere',
+              }}
+            >
+              {text}
+            </span>
+          </div>
+
+          {/* 시간 & 읽음 수 (마지막 메시지만) */}
+          {isLastInGroup && theme.showTime && (
+            <div
+              className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
+              style={{ gap: 1 }}
+            >
+              {/* 읽음 수 (내 메시지만) */}
+              {isMe && theme.showReadStatus && (
+                <span
+                  style={{
+                    fontFamily: `'${kakaoColors.fontFamily}', sans-serif`,
+                    fontSize: kakaoColors.fontSizeReadCount,
+                    fontWeight: 500,
+                    color: kakaoColors.readCountText,
+                  }}
+                >
+                  1
+                </span>
+              )}
+              {/* 시간 */}
+              <span
+                style={{
+                  fontFamily: `'${kakaoColors.fontFamily}', sans-serif`,
+                  fontSize: kakaoColors.fontSizeTime,
+                  fontWeight: 300,
+                  color: kakaoColors.timeText,
+                }}
+              >
+                {formatTime(time)}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// 카카오톡 버블 꼬리 (SVG) - 작은 삼각형 스타일
+const KakaoBubbleTail = ({ isMe, color }) => {
+  if (isMe) {
+    // 오른쪽 하단 꼬리
+    return (
+      <svg
+        className="absolute"
+        style={{ right: -5, bottom: 0 }}
+        width="8"
+        height="12"
+        viewBox="0 0 8 12"
+        fill="none"
+      >
+        <path
+          d="M0 12C0 12 0 6 4 2C6 0 8 0 8 0L8 12L0 12Z"
+          fill={color}
+        />
+      </svg>
+    );
+  }
+
+  // 왼쪽 하단 꼬리
+  return (
+    <svg
+      className="absolute"
+      style={{ left: -5, bottom: 0 }}
+      width="8"
+      height="12"
+      viewBox="0 0 8 12"
+      fill="none"
+    >
+      <path
+        d="M8 12C8 12 8 6 4 2C2 0 0 0 0 0L0 12L8 12Z"
+        fill={color}
+      />
+    </svg>
   );
 };
 

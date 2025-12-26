@@ -135,12 +135,8 @@ const ChatPreview = () => {
               height: theme.canvasHeight,
               fontFamily: theme.fontFamily,
               backgroundColor: discordColors.backgroundPrimary,
-              borderRadius: 44,
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05)',
             }}
           >
-        {/* iOS 상태바 (47px) - 토글 가능 */}
-        {theme.showStatusBar && <DiscordIOSStatusBar statusBar={statusBar} />}
 
         {/* 네비게이션 헤더 (55px) */}
         <DiscordMobileNav title={title} avatar={otherAuthor?.avatarUrl} unreadCount={conversation.unreadCount} />
@@ -210,13 +206,8 @@ const ChatPreview = () => {
               height: theme.canvasHeight,
               fontFamily: theme.fontFamily,
               backgroundColor: kakaoColors.backgroundPrimary,
-              borderRadius: 44,
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
             }}
           >
-            {/* iOS 상태바 */}
-            {theme.showStatusBar && <KakaoIOSStatusBar statusBar={statusBar} />}
-
             {/* 카카오톡 헤더 */}
             <KakaoMobileNav title={title} avatar={otherAuthor?.avatarUrl} />
 
@@ -281,13 +272,8 @@ const ChatPreview = () => {
               height: theme.canvasHeight,
               fontFamily: theme.fontFamily,
               background: `linear-gradient(180deg, ${telegramColors.backgroundGradientStart} 0%, ${telegramColors.backgroundGradientEnd} 100%)`,
-              borderRadius: 44,
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
             }}
           >
-            {/* iOS 상태바 */}
-            {theme.showStatusBar && <TelegramIOSStatusBar statusBar={statusBar} />}
-
             {/* 텔레그램 헤더 */}
             <TelegramMobileNav title={title} avatar={otherAuthor?.avatarUrl} />
 
@@ -352,13 +338,8 @@ const ChatPreview = () => {
               height: theme.canvasHeight,
               fontFamily: theme.fontFamily,
               backgroundColor: instagramColors.backgroundPrimary,
-              borderRadius: 44,
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
             }}
           >
-            {/* iOS 상태바 */}
-            {theme.showStatusBar && <InstagramIOSStatusBar statusBar={statusBar} />}
-
             {/* 인스타그램 헤더 */}
             <InstagramMobileNav title={title} avatar={otherAuthor?.avatarUrl} />
 
@@ -492,7 +473,7 @@ const DiscordIOSStatusBar = ({ statusBar }) => {
     <div
       className="relative flex items-center justify-between"
       style={{
-        width: 390,
+        width: '100%',
         height: 47,
         padding: '14px 27px 0',
         backgroundColor: discordColors.backgroundPrimary,
@@ -588,7 +569,7 @@ const DiscordMobileNav = ({ title, avatar, unreadCount = 0 }) => {
     <div
       className="flex items-center justify-between"
       style={{
-        width: 390,
+        width: '100%',
         height: 55,
         padding: '11px 10px 11px 13px',
         backgroundColor: discordColors.backgroundPrimary,
@@ -774,7 +755,7 @@ const DiscordMobileBottomNav = ({ title: _title }) => {
     <div
       className="flex flex-col"
       style={{
-        width: 390,
+        width: '100%',
         height: 92,
         backgroundColor: discordColors.backgroundPrimary,
         borderTop: `1px solid ${discordColors.borderPrimary}`,
@@ -873,7 +854,7 @@ const DiscordMobileBottomNav = ({ title: _title }) => {
       <div
         className="flex items-start justify-center"
         style={{
-          width: 390,
+          width: '100%',
           height: 13,
           padding: '0 125px 8px',
         }}
@@ -909,7 +890,7 @@ const KakaoIOSStatusBar = ({ statusBar }) => {
     <div
       className="relative flex items-center justify-between"
       style={{
-        width: 375,
+        width: '100%',
         height: 44,
         padding: '14px 16px 0',
         backgroundColor: kakaoColors.backgroundHeader,
@@ -1001,7 +982,7 @@ const KakaoMobileNav = ({ title, avatar }) => {
     <div
       className="flex items-center justify-between"
       style={{
-        width: 375,
+        width: '100%',
         height: 56,
         padding: '8px 12px',
         backgroundColor: kakaoColors.backgroundHeader,
@@ -1052,7 +1033,7 @@ const KakaoInputBar = () => {
     <div
       className="flex flex-col"
       style={{
-        width: 375,
+        width: '100%',
         backgroundColor: kakaoColors.inputBg,
         borderTop: `1px solid ${kakaoColors.inputBorder}`,
       }}
@@ -1153,7 +1134,7 @@ const TelegramIOSStatusBar = ({ statusBar }) => {
     <div
       className="relative flex items-center justify-between"
       style={{
-        width: 375,
+        width: '100%',
         height: 44,
         padding: '14px 16px 0',
         backgroundColor: telegramColors.backgroundHeader,
@@ -1239,59 +1220,63 @@ const TelegramIOSStatusBar = ({ statusBar }) => {
   );
 };
 
-// Telegram 모바일 네비게이션 헤더 (56px)
+// Telegram 모바일 네비게이션 헤더 (56px) - iOS 스타일
 const TelegramMobileNav = ({ title, avatar }) => {
   return (
     <div
-      className="flex items-center justify-between"
+      className="flex items-center"
       style={{
-        width: 375,
+        width: '100%',
         height: 56,
-        padding: '8px 12px',
+        padding: '0 8px',
         backgroundColor: telegramColors.backgroundHeader,
       }}
     >
       {/* 왼쪽: 뒤로가기 */}
-      <div className="flex items-center" style={{ gap: 4 }}>
-        <ChevronLeft size={28} color={telegramColors.headerText} />
-        <span style={{ fontSize: 17, color: telegramColors.headerText }}>Back</span>
+      <div className="flex items-center" style={{ gap: 0 }}>
+        <ChevronLeft size={26} color={telegramColors.headerText} strokeWidth={2} />
+        <span style={{ fontSize: 17, color: telegramColors.headerText, marginLeft: -2 }}>Back</span>
       </div>
 
-      {/* 중앙: 프로필 + 이름 + 상태 */}
-      <div className="flex flex-col items-center">
+      {/* 중앙: 프로필 + 이름 + 상태 (가로 배치) */}
+      <div className="flex-1 flex items-center justify-center" style={{ gap: 10 }}>
         {avatar && (
           <img
             src={avatar}
             alt={title}
             style={{
-              width: 32,
-              height: 32,
+              width: 36,
+              height: 36,
               borderRadius: '50%',
             }}
           />
         )}
-        <span
-          style={{
-            fontFamily: "'SF Pro Text', -apple-system, sans-serif",
-            fontWeight: 600,
-            fontSize: 14,
-            color: telegramColors.headerText,
-          }}
-        >
-          {title}
-        </span>
-        <span
-          style={{
-            fontSize: 11,
-            color: telegramColors.subtitleText,
-          }}
-        >
-          last seen recently
-        </span>
+        <div className="flex flex-col">
+          <span
+            style={{
+              fontFamily: "'SF Pro Text', -apple-system, sans-serif",
+              fontWeight: 600,
+              fontSize: 16,
+              color: telegramColors.headerText,
+              lineHeight: 1.2,
+            }}
+          >
+            {title}
+          </span>
+          <span
+            style={{
+              fontSize: 13,
+              color: telegramColors.subtitleText,
+              lineHeight: 1.2,
+            }}
+          >
+            last seen recently
+          </span>
+        </div>
       </div>
 
       {/* 오른쪽: 더보기 */}
-      <div className="flex items-center" style={{ width: 60, justifyContent: 'flex-end' }}>
+      <div className="flex items-center">
         <MoreVertical size={22} color={telegramColors.headerText} />
       </div>
     </div>
@@ -1304,7 +1289,7 @@ const TelegramInputBar = () => {
     <div
       className="flex flex-col"
       style={{
-        width: 375,
+        width: '100%',
         backgroundColor: telegramColors.inputBg,
       }}
     >
@@ -1406,7 +1391,7 @@ const InstagramIOSStatusBar = ({ statusBar }) => {
     <div
       className="relative flex items-center justify-between"
       style={{
-        width: 375,
+        width: '100%',
         height: 44,
         padding: '14px 16px 0',
         backgroundColor: instagramColors.backgroundHeader,
@@ -1498,7 +1483,7 @@ const InstagramMobileNav = ({ title, avatar }) => {
     <div
       className="flex items-center justify-between"
       style={{
-        width: 375,
+        width: '100%',
         height: 60,
         padding: '8px 16px',
         backgroundColor: instagramColors.backgroundHeader,
@@ -1578,7 +1563,7 @@ const InstagramInputBar = () => {
     <div
       className="flex flex-col"
       style={{
-        width: 375,
+        width: '100%',
         backgroundColor: instagramColors.inputBg,
         borderTop: `0.5px solid ${instagramColors.inputBorder}`,
       }}

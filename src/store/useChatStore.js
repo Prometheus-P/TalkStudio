@@ -12,6 +12,11 @@ import {
   createNewProject as createNewProjectInStorage,
   generateProjectId,
 } from '../utils/storage';
+import {
+  sanitizeMessage,
+  sanitizeAuthor,
+  sanitizeTitle,
+} from '../utils/sanitize';
 
 const useChatStore = create((set, get) => ({
   // ============================================
@@ -80,6 +85,15 @@ const useChatStore = create((set, get) => ({
   },
 
   // ============================================
+  // 5. 시퀀스 렌더링 상태
+  // ============================================
+  sequence: {
+    isRendering: false,
+    progress: 0,
+    visibleMessageCount: null, // null = 전체 표시, 숫자 = 해당 개수만 표시
+  },
+
+  // ============================================
   // 액션 - 테마 & 플랫폼
   // ============================================
 
@@ -114,9 +128,9 @@ const useChatStore = create((set, get) => ({
   // 액션 - 대화 내용
   // ============================================
 
-  /** 대화 제목 변경 */
+  /** 대화 제목 변경 (sanitized) */
   setTitle: (title) => set((state) => ({
-    conversation: { ...state.conversation, title },
+    conversation: { ...state.conversation, title: sanitizeTitle(title) },
   })),
 
   /** Discord 안읽음 숫자 설정 */
@@ -127,13 +141,13 @@ const useChatStore = create((set, get) => ({
     },
   })),
 
-  /** 메시지 추가 */
+  /** 메시지 추가 (sanitized) */
   addMessage: (message) => set((state) => ({
     conversation: {
       ...state.conversation,
       messages: [
         ...state.conversation.messages,
-        { ...message, id: `msg-${Date.now()}` },
+        { ...sanitizeMessage(message), id: `msg-${Date.now()}` },
       ],
     },
   })),
@@ -146,12 +160,12 @@ const useChatStore = create((set, get) => ({
     },
   })),
 
-  /** 메시지 수정 */
+  /** 메시지 수정 (sanitized) */
   updateMessage: (id, updates) => set((state) => ({
     conversation: {
       ...state.conversation,
       messages: state.conversation.messages.map((m) =>
-        m.id === id ? { ...m, ...updates } : m
+        m.id === id ? { ...m, ...sanitizeMessage(updates) } : m
       ),
     },
   })),
@@ -181,10 +195,10 @@ const useChatStore = create((set, get) => ({
     };
   }),
 
-  /** 특정 위치에 메시지 삽입 */
+  /** 특정 위치에 메시지 삽입 (sanitized) */
   insertMessageAt: (index, message) => set((state) => {
     const messages = [...state.conversation.messages];
-    const newMessage = { ...message, id: `msg-${Date.now()}` };
+    const newMessage = { ...sanitizeMessage(message), id: `msg-${Date.now()}` };
     messages.splice(index, 0, newMessage);
     return {
       conversation: { ...state.conversation, messages },
@@ -254,12 +268,12 @@ const useChatStore = create((set, get) => ({
   // 액션 - Author 관리
   // ============================================
 
-  /** Author 정보 업데이트 */
+  /** Author 정보 업데이트 (sanitized) */
   updateAuthor: (authorId, updates) => set((state) => ({
     conversation: {
       ...state.conversation,
       authors: state.conversation.authors.map((a) =>
-        a.id === authorId ? { ...a, ...updates } : a
+        a.id === authorId ? { ...a, ...sanitizeAuthor(updates) } : a
       ),
     },
   })),
@@ -318,6 +332,30 @@ const useChatStore = create((set, get) => ({
   /** Export 상태 설정 */
   setExporting: (isExporting) => set((state) => ({
     ui: { ...state.ui, isExporting },
+  })),
+
+  // ============================================
+  // 액션 - 시퀀스 렌더링
+  // ============================================
+
+  /** 시퀀스 렌더링 시작 */
+  startSequenceRendering: () => set((state) => ({
+    sequence: { ...state.sequence, isRendering: true, progress: 0 },
+  })),
+
+  /** 시퀀스 렌더링 진행률 업데이트 */
+  setSequenceProgress: (progress) => set((state) => ({
+    sequence: { ...state.sequence, progress },
+  })),
+
+  /** 표시할 메시지 수 설정 (시퀀스 캡처용) */
+  setVisibleMessageCount: (count) => set((state) => ({
+    sequence: { ...state.sequence, visibleMessageCount: count },
+  })),
+
+  /** 시퀀스 렌더링 완료/취소 */
+  stopSequenceRendering: () => set(() => ({
+    sequence: { isRendering: false, progress: 0, visibleMessageCount: null },
   })),
 
   // ============================================

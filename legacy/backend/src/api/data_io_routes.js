@@ -72,7 +72,7 @@ router.post('/import/excel', upload.single('file'), async (req, res) => {
     });
 
     // Parse Excel file
-    const { messages, errors: parseErrors } = parseMessagesFromExcel(req.file.buffer);
+    const { messages, errors: parseErrors } = await parseMessagesFromExcel(req.file.buffer);
 
     // Check for parsing errors
     if (parseErrors.length > 0 && parseErrors.some((e) => e.type === 'header')) {

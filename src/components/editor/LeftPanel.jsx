@@ -8,6 +8,8 @@ import MessageEditor from './MessageEditor';
 import ProfileEditor from './ProfileEditor';
 import ThemeControls from './ThemeControls';
 import ExportButton from './ExportButton';
+import SequenceExportButton from './SequenceExportButton';
+import VideoExportButton from './VideoExportButton';
 
 const tabs = [
   { id: 'messages', label: '메시지', icon: MessageSquare, color: '#FF6B9D' },
@@ -70,12 +72,20 @@ const LeftPanel = () => {
 
       {/* Export 버튼 (하단 고정) */}
       <div
-        className="p-4"
+        className="p-4 flex flex-col gap-3"
         style={{
           background: 'linear-gradient(180deg, transparent 0%, rgba(168, 85, 247, 0.05) 100%)',
         }}
       >
         <ExportButton />
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <SequenceExportButton />
+          </div>
+          <div className="flex-1">
+            <VideoExportButton />
+          </div>
+        </div>
       </div>
     </div>
   );
