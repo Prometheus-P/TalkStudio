@@ -211,6 +211,9 @@ const ChatPreview = () => {
               backgroundColor: kakaoColors.backgroundPrimary,
             }}
           >
+            {/* iOS 상태바 */}
+            <KakaoIOSStatusBar statusBar={statusBar} />
+
             {/* 카카오톡 헤더 */}
             <KakaoMobileNav title={title} avatar={otherAuthor?.avatarUrl} />
 
@@ -277,6 +280,9 @@ const ChatPreview = () => {
               background: `linear-gradient(180deg, ${telegramColors.backgroundGradientStart} 0%, ${telegramColors.backgroundGradientEnd} 100%)`,
             }}
           >
+            {/* iOS 상태바 */}
+            <TelegramIOSStatusBar statusBar={statusBar} />
+
             {/* 텔레그램 헤더 */}
             <TelegramMobileNav title={title} avatar={otherAuthor?.avatarUrl} />
 
@@ -343,6 +349,9 @@ const ChatPreview = () => {
               backgroundColor: instagramColors.backgroundPrimary,
             }}
           >
+            {/* iOS 상태바 */}
+            <InstagramIOSStatusBar statusBar={statusBar} />
+
             {/* 인스타그램 헤더 */}
             <InstagramMobileNav title={title} avatar={otherAuthor?.avatarUrl} />
 
