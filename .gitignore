@@ -72,6 +72,7 @@ legacy/*/coverage/
 # but ignore other generated images
 *.png
 !scripts/captures/*.png
+!scripts/captures/improved/*.png
 !public/**/*.png
 
 # Vercel
