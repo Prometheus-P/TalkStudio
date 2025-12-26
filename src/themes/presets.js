@@ -109,10 +109,10 @@ export const telegramColors = {
     '#2AABEE', '#468EE5', '#8E85EE', '#E570B0',
   ],
 
-  // 체크마크 - 읽음/안읽음
-  checkRead: '#4FAE4E',               // 읽음 (녹색 더블체크)
-  checkUnread: '#A1AAB3',             // 전송됨 (회색 싱글체크)
-  checkSending: '#A1AAB3',            // 전송중
+  // 체크마크 - 읽음/안읽음 (실제 텔레그램 iOS와 동일)
+  checkRead: '#34C759',               // 읽음 (밝은 녹색 더블체크 - iOS 스타일)
+  checkUnread: '#8E8E93',             // 전송됨 (회색 싱글체크)
+  checkSending: '#8E8E93',            // 전송중
 
   // 입력창
   inputBg: '#FFFFFF',
@@ -582,7 +582,7 @@ export const themePresets = {
 
     showName: false,
     showTime: false,
-    showReadStatus: false,
+    showReadStatus: true,   // Seen 읽음 표시 활성화
     timeColor: '#8E8E8E',
     nameColor: '#262626',
 
@@ -850,7 +850,7 @@ export const themePresets = {
 
     showName: false,
     showTime: false,
-    showReadStatus: false,
+    showReadStatus: true,   // Seen 읽음 표시 활성화
     timeColor: '#8E8E8E',
     nameColor: '#262626',
 

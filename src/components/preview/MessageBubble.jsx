@@ -88,7 +88,23 @@ const MessageBubble = ({ message, author, theme, isFirstInGroup, isLastInGroup }
     );
   }
 
-  // 인스타 스타일 (버블 형식)
+  // 인스타그램 스타일 - Seen 읽음 표시 포함
+  if (theme.id === 'insta') {
+    return (
+      <InstagramMessage
+        author={author}
+        text={text}
+        time={time}
+        isMe={isMe}
+        isFirstInGroup={isFirstInGroup}
+        isLastInGroup={isLastInGroup}
+        theme={theme}
+        bubbleStyle={bubbleStyle}
+      />
+    );
+  }
+
+  // 기타 스타일 (버블 형식)
   const align = isMe ? 'justify-end' : 'justify-start';
 
   return (
@@ -184,20 +200,22 @@ const DiscordMessage = ({ author, text, time, isMe, isFirstInGroup, theme, bubbl
     return discordColors.headerSecondary; // #C7C8CE
   };
 
-  // Discord iOS 타임스탬프 형식으로 변환 (MM/DD/YY, HH:MM)
+  // Discord iOS 타임스탬프 형식으로 변환 (Today at HH:MM AM/PM)
   const formatDiscordTime = (timeStr) => {
-    const today = new Date();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const year = String(today.getFullYear()).slice(-2);
-
-    // 시간만 추출 (오전/오후 제거)
+    // 시간만 추출
     let timeOnly = timeStr;
+    let isPM = timeStr.includes('오후');
+
     if (timeStr.includes('오전') || timeStr.includes('오후')) {
       timeOnly = timeStr.replace(/오[전후]\s?/, '');
     }
 
-    return `${month}/${day}/${year}, ${timeOnly}`;
+    // 12시간 형식으로 변환 (AM/PM)
+    const [hours, minutes] = timeOnly.split(':');
+    const hour12 = parseInt(hours);
+    const ampm = isPM ? 'PM' : 'AM';
+
+    return `Today at ${hour12}:${minutes} ${ampm}`;
   };
 
   // 연속 메시지: 50px 왼쪽 인덴트 (Avatar 40px + Gap 10px)
@@ -639,6 +657,105 @@ const KakaoMessage = ({
           )}
         </div>
       </div>
+    </div>
+  );
+};
+
+// Instagram iOS 모바일 메시지 컴포넌트 - Seen 읽음 표시 포함
+const InstagramMessage = ({
+  author,
+  text,
+  isMe,
+  isFirstInGroup,
+  isLastInGroup,
+  theme,
+  bubbleStyle,
+}) => {
+  const align = isMe ? 'justify-end' : 'justify-start';
+
+  // 인스타그램 스타일 border-radius 계산
+  const getInstagramRadius = () => {
+    const r = 22;
+    const small = 4;
+
+    if (isMe) {
+      if (isFirstInGroup && isLastInGroup) return `${r}px ${r}px ${small}px ${r}px`;
+      if (isFirstInGroup) return `${r}px ${r}px ${small}px ${r}px`;
+      if (isLastInGroup) return `${r}px ${small}px ${small}px ${r}px`;
+      return `${r}px ${small}px ${small}px ${r}px`;
+    } else {
+      if (isFirstInGroup && isLastInGroup) return `${r}px ${r}px ${r}px ${small}px`;
+      if (isFirstInGroup) return `${r}px ${r}px ${r}px ${small}px`;
+      if (isLastInGroup) return `${small}px ${r}px ${r}px ${small}px`;
+      return `${small}px ${r}px ${r}px ${small}px`;
+    }
+  };
+
+  return (
+    <div
+      className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
+      style={{
+        padding: '0 16px',
+        marginBottom: isLastInGroup ? 8 : 2,
+      }}
+    >
+      {/* 상대방 아바타 + 메시지 행 */}
+      <div className={`flex ${align} items-end gap-2`}>
+        {/* 상대방 아바타 (왼쪽) */}
+        {!isMe && isFirstInGroup && (
+          <img
+            src={author?.avatarUrl}
+            alt={author?.name}
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: '50%',
+              flexShrink: 0,
+            }}
+          />
+        )}
+        {!isMe && !isFirstInGroup && (
+          <div style={{ width: 28, flexShrink: 0 }} />
+        )}
+
+        {/* 메시지 버블 */}
+        <div
+          style={{
+            backgroundColor: bubbleStyle.bg,
+            borderRadius: getInstagramRadius(),
+            padding: '8px 12px',
+            maxWidth: '70%',
+          }}
+        >
+          <span
+            className="whitespace-pre-wrap break-words"
+            style={{
+              fontFamily: theme.fontFamily,
+              fontSize: 15,
+              lineHeight: 1.33,
+              color: bubbleStyle.textColor,
+              wordBreak: 'break-word',
+            }}
+          >
+            {text}
+          </span>
+        </div>
+      </div>
+
+      {/* Seen 읽음 표시 (내 메시지의 마지막 메시지만) */}
+      {isMe && isLastInGroup && theme.showReadStatus && (
+        <span
+          style={{
+            fontFamily: theme.fontFamily,
+            fontSize: 11,
+            color: '#8E8E8E',
+            marginTop: 4,
+            marginRight: 4,
+          }}
+        >
+          Seen
+        </span>
+      )}
     </div>
   );
 };
