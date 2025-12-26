@@ -41,8 +41,8 @@ const MessageBubble = ({ message, author, theme, isFirstInGroup, isLastInGroup }
     );
   }
 
-  // 디스코드 스타일 (라인 형식) - Discord UI Kit
-  if (theme.id === 'discord') {
+  // 디스코드 스타일 (라인 형식) - Discord UI Kit (쇼츠 포함)
+  if (theme.id === 'discord' || theme.id === 'discord-shorts') {
     return (
       <DiscordMessage
         author={author}
@@ -56,8 +56,8 @@ const MessageBubble = ({ message, author, theme, isFirstInGroup, isLastInGroup }
     );
   }
 
-  // 텔레그램 스타일 - Figma 스펙 기반
-  if (theme.id === 'telegram') {
+  // 텔레그램 스타일 - Figma 스펙 기반 (쇼츠 포함)
+  if (theme.id === 'telegram' || theme.id === 'telegram-shorts') {
     return (
       <TelegramMessage
         author={author}
@@ -72,8 +72,8 @@ const MessageBubble = ({ message, author, theme, isFirstInGroup, isLastInGroup }
     );
   }
 
-  // 카카오톡 스타일 - Figma 스펙 기반
-  if (theme.id === 'kakao') {
+  // 카카오톡 스타일 - Figma 스펙 기반 (쇼츠 포함)
+  if (theme.id === 'kakao' || theme.id === 'kakao-shorts') {
     return (
       <KakaoMessage
         author={author}
@@ -88,8 +88,8 @@ const MessageBubble = ({ message, author, theme, isFirstInGroup, isLastInGroup }
     );
   }
 
-  // 인스타그램 스타일 - Seen 읽음 표시 포함
-  if (theme.id === 'insta') {
+  // 인스타그램 스타일 - Seen 읽음 표시 포함 (쇼츠 포함)
+  if (theme.id === 'insta' || theme.id === 'insta-shorts') {
     return (
       <InstagramMessage
         author={author}

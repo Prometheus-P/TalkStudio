@@ -107,8 +107,8 @@ const ChatPreview = () => {
     };
   };
 
-  // Discord iOS 모바일 레이아웃 - 폰 크기로 스케일
-  if (theme.id === 'discord') {
+  // Discord iOS 모바일 레이아웃 - 폰 크기로 스케일 (쇼츠 포함)
+  if (theme.id === 'discord' || theme.id === 'discord-shorts') {
     const scale = 0.7; // 적절한 크기로 스케일
     const scaledHeight = theme.canvasHeight * scale;
     const scaledWidth = theme.canvasWidth * scale;
@@ -189,8 +189,8 @@ const ChatPreview = () => {
     );
   }
 
-  // KakaoTalk iOS 모바일 레이아웃
-  if (theme.id === 'kakao') {
+  // KakaoTalk iOS 모바일 레이아웃 (쇼츠 포함)
+  if (theme.id === 'kakao' || theme.id === 'kakao-shorts') {
     const scale = 0.75;
     const scaledHeight = theme.canvasHeight * scale;
     const scaledWidth = theme.canvasWidth * scale;
@@ -258,8 +258,8 @@ const ChatPreview = () => {
     );
   }
 
-  // Telegram iOS 모바일 레이아웃
-  if (theme.id === 'telegram') {
+  // Telegram iOS 모바일 레이아웃 (쇼츠 포함)
+  if (theme.id === 'telegram' || theme.id === 'telegram-shorts') {
     const scale = 0.75;
     const scaledHeight = theme.canvasHeight * scale;
     const scaledWidth = theme.canvasWidth * scale;
@@ -327,8 +327,8 @@ const ChatPreview = () => {
     );
   }
 
-  // Instagram iOS 모바일 레이아웃
-  if (theme.id === 'insta') {
+  // Instagram iOS 모바일 레이아웃 (쇼츠 포함)
+  if (theme.id === 'insta' || theme.id === 'insta-shorts') {
     const scale = 0.75;
     const scaledHeight = theme.canvasHeight * scale;
     const scaledWidth = theme.canvasWidth * scale;
@@ -1694,10 +1694,13 @@ const ChatHeader = ({ title, theme, avatar }) => {
   const getHeaderContent = () => {
     switch (theme.id) {
       case 'kakao':
+      case 'kakao-shorts':
         return <KakaoHeader title={title} theme={theme} avatar={avatar} />;
       case 'telegram':
+      case 'telegram-shorts':
         return <TelegramHeader title={title} theme={theme} avatar={avatar} />;
       case 'insta':
+      case 'insta-shorts':
         return <InstaHeader title={title} theme={theme} avatar={avatar} />;
       default:
         return <KakaoHeader title={title} theme={theme} avatar={avatar} />;
