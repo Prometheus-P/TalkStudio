@@ -190,6 +190,58 @@ const MessageBubble = ({ message, author, theme, isFirstInGroup, isLastInGroup }
   );
 };
 
+// Discord 멘션 파싱 및 하이라이트 렌더링
+const parseDiscordMentions = (text) => {
+  // @username 패턴 매칭 (한글, 영문, 숫자, 언더스코어 지원)
+  const mentionRegex = /@([\w가-힣]+)/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = mentionRegex.exec(text)) !== null) {
+    // 멘션 앞의 일반 텍스트
+    if (match.index > lastIndex) {
+      parts.push({
+        type: 'text',
+        content: text.slice(lastIndex, match.index),
+      });
+    }
+    // 멘션
+    parts.push({
+      type: 'mention',
+      content: match[0], // @username 전체
+      username: match[1], // username만
+    });
+    lastIndex = match.index + match[0].length;
+  }
+
+  // 남은 텍스트
+  if (lastIndex < text.length) {
+    parts.push({
+      type: 'text',
+      content: text.slice(lastIndex),
+    });
+  }
+
+  return parts.length > 0 ? parts : [{ type: 'text', content: text }];
+};
+
+// Discord 멘션 하이라이트 컴포넌트
+const DiscordMention = ({ children }) => (
+  <span
+    style={{
+      backgroundColor: 'rgba(88, 101, 242, 0.3)', // blurple 30%
+      color: '#C9CDFB', // 밝은 blurple
+      borderRadius: 3,
+      padding: '0 2px',
+      fontWeight: 500,
+      cursor: 'pointer',
+    }}
+  >
+    {children}
+  </span>
+);
+
 // Discord iOS Mobile DM 메시지 컴포넌트 - Figma 스펙 기반
 // Avatar: 40px, Username: 17px (656 weight), Timestamp: 12px (#9597A3)
 // Message text: 15px (#FFFFFF)
@@ -292,7 +344,7 @@ const DiscordMessage = ({ author, text, time, isMe, isFirstInGroup, theme, bubbl
           </div>
         )}
 
-        {/* 메시지 텍스트 - 15px */}
+        {/* 메시지 텍스트 - 15px (멘션 하이라이트 지원) */}
         <p
           className="break-words whitespace-pre-wrap"
           style={{
@@ -306,7 +358,13 @@ const DiscordMessage = ({ author, text, time, isMe, isFirstInGroup, theme, bubbl
             overflowWrap: 'anywhere',
           }}
         >
-          {text}
+          {parseDiscordMentions(text).map((part, index) =>
+            part.type === 'mention' ? (
+              <DiscordMention key={index}>{part.content}</DiscordMention>
+            ) : (
+              <span key={index}>{part.content}</span>
+            )
+          )}
         </p>
       </div>
     </div>
