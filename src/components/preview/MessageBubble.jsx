@@ -681,13 +681,13 @@ const KakaoMessage = ({
             </span>
           </div>
 
-          {/* 시간 & 읽음 수 (마지막 메시지만) */}
+          {/* 시간 & 읽음 수 (마지막 메시지만) - 실제 카톡: 수평 배치 "1 오후 12:30" */}
           {isLastInGroup && theme.showTime && (
             <div
-              className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
-              style={{ gap: 1 }}
+              className="flex items-end"
+              style={{ gap: 3 }}
             >
-              {/* 읽음 수 (내 메시지만) */}
+              {/* 읽음 수 (내 메시지만) - 시간 왼쪽에 표시 */}
               {isMe && theme.showReadStatus && (
                 <span
                   style={{
