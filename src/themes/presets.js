@@ -64,8 +64,8 @@ export const kakaoColors = {
   // iOS 상태바
   notchBg: '#000000',
 
-  // 타이포그래피 - Figma kt/ 스타일
-  fontFamily: 'Pretendard',
+  // 타이포그래피 - Pretendard Variable (한글 최적화)
+  fontFamily: "'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif",
   fontSizeName: 12,                       // kt/chatBaloonName
   fontSizeMessage: 15,                    // 메시지 본문
   fontSizeReadCount: 11,                  // kt/readCount
@@ -310,8 +310,8 @@ export const themePresets = {
       },
     },
 
-    // 타이포 - Figma kt/ 스타일 (Pretendard)
-    fontFamily: "'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif",
+    // 타이포 - Pretendard Variable (한글 최적화)
+    fontFamily: "'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif",
     fontSize: 15,                     // kt/chatMessage
     lineHeight: 1.2,
 
@@ -395,8 +395,8 @@ export const themePresets = {
       },
     },
 
-    // 타이포 - SF Compact (iOS) 폰트 시스템
-    fontFamily: "'SF Compact', 'SF Pro Text', -apple-system, sans-serif",
+    // 타이포 - Inter (gg sans 대안, Discord 스타일)
+    fontFamily: "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
     fontSize: 15,
     lineHeight: 1.2,
 
@@ -576,7 +576,8 @@ export const themePresets = {
       },
     },
 
-    fontFamily: "'-apple-system', 'Segoe UI', sans-serif",
+    // 타이포 - DM Sans (Instagram Sans / Proxima Nova 대안)
+    fontFamily: "'DM Sans', -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif",
     fontSize: 14,
     lineHeight: 1.4,
 
@@ -643,7 +644,8 @@ export const themePresets = {
       },
     },
 
-    fontFamily: "'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif",
+    // 타이포 - Pretendard Variable (한글 최적화)
+    fontFamily: "'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif",
     fontSize: 39,
     lineHeight: 1.4,
 
@@ -707,7 +709,8 @@ export const themePresets = {
       },
     },
 
-    fontFamily: "'SF Compact', 'SF Pro Text', -apple-system, sans-serif",
+    // 타이포 - Inter (gg sans 대안, Discord 스타일)
+    fontFamily: "'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif",
     fontSize: 42,
     lineHeight: 1.2,
 
@@ -844,7 +847,8 @@ export const themePresets = {
       },
     },
 
-    fontFamily: "'-apple-system', 'Segoe UI', sans-serif",
+    // 타이포 - DM Sans (Instagram Sans / Proxima Nova 대안)
+    fontFamily: "'DM Sans', -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif",
     fontSize: 39,
     lineHeight: 1.4,
 
