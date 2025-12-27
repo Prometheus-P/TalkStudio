@@ -152,11 +152,11 @@ function App() {
         {/* 3. 미리보기 영역 (우측) - 간소화된 레이아웃 */}
         <div className="flex-1 flex flex-col items-center p-4 overflow-auto m-4 ml-2 bg-clay-preview rounded-clay shadow-clay-blue">
           {/* 플랫폼 레이블 - 상단 고정 */}
-          <div className="flex items-center gap-3 px-5 py-2 mb-4 bg-clay-card-white rounded-clay-md shadow-clay-neutral-sm">
-            <span className="text-sm font-semibold text-gray-600">
+          <div className="flex items-center gap-3 px-5 py-2 mb-4 bg-white rounded-clay-md shadow-clay-neutral-sm">
+            <span className="text-sm font-semibold text-gray-700">
               미리보기
             </span>
-            <span className="text-sm font-bold uppercase px-3 py-0.5 rounded-full bg-clay-purple text-white shadow-clay-xs">
+            <span className="text-sm font-bold uppercase px-3 py-0.5 rounded-full bg-purple-500 text-white shadow-clay-xs">
               {platformSkin}
             </span>
           </div>
@@ -169,7 +169,7 @@ function App() {
           </div>
 
           {/* 안내 텍스트 - 미리보기 아래 배치 */}
-          <div className="mt-4 mb-2 px-5 py-2 bg-clay-card-light rounded-clay-sm shadow-clay-neutral-md text-gray-600 font-semibold text-[13px]">
+          <div className="mt-4 mb-2 px-5 py-2 bg-white rounded-clay-sm shadow-clay-neutral-md text-gray-700 font-semibold text-[13px]">
             메시지를 편집하고 PNG로 저장하세요
           </div>
         </div>
