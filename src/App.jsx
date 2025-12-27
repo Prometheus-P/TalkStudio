@@ -82,7 +82,7 @@ function App() {
         {/* 2. 에디터 영역 (중앙) - Clay Card */}
         <div className="w-[420px] min-w-[380px] flex flex-col m-4 mr-2 bg-clay-card rounded-clay shadow-clay-lg">
           {/* 헤더 - Clay Style */}
-          <header className="h-16 flex items-center justify-between px-6 shrink-0 rounded-t-clay bg-clay-purple shadow-clay-md">
+          <header className="h-16 flex items-center justify-between px-6 shrink-0 rounded-t-clay bg-purple-500 shadow-clay-md">
             <div className="flex items-center gap-3">
               <h1 className="text-xl font-bold text-white tracking-tight drop-shadow-sm">
                 TalkStudio
