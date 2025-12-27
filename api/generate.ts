@@ -88,9 +88,10 @@ function parseMessages(messagesData: Array<{ speaker: string; text: string }>): 
 
   for (let i = 0; i < messagesData.length; i++) {
     const msg = messagesData[i];
+    if (!msg) continue;
     const speaker = msg.speaker?.toLowerCase();
     const role = speaker === 'me' ? 'me' : 'other';
-    const text = String(msg.text || '').trim();
+    const text = String(msg.text ?? '').trim();
 
     if (!text) continue;
 
