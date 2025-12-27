@@ -162,14 +162,14 @@ function App() {
           </div>
 
           {/* 채팅 미리보기 - 프레임 없이 직접 렌더링 */}
-          <div className="flex-1 flex items-center justify-center w-full pt-12 pb-4">
+          <div className="flex-1 flex items-center justify-center w-full pt-12 pb-2">
             <div className="overflow-hidden rounded-lg shadow-lg">
               <ChatPreview />
             </div>
           </div>
 
-          {/* 안내 텍스트 */}
-          <div className="absolute bottom-4 px-5 py-2 bg-clay-card-light rounded-clay-sm shadow-clay-neutral-md text-gray-500 font-semibold text-[13px]">
+          {/* 안내 텍스트 - 미리보기 아래 배치 */}
+          <div className="mb-4 px-5 py-2 bg-clay-card-light rounded-clay-sm shadow-clay-neutral-md text-gray-500 font-semibold text-[13px]">
             메시지를 편집하고 PNG로 저장하세요
           </div>
         </div>
