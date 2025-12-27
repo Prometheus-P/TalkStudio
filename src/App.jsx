@@ -150,10 +150,10 @@ function App() {
         </div>
 
         {/* 3. 미리보기 영역 (우측) - 간소화된 레이아웃 */}
-        <div className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-auto m-4 ml-2 bg-clay-preview rounded-clay shadow-clay-blue">
-          {/* 플랫폼 레이블 */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-3 px-5 py-2 z-10 bg-clay-card-white rounded-clay-md shadow-clay-neutral-sm">
-            <span className="text-sm font-semibold text-gray-500">
+        <div className="flex-1 flex flex-col items-center p-4 overflow-auto m-4 ml-2 bg-clay-preview rounded-clay shadow-clay-blue">
+          {/* 플랫폼 레이블 - 상단 고정 */}
+          <div className="flex items-center gap-3 px-5 py-2 mb-4 bg-clay-card-white rounded-clay-md shadow-clay-neutral-sm">
+            <span className="text-sm font-semibold text-gray-600">
               미리보기
             </span>
             <span className="text-sm font-bold uppercase px-3 py-0.5 rounded-full bg-clay-purple text-white shadow-clay-xs">
@@ -162,14 +162,14 @@ function App() {
           </div>
 
           {/* 채팅 미리보기 - 프레임 없이 직접 렌더링 */}
-          <div className="flex-1 flex items-center justify-center w-full pt-12 pb-2">
+          <div className="flex-1 flex items-center justify-center w-full">
             <div className="overflow-hidden rounded-lg shadow-lg">
               <ChatPreview />
             </div>
           </div>
 
           {/* 안내 텍스트 - 미리보기 아래 배치 */}
-          <div className="mb-4 px-5 py-2 bg-clay-card-light rounded-clay-sm shadow-clay-neutral-md text-gray-500 font-semibold text-[13px]">
+          <div className="mt-4 mb-2 px-5 py-2 bg-clay-card-light rounded-clay-sm shadow-clay-neutral-md text-gray-600 font-semibold text-[13px]">
             메시지를 편집하고 PNG로 저장하세요
           </div>
         </div>
