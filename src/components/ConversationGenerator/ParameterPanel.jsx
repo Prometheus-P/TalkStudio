@@ -131,7 +131,7 @@ const ParameterPanel = ({
             cursor: disabled ? 'not-allowed' : 'pointer',
           }}
         />
-        <div className="flex justify-between text-xs text-gray-400">
+        <div className="flex justify-between text-xs text-gray-600">
           <span>5개</span>
           <span>50개</span>
         </div>

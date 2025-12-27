@@ -105,7 +105,7 @@ const VideoExportButton = () => {
 
   if (!isSupported) {
     return (
-      <div className="text-xs text-gray-400 text-center py-2">
+      <div className="text-xs text-gray-600 text-center py-2">
         영상 내보내기가 이 브라우저에서 지원되지 않습니다
       </div>
     );
@@ -167,7 +167,7 @@ const VideoExportButton = () => {
 
       {/* 예상 시간 */}
       {!isExporting && messages.length > 0 && (
-        <p className="text-xs text-gray-500 text-center">
+        <p className="text-xs text-gray-600 text-center">
           {estimatedText}
         </p>
       )}

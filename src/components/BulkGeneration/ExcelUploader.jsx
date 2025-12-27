@@ -217,7 +217,7 @@ const ExcelUploader = ({ onBatchComplete, disabled = false }) => {
             <CheckCircle size={40} className="text-purple-500 mx-auto" />
             <div>
               <p className="text-sm font-medium text-gray-800">{file.name}</p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-600">
                 {(file.size / 1024).toFixed(1)} KB
               </p>
             </div>
@@ -247,14 +247,14 @@ const ExcelUploader = ({ onBatchComplete, disabled = false }) => {
           <div className="space-y-3">
             <Upload
               size={40}
-              className={isDragOver ? 'text-purple-500' : 'text-gray-400'}
+              className={isDragOver ? 'text-purple-500' : 'text-gray-600'}
               style={{ margin: '0 auto' }}
             />
             <div>
               <p className="text-sm font-medium text-gray-700">
                 Excel 파일을 드래그하거나 클릭하여 선택
               </p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-600 mt-1">
                 .xlsx, .xls 파일 (최대 5MB, 100개 시나리오)
               </p>
             </div>

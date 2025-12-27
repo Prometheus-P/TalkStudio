@@ -16,7 +16,7 @@ const BottomTabBar = ({ activeView, setActiveView }) => {
           className={`flex flex-col items-center gap-1 transition-all duration-300 ${
             activeView === tab.name
               ? 'text-violet-600 scale-110'
-              : 'text-gray-400'
+              : 'text-gray-600'
           }`}
         >
           <tab.icon size={24} />

@@ -122,7 +122,7 @@ const SequenceExportButton = () => {
           ${isRendering
             ? 'bg-blue-100 text-blue-600 cursor-wait'
             : messages.length === 0
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              ? 'bg-gray-100 text-gray-600 cursor-not-allowed'
               : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600 shadow-md hover:shadow-lg'
           }
         `}
@@ -152,7 +152,7 @@ const SequenceExportButton = () => {
 
       {/* 예상 정보 */}
       {!isRendering && messages.length > 0 && (
-        <p className="text-xs text-gray-500 text-center">
+        <p className="text-xs text-gray-600 text-center">
           {estimatedText}
         </p>
       )}

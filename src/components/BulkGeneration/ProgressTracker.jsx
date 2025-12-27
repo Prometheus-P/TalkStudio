@@ -93,14 +93,14 @@ const BatchResultsViewer = ({ batchResult, onSelectResult }) => {
           >
             {success ? '배치 처리 완료!' : '일부 처리 실패'}
           </p>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-600 mt-1">
             {processed} / {total} 프롬프트 성공 ({successRate}%)
           </p>
         </div>
 
         {/* Remaining Quota */}
         <div className="text-right">
-          <p className="text-xs text-gray-500">남은 할당량</p>
+          <p className="text-xs text-gray-600">남은 할당량</p>
           <p className="text-sm font-semibold text-purple-600">{remaining_quota}회</p>
         </div>
       </div>
@@ -128,10 +128,10 @@ const BatchResultsViewer = ({ batchResult, onSelectResult }) => {
             textAlign: 'center',
           }}
         >
-          <p className={`text-lg font-bold ${failed > 0 ? 'text-red-600' : 'text-gray-400'}`}>
+          <p className={`text-lg font-bold ${failed > 0 ? 'text-red-600' : 'text-gray-600'}`}>
             {failed}
           </p>
-          <p className={`text-xs ${failed > 0 ? 'text-red-700' : 'text-gray-500'}`}>실패</p>
+          <p className={`text-xs ${failed > 0 ? 'text-red-700' : 'text-gray-600'}`}>실패</p>
         </div>
         <div
           style={{
@@ -192,16 +192,16 @@ const BatchResultsViewer = ({ batchResult, onSelectResult }) => {
                   <p className="text-xs text-red-500 truncate">{result.error}</p>
                 )}
                 {result.status === 'success' && result.messages && (
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-600">
                     {result.messages.length}개 메시지 • {result.tokens_used} 토큰
                   </p>
                 )}
               </div>
 
               {expandedRow === result.row_number ? (
-                <ChevronUp size={16} className="text-gray-400" />
+                <ChevronUp size={16} className="text-gray-600" />
               ) : (
-                <ChevronDown size={16} className="text-gray-400" />
+                <ChevronDown size={16} className="text-gray-600" />
               )}
             </div>
 
@@ -225,14 +225,14 @@ const BatchResultsViewer = ({ batchResult, onSelectResult }) => {
                         border: '1px solid #E5E7EB',
                       }}
                     >
-                      <span className="text-xs font-medium text-gray-500">
+                      <span className="text-xs font-medium text-gray-600">
                         {msg.speaker === 'me' ? '나' : '상대방'}
                       </span>
                       <p className="text-sm text-gray-800">{msg.text}</p>
                     </div>
                   ))}
                   {result.messages.length > 5 && (
-                    <p className="text-xs text-gray-500 text-center">
+                    <p className="text-xs text-gray-600 text-center">
                       ...외 {result.messages.length - 5}개 메시지
                     </p>
                   )}

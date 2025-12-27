@@ -1787,7 +1787,7 @@ const InstaHeader = ({ title, theme, avatar }) => (
       >
         {title}
       </span>
-      <span className="text-xs text-gray-500">Active now</span>
+      <span className="text-xs text-gray-600">Active now</span>
     </div>
     <div className="flex gap-4" style={{ color: theme.headerTitleColor }}>
       <Phone size={20} />
@@ -1813,7 +1813,7 @@ const InputAreaDecoration = ({ theme: _theme, title: _title }) => {
         className="flex-1 h-9 rounded-full px-4 flex items-center"
         style={{ backgroundColor: '#F5F5F5' }}
       >
-        <span className="text-gray-400 text-sm">메시지를 입력하세요</span>
+        <span className="text-gray-600 text-sm">메시지를 입력하세요</span>
       </div>
     </div>
   );

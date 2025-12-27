@@ -326,7 +326,7 @@ const TemplateCard = ({
             )}
           </div>
           <p
-            className="text-xs text-gray-500 line-clamp-2"
+            className="text-xs text-gray-600 line-clamp-2"
             style={{
               display: '-webkit-box',
               WebkitLineClamp: 2,
@@ -336,7 +336,7 @@ const TemplateCard = ({
           >
             {template.scenario}
           </p>
-          <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
+          <div className="flex items-center gap-3 mt-2 text-xs text-gray-600">
             <span>{template.participants}명</span>
             <span>{template.messageCount}개 메시지</span>
             <span
