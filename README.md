@@ -37,27 +37,56 @@
 
 ## 주요 기능
 
-### 🍎 진짜 iOS처럼
-모든 테마에 **실제 iOS 상태바** 적용. 시간, 배터리, 와이파이까지 완벽 재현.
+<table>
+<tr>
+<td width="50%">
 
-### 💬 4가지 메신저 완벽 지원
-
+### 💬 메신저 테마
 | 플랫폼 | 특징 |
 |:------:|------|
-| **카카오톡** | 회색 읽음 표시, 실제와 동일한 레이아웃 |
-| **Discord** | @멘션 하이라이트, "Today at" 타임스탬프 |
-| **Telegram** | 온라인 상태 표시, iOS 스타일 체크마크 |
-| **Instagram** | Seen 읽음 확인, 메시지 위 시간 표시 |
+| **카카오톡** | 읽음 표시, 실제 레이아웃 |
+| **Discord** | @멘션, 타임스탬프 |
+| **Telegram** | 온라인 상태, 체크마크 |
+| **Instagram** | Seen 표시, 시간 배치 |
 
-### 📐 쇼츠 버전 지원
-1080x1920 세로형 테마로 **YouTube Shorts, Instagram Reels**에 바로 활용
+</td>
+<td width="50%">
 
-### ✨ 더 많은 기능
-- **실시간 미리보기** - 편집 내용이 즉시 iPhone 프레임에 반영
-- **다중 발화자** - 최대 10명까지 프로필 설정 가능
-- **드래그 앤 드롭** - 메시지 순서 자유롭게 변경
-- **프로젝트 저장** - 작업 내용 자동/수동 저장
-- **고품질 PNG 내보내기** - 선명한 이미지로 저장
+### 🍎 iOS 재현
+| 기능 | 설명 |
+|:----:|------|
+| **상태바** | 시간, 배터리, WiFi |
+| **폰트** | SF Pro 시스템 폰트 |
+| **프레임** | iPhone 노치 디자인 |
+| **해상도** | Retina 2x 지원 |
+
+</td>
+</tr>
+<tr>
+<td width="50%">
+
+### ✏️ 에디터
+| 기능 | 설명 |
+|:----:|------|
+| **실시간 미리보기** | 즉시 반영 |
+| **다중 발화자** | 최대 10명 |
+| **드래그 정렬** | 순서 변경 |
+| **메시지 타입** | 텍스트, 이미지 |
+
+</td>
+<td width="50%">
+
+### 📤 내보내기
+| 기능 | 설명 |
+|:----:|------|
+| **PNG 저장** | 고품질 이미지 |
+| **쇼츠 모드** | 1080x1920 세로형 |
+| **프로젝트 저장** | 자동/수동 저장 |
+| **클립보드 복사** | 바로 붙여넣기 |
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -144,6 +173,21 @@ TalkStudio/
 ├── scripts/                # AI 대화 생성 & 캡처 스크립트
 └── specs/                  # 기능 스펙 문서
 ```
+
+---
+
+## 아키텍처 다이어그램
+
+FigJam으로 작성된 프로젝트 아키텍처 문서입니다.
+
+| 다이어그램 | 설명 | 링크 |
+|-----------|------|:----:|
+| **전체 시스템 플로우** | End-to-End 플로우 (User → Frontend → Backend → Storage) | [보기](https://www.figma.com/online-whiteboard/create-diagram/8cbf2964-7ab8-4cb1-adc8-fd27f89f9856) |
+| **앱 아키텍처** | 3-Column UI 레이아웃, Zustand 상태 관리, 데이터 흐름 | [보기](https://www.figma.com/online-whiteboard/create-diagram/201dd821-bae7-4244-89bb-db4dc3a60c26) |
+| **사용자 플로우** | 테마 선택 → 메시지 작성 → 미리보기 → 캡처 과정 | [보기](https://www.figma.com/online-whiteboard/create-diagram/7a4c5566-7848-43e5-9bde-107d24435ad2) |
+| **상태 관리** | Zustand Store 상태 전이 다이어그램 | [보기](https://www.figma.com/online-whiteboard/create-diagram/eb38a477-ba22-4bdb-91e5-e619b9a1821f) |
+| **컴포넌트 구조** | React 컴포넌트 계층 구조 (Sidebar, Editor, Preview) | [보기](https://www.figma.com/online-whiteboard/create-diagram/22ecf2d9-0e00-4878-8e46-23ac626a5dfb) |
+| **백엔드 아키텍처** | Clean Architecture (Router → Service → Repository) | [보기](https://www.figma.com/online-whiteboard/create-diagram/b06c9856-4326-4b26-93f9-7bce56900434) |
 
 ---
 
