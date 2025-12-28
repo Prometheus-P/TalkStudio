@@ -91,11 +91,7 @@ const AIGenerator = ({ onClose, onGenerated }) => {
 
   // Handle generation
   const handleGenerate = useCallback(async () => {
-    console.log('[AIGenerator] handleGenerate called', { isValid, isGenerating, selectedTemplate, scenario });
-    if (!isValid || isGenerating) {
-      console.log('[AIGenerator] Early return - isValid:', isValid, 'isGenerating:', isGenerating);
-      return;
-    }
+    if (!isValid || isGenerating) return;
 
     setIsGenerating(true);
     setError(null);
@@ -109,7 +105,6 @@ const AIGenerator = ({ onClose, onGenerated }) => {
         tone,
         platform,
       };
-      console.log('[AIGenerator] Calling generateConversation with params:', params);
 
       // Include templateId if using a template
       if (activeTab === 'template' && selectedTemplate) {
@@ -117,7 +112,6 @@ const AIGenerator = ({ onClose, onGenerated }) => {
       }
 
       const conversation = await generateConversation(params);
-      console.log('[AIGenerator] API response:', conversation);
 
       // Convert to TalkStudio format
       // API 응답의 msg.role은 'me' 또는 'other'로 반환됨
@@ -154,7 +148,6 @@ const AIGenerator = ({ onClose, onGenerated }) => {
       }, 1500);
 
     } catch (err) {
-      console.error('[AIGenerator] Error:', err);
       setError(err.message || '대화 생성에 실패했습니다.');
     } finally {
       setIsGenerating(false);
