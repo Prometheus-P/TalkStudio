@@ -114,12 +114,13 @@ const AIGenerator = ({ onClose, onGenerated }) => {
       const conversation = await generateConversation(params);
 
       // Convert to TalkStudio format
+      // API 응답의 msg.role은 'me' 또는 'other'로 반환됨
       const talkStudioMessages = conversation.messages.map((msg, idx) => ({
-        id: `ai-${Date.now()}-${idx}`,
-        sender: msg.sender === conversation.participants[0] ? 'me' : 'other',
+        id: msg.id || `ai-${Date.now()}-${idx}`,
+        sender: msg.role || (msg.authorId === 'me' ? 'me' : 'other'),
         type: 'text',
         text: msg.text,
-        time: msg.timestamp,
+        time: msg.datetime || msg.timestamp || new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
       }));
 
       // Update TalkStudio store
