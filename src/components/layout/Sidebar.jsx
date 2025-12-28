@@ -37,10 +37,58 @@ const platforms = [
   },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ horizontal = false }) => {
   const platformSkin = useChatStore((s) => s.conversation.platformSkin);
   const setPlatform = useChatStore((s) => s.setPlatform);
 
+  // 모바일 가로 모드
+  if (horizontal) {
+    return (
+      <nav className="flex items-center gap-3 px-4 py-3 overflow-x-auto">
+        {platforms.map((platform) => {
+          const Icon = platform.icon;
+          const isActive = platformSkin === platform.id;
+
+          return (
+            <button
+              key={platform.id}
+              onClick={() => setPlatform(platform.id)}
+              className="flex items-center gap-2 shrink-0"
+              style={{
+                padding: '8px 16px',
+                borderRadius: '16px',
+                background: isActive
+                  ? platform.gradient
+                  : 'linear-gradient(145deg, #F3F4F6 0%, #E5E7EB 100%)',
+                boxShadow: isActive
+                  ? `0px 4px 0px ${platform.shadowColor}`
+                  : '0px 2px 0px rgba(0, 0, 0, 0.08)',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <Icon
+                size={18}
+                style={{
+                  color: isActive ? '#FFFFFF' : '#6B7280',
+                }}
+              />
+              <span
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  color: isActive ? '#FFFFFF' : '#6B7280',
+                }}
+              >
+                {platform.label}
+              </span>
+            </button>
+          );
+        })}
+      </nav>
+    );
+  }
+
+  // 데스크톱 세로 모드
   return (
     <nav
       className="w-24 flex flex-col items-center py-6 gap-5 shrink-0 m-4 mr-0"
