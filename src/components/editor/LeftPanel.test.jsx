@@ -18,16 +18,8 @@ vi.mock('./ThemeControls', () => ({
   default: () => <div data-testid="theme-controls">ThemeControls</div>,
 }));
 
-vi.mock('./ExportButton', () => ({
-  default: () => <button data-testid="export-button">Export</button>,
-}));
-
-vi.mock('./SequenceExportButton', () => ({
-  default: () => <button data-testid="sequence-export">Sequence</button>,
-}));
-
-vi.mock('./VideoExportButton', () => ({
-  default: () => <button data-testid="video-export">Video</button>,
+vi.mock('./UnifiedExportButton', () => ({
+  default: () => <button data-testid="unified-export-button">저장하기</button>,
 }));
 
 describe('LeftPanel', () => {
@@ -77,20 +69,15 @@ describe('LeftPanel', () => {
     });
   });
 
-  describe('Export Buttons', () => {
-    it('should render export button', () => {
+  describe('Export Button', () => {
+    it('should render unified export button', () => {
       render(<LeftPanel />);
-      expect(screen.getByTestId('export-button')).toBeInTheDocument();
+      expect(screen.getByTestId('unified-export-button')).toBeInTheDocument();
     });
 
-    it('should render sequence export button', () => {
+    it('should display save text', () => {
       render(<LeftPanel />);
-      expect(screen.getByTestId('sequence-export')).toBeInTheDocument();
-    });
-
-    it('should render video export button', () => {
-      render(<LeftPanel />);
-      expect(screen.getByTestId('video-export')).toBeInTheDocument();
+      expect(screen.getByText('저장하기')).toBeInTheDocument();
     });
   });
 

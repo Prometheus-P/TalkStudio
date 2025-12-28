@@ -316,51 +316,54 @@ const MessageItem = ({
           </span>
         </div>
 
-        {/* 날짜 입력 */}
-        <input
-          type="date"
-          value={dateValue}
-          onChange={handleDateChange}
-          style={{
-            width: '110px',
-            padding: '6px 8px',
-            borderRadius: '10px',
-            fontSize: '11px',
-            fontWeight: 500,
-            background: 'linear-gradient(145deg, #FFFFFF 0%, #F9FAFB 100%)',
-            border: 'none',
-            boxShadow: '0px 2px 0px rgba(0, 0, 0, 0.06)',
-            color: '#4B5563',
-            outline: 'none',
-          }}
-        />
+        {/* 날짜/시간 입력 - 호버 시 표시 */}
+        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          {/* 날짜 입력 */}
+          <input
+            type="date"
+            value={dateValue}
+            onChange={handleDateChange}
+            style={{
+              width: '110px',
+              padding: '6px 8px',
+              borderRadius: '10px',
+              fontSize: '11px',
+              fontWeight: 500,
+              background: 'linear-gradient(145deg, #FFFFFF 0%, #F9FAFB 100%)',
+              border: 'none',
+              boxShadow: '0px 2px 0px rgba(0, 0, 0, 0.06)',
+              color: '#4B5563',
+              outline: 'none',
+            }}
+          />
 
-        {/* 시간 입력 */}
-        <input
-          type="text"
-          value={timeValue}
-          onChange={handleTimeChange}
-          style={{
-            width: '80px',
-            padding: '6px 8px',
-            borderRadius: '10px',
-            fontSize: '11px',
-            fontWeight: 500,
-            background: 'linear-gradient(145deg, #FFFFFF 0%, #F9FAFB 100%)',
-            border: hasTimeWarning ? '2px solid #F59E0B' : 'none',
-            boxShadow: '0px 2px 0px rgba(0, 0, 0, 0.06)',
-            color: '#4B5563',
-            outline: 'none',
-          }}
-          placeholder="오후 12:30"
-        />
+          {/* 시간 입력 */}
+          <input
+            type="text"
+            value={timeValue}
+            onChange={handleTimeChange}
+            style={{
+              width: '80px',
+              padding: '6px 8px',
+              borderRadius: '10px',
+              fontSize: '11px',
+              fontWeight: 500,
+              background: 'linear-gradient(145deg, #FFFFFF 0%, #F9FAFB 100%)',
+              border: hasTimeWarning ? '2px solid #F59E0B' : 'none',
+              boxShadow: '0px 2px 0px rgba(0, 0, 0, 0.06)',
+              color: '#4B5563',
+              outline: 'none',
+            }}
+            placeholder="오후 12:30"
+          />
 
-        {/* 시간 순서 경고 */}
-        {hasTimeWarning && (
-          <div title="이전 메시지보다 시간이 이릅니다">
-            <AlertTriangle size={14} style={{ color: '#F59E0B' }} />
-          </div>
-        )}
+          {/* 시간 순서 경고 */}
+          {hasTimeWarning && (
+            <div title="이전 메시지보다 시간이 이릅니다">
+              <AlertTriangle size={14} style={{ color: '#F59E0B' }} />
+            </div>
+          )}
+        </div>
 
         {/* 액션 버튼들 */}
         <div className="ml-auto flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
