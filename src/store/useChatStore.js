@@ -141,6 +141,14 @@ const useChatStore = create((set, get) => ({
     },
   })),
 
+  /** 메시지 전체 교체 (AI 생성 시 사용) */
+  setMessages: (messages) => set((state) => ({
+    conversation: {
+      ...state.conversation,
+      messages: messages.map((m) => sanitizeMessage(m)),
+    },
+  })),
+
   /** 메시지 추가 (sanitized) */
   addMessage: (message) => set((state) => ({
     conversation: {
