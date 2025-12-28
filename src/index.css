@@ -1,7 +1,5 @@
-@import "tailwindcss";
-
 /* ========================================
-   PLATFORM FONTS
+   PLATFORM FONTS - @import must come first
    ======================================== */
 
 /* Pretendard - KakaoTalk 스타일 한글 폰트 (오픈소스) */
@@ -12,6 +10,9 @@
 
 /* Proxima Nova 대체 - Instagram 스타일 */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+/* Tailwind CSS */
+@import "tailwindcss";
 
 /* Tailwind CSS 4 - html2canvas 호환을 위해 oklch 대신 hex 색상 사용 */
 @theme {
