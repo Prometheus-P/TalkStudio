@@ -550,7 +550,7 @@ jobs:
             console.log(`Release created: ${release.html_url}`);
 
       - name: Notify Sentry of release
-        if: secrets.SENTRY_AUTH_TOKEN != ''
+        continue-on-error: true
         run: |
           curl -X POST "https://sentry.io/api/0/organizations/${{ secrets.SENTRY_ORG }}/releases/" \
             -H "Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}" \
