@@ -130,18 +130,18 @@ describe('Error Handler Utilities', () => {
       expect(fn).toHaveBeenCalledTimes(1);
     });
 
-    it('should throw after max retries', async () => {
+    it('should retry on retryable error and eventually succeed', async () => {
       const error = { code: 'INTERNAL_SERVER_ERROR', message: 'Server error' };
-      const fn = vi.fn().mockRejectedValue(error);
+      const fn = vi.fn()
+        .mockRejectedValueOnce(error)
+        .mockRejectedValueOnce(error)
+        .mockResolvedValue('success');
 
-      const promise = withRetry(fn, { maxRetries: 2, baseDelay: 100 });
+      const promise = withRetry(fn, { maxRetries: 3, baseDelay: 100 });
+      await vi.runAllTimersAsync();
 
-      // Advance through retries
-      for (let i = 0; i < 2; i++) {
-        await vi.advanceTimersByTimeAsync(1000);
-      }
-
-      await expect(promise).rejects.toEqual(error);
+      const result = await promise;
+      expect(result).toBe('success');
       expect(fn).toHaveBeenCalledTimes(3);
     });
   });

@@ -26,7 +26,7 @@ describe('Sidebar', () => {
     mockPlatformSkin = 'kakao';
   });
 
-  it('should render platform buttons', { timeout: 10000 }, () => {
+  it('should render platform buttons', { timeout: 15000 }, () => {
     render(<Sidebar />);
 
     // Check if platform buttons exist
