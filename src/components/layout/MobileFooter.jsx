@@ -21,6 +21,7 @@ import {
 import html2canvas from 'html2canvas';
 import SaveButton from './SaveButton';
 import BottomSheet from '../common/BottomSheet';
+import MobileProjectSheet from './MobileProjectSheet';
 import useChatStore from '../../store/useChatStore';
 import { exportCanvas, downloadDataUrl } from '../../utils/exportUtils';
 import { renderSequence } from '../../utils/sequenceRenderer';
@@ -117,10 +118,13 @@ const MobileFooter = ({
 }) => {
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showSaveOptions, setShowSaveOptions] = useState(false);
+  const [showProjectSheet, setShowProjectSheet] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [progress, setProgress] = useState(0);
 
   const messages = useChatStore((s) => s.conversation.messages);
+  const saveProject = useChatStore((s) => s.saveProject);
+  const createNewProject = useChatStore((s) => s.createNewProject);
   const theme = useChatStore((s) => s.theme);
   const setVisibleCount = useChatStore((s) => s.setVisibleMessageCount);
   const stopRendering = useChatStore((s) => s.stopSequenceRendering);
@@ -447,18 +451,18 @@ const MobileFooter = ({
             label="프로젝트 관리"
             onClick={() => {
               setShowMoreMenu(false);
-              // TODO: 프로젝트 관리 시트 열기
+              setShowProjectSheet(true);
             }}
-            badge={{ text: '준비중', bg: '#F3F4F6', color: '#6B7280' }}
           />
           <MenuItem
             icon={FilePlus}
             label="새 프로젝트로 저장"
             onClick={() => {
               setShowMoreMenu(false);
-              // TODO: 새 프로젝트 생성
+              // 현재 프로젝트 저장 후 새 프로젝트 생성
+              saveProject();
+              createNewProject();
             }}
-            badge={{ text: '준비중', bg: '#F3F4F6', color: '#6B7280' }}
           />
           <MenuItem
             icon={Share2}
@@ -498,6 +502,12 @@ const MobileFooter = ({
           </a>
         </div>
       </BottomSheet>
+
+      {/* 프로젝트 관리 바텀시트 */}
+      <MobileProjectSheet
+        isOpen={showProjectSheet}
+        onClose={() => setShowProjectSheet(false)}
+      />
     </>
   );
 };
