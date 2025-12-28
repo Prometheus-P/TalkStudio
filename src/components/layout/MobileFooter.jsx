@@ -17,12 +17,14 @@ import {
   Layers,
   Video,
   Mail,
+  Sparkles,
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import SaveButton from './SaveButton';
 import BottomSheet from '../common/BottomSheet';
 import MobileProjectSheet from './MobileProjectSheet';
 import MobileSettingsSheet from './MobileSettingsSheet';
+import AIGenerator from '../../pages/AIGenerator';
 import useChatStore from '../../store/useChatStore';
 import { exportCanvas, downloadDataUrl } from '../../utils/exportUtils';
 import { renderSequence } from '../../utils/sequenceRenderer';
@@ -121,6 +123,7 @@ const MobileFooter = ({
   const [showSaveOptions, setShowSaveOptions] = useState(false);
   const [showProjectSheet, setShowProjectSheet] = useState(false);
   const [showSettingsSheet, setShowSettingsSheet] = useState(false);
+  const [showAIGenerator, setShowAIGenerator] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [progress, setProgress] = useState(0);
 
@@ -448,6 +451,17 @@ const MobileFooter = ({
         title="메뉴"
       >
         <div className="py-2">
+          {/* AI 대화 생성 */}
+          <MenuItem
+            icon={Sparkles}
+            label="AI 대화 생성"
+            onClick={() => {
+              setShowMoreMenu(false);
+              setShowAIGenerator(true);
+            }}
+            badge={{ text: 'AI', bg: '#F3E8FF', color: '#7C3AED' }}
+          />
+
           <MenuItem
             icon={FolderOpen}
             label="프로젝트 관리"
@@ -515,6 +529,14 @@ const MobileFooter = ({
         isOpen={showSettingsSheet}
         onClose={() => setShowSettingsSheet(false)}
       />
+
+      {/* AI 대화 생성 모달 */}
+      {showAIGenerator && (
+        <AIGenerator
+          onClose={() => setShowAIGenerator(false)}
+          onGenerated={() => setShowAIGenerator(false)}
+        />
+      )}
     </>
   );
 };

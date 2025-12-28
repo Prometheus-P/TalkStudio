@@ -4,11 +4,12 @@
  * CLAYMORPHISM DESIGN STYLE (Tailwind 커스텀 클래스 적용)
  */
 import React, { useState, useMemo } from 'react';
-import { FolderOpen, Save, Cloud, CloudOff } from 'lucide-react';
+import { FolderOpen, Save, Cloud, CloudOff, Sparkles } from 'lucide-react';
 import Sidebar from './components/layout/Sidebar';
 import LeftPanel from './components/editor/LeftPanel';
 import ChatPreview from './components/preview/ChatPreview';
 import ProjectListModal from './components/editor/ProjectListModal';
+import AIGenerator from './pages/AIGenerator';
 import useChatStore from './store/useChatStore';
 import { useAutoSave } from './hooks/useAutoSave';
 import { useMediaQuery } from './hooks/useMediaQuery';
@@ -27,6 +28,7 @@ function App() {
   const saveCurrentProject = useChatStore((s) => s.saveCurrentProject);
 
   const [isProjectModalOpen, setProjectModalOpen] = useState(false);
+  const [showAIGenerator, setShowAIGenerator] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, saved, error
 
   // 프로젝트 데이터 (auto-save용)
@@ -100,6 +102,16 @@ function App() {
               >
                 <FolderOpen size={14} />
                 <span className="text-xs font-semibold">프로젝트</span>
+              </button>
+
+              {/* AI 대화 생성 버튼 */}
+              <button
+                onClick={() => setShowAIGenerator(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-transform hover:scale-105 bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg"
+                title="AI 대화 생성"
+              >
+                <Sparkles size={14} />
+                <span className="text-xs font-semibold">AI 생성</span>
               </button>
 
               {/* 저장 버튼 */}
@@ -180,6 +192,14 @@ function App() {
         isOpen={isProjectModalOpen}
         onClose={() => setProjectModalOpen(false)}
       />
+
+      {/* AI 대화 생성 모달 */}
+      {showAIGenerator && (
+        <AIGenerator
+          onClose={() => setShowAIGenerator(false)}
+          onGenerated={() => setShowAIGenerator(false)}
+        />
+      )}
     </div>
   );
 }

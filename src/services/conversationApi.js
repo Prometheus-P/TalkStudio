@@ -4,9 +4,11 @@
  * 변경사항:
  * - 백엔드 API → Vercel Edge Function (/api/generate)
  * - Excel 처리는 excelParser.js로 이전됨
+ * - 템플릿은 로컬 데이터 사용 (src/data/templates.js)
  */
 
 import { getErrorMessage } from '../utils/errorHandler';
+import { SYSTEM_TEMPLATES, getTemplatesByCategory } from '../data/templates';
 
 // Vercel Edge Function 엔드포인트 (개발 시에는 Vite proxy 사용)
 const API_BASE_URL = '/api';
@@ -91,7 +93,7 @@ const apiRequest = async (endpoint, options = {}) => {
 // ============ Conversation API ============
 
 /**
- * Generate a new conversation
+ * Generate a new conversation using Edge Function
  * @param {Object} params - Generation parameters
  * @param {string} params.scenario - Scenario description
  * @param {number} [params.participants=2] - Number of participants
@@ -102,11 +104,22 @@ const apiRequest = async (endpoint, options = {}) => {
  * @param {string} [params.templateId] - Template ID
  */
 export const generateConversation = async (params) => {
-  const response = await apiRequest('/conversations/generate', {
+  const response = await apiRequest('/generate', {
     method: 'POST',
-    body: JSON.stringify(params),
+    body: JSON.stringify({
+      prompt: params.scenario || params.prompt,
+      messageCount: params.messageCount || 10,
+      style: params.tone || 'casual',
+      language: params.language || 'ko',
+    }),
   });
-  return response.data.conversation;
+
+  // Edge Function 응답 형식을 기존 API 형식으로 변환
+  return {
+    participants: params.participantNames || ['나', '상대방'],
+    messages: response.data?.messages || [],
+    metadata: response.data?.metadata || {},
+  };
 };
 
 /**
@@ -169,16 +182,15 @@ export const addMessage = async (id, sender, text, instruction) => {
   return response.data.conversation;
 };
 
-// ============ Template API ============
+// ============ Template API (로컬 데이터 사용) ============
 
 /**
- * Get all templates
+ * Get all templates from local data
  * @param {string} [category] - Filter by category
  */
 export const getTemplates = async (category) => {
-  const params = category ? `?category=${category}` : '';
-  const response = await apiRequest(`/templates${params}`);
-  return response.data.templates;
+  // 로컬 데이터 사용 (백엔드 API 없음)
+  return getTemplatesByCategory(category);
 };
 
 /**

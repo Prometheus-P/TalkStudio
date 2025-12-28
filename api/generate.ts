@@ -1,6 +1,6 @@
 /**
  * Vercel Edge Function - AI 대화 생성
- * backend/app/services/ai_service.py 로직을 Edge Function으로 이식
+ * Upstage Solar API를 사용한 대화 생성
  *
  * 엔드포인트: POST /api/generate
  */
@@ -129,10 +129,10 @@ export default async function handler(req: Request): Promise<Response> {
   }
 
   // Check API key
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.UPSTAGE_API_KEY;
   if (!apiKey) {
     return new Response(
-      JSON.stringify({ error: 'OpenAI API key not configured' }),
+      JSON.stringify({ error: 'Upstage API key not configured' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
@@ -157,28 +157,27 @@ export default async function handler(req: Request): Promise<Response> {
     const systemPrompt = buildSystemPrompt(style, language, messageCount);
     const userPrompt = `Generate a conversation about: ${prompt}`;
 
-    // Call OpenAI
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Call Upstage Solar API
+    const response = await fetch('https://api.upstage.ai/v1/solar/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'solar-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt },
         ],
         temperature: 0.8,
         max_tokens: 2000,
-        response_format: { type: 'json_object' },
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      console.error('OpenAI API error:', errorData);
+      console.error('Upstage API error:', errorData);
       return new Response(
         JSON.stringify({ error: 'AI generation failed', details: errorData }),
         { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -229,7 +228,7 @@ export default async function handler(req: Request): Promise<Response> {
         data: {
           messages,
           metadata: {
-            model: 'gpt-4o-mini',
+            model: 'solar-mini',
             tokensUsed: data.usage?.total_tokens || 0,
             generatedAt: new Date().toISOString(),
           },
