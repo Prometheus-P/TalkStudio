@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 1200px;
+      height: 630px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 50%, #4C1D95 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+      padding: 60px;
+    }
+
+    .phones {
+      display: flex;
+      gap: 20px;
+      transform: perspective(1000px) rotateY(-5deg);
+    }
+
+    .phone {
+      width: 160px;
+      height: 320px;
+      background: #1a1a1a;
+      border-radius: 24px;
+      padding: 8px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .phone.kakao .phone-screen {
+      background: #B2C7D9;
+    }
+
+    .phone.discord .phone-screen {
+      background: #36393F;
+    }
+
+    .phone.telegram .phone-screen {
+      background: linear-gradient(180deg, #5BA0D0 0%, #4A90C0 100%);
+    }
+
+    .phone.instagram .phone-screen {
+      background: #FAFAFA;
+    }
+
+    .chat-header {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .phone.kakao .chat-header {
+      background: #B2C7D9;
+      color: #333;
+    }
+
+    .phone.discord .chat-header {
+      background: #36393F;
+      color: #fff;
+    }
+
+    .phone.telegram .chat-header {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .phone.instagram .chat-header {
+      background: #FAFAFA;
+      color: #262626;
+      border-bottom: 1px solid #DBDBDB;
+    }
+
+    .chat-body {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bubble {
+      max-width: 85%;
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-size: 9px;
+      line-height: 1.3;
+    }
+
+    .bubble.other {
+      align-self: flex-start;
+    }
+
+    .bubble.me {
+      align-self: flex-end;
+    }
+
+    .phone.kakao .bubble.other {
+      background: #fff;
+      color: #333;
+    }
+
+    .phone.kakao .bubble.me {
+      background: #FEE500;
+      color: #333;
+    }
+
+    .phone.discord .bubble {
+      background: #40444B;
+      color: #DCDDDE;
+      border-radius: 4px;
+    }
+
+    .phone.telegram .bubble.other {
+      background: #fff;
+      color: #333;
+    }
+
+    .phone.telegram .bubble.me {
+      background: #EEFFDE;
+      color: #333;
+    }
+
+    .phone.instagram .bubble.other {
+      background: #EFEFEF;
+      color: #262626;
+    }
+
+    .phone.instagram .bubble.me {
+      background: #3797F0;
+      color: #fff;
+    }
+
+    .content {
+      text-align: left;
+      color: white;
+    }
+
+    .logo {
+      font-size: 56px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+
+    .tagline {
+      font-size: 24px;
+      font-weight: 500;
+      opacity: 0.95;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .description {
+      font-size: 18px;
+      opacity: 0.8;
+      max-width: 400px;
+      line-height: 1.5;
+    }
+
+    .platforms {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .platform-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="phones">
+      <div class="phone kakao">
+        <div class="phone-screen">
+          <div class="chat-header">KakaoTalk</div>
+          <div class="chat-body">
+            <div class="bubble other">안녕!</div>
+            <div class="bubble me">오 반가워</div>
+            <div class="bubble other">뭐해?</div>
+            <div class="bubble me">그냥 있어 ㅎㅎ</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone discord" style="margin-top: 30px;">
+        <div class="phone-screen">
+          <div class="chat-header"># general</div>
+          <div class="chat-body">
+            <div class="bubble">Hey everyone!</div>
+            <div class="bubble">What's up</div>
+            <div class="bubble">Nothing much</div>
+            <div class="bubble">Cool cool</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="logo">TalkStudio</div>
+      <div class="tagline">대화 스크린샷을<br>진짜처럼 만들어보세요</div>
+      <div class="description">
+        유튜브 썸네일, 인스타 스토리, 블로그 포스팅에 활용할 수 있는 고품질 대화 캡쳐
+      </div>
+      <div class="platforms">
+        <span class="platform-badge">카카오톡</span>
+        <span class="platform-badge">Discord</span>
+        <span class="platform-badge">Telegram</span>
+        <span class="platform-badge">Instagram</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
