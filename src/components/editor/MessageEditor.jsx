@@ -3,7 +3,7 @@
  * CLAYMORPHISM DESIGN STYLE
  */
 import React, { useState, useMemo } from 'react';
-import { Plus, Trash2, Copy, ChevronUp, ChevronDown, AlertTriangle, UserPlus } from 'lucide-react';
+import { Plus, Trash2, Copy, ChevronUp, ChevronDown, AlertTriangle } from 'lucide-react';
 import useChatStore from '../../store/useChatStore';
 import { validateTimeOrder, getCurrentDateTime, extractDate, extractTime, combineDateTime } from '../../utils/timeValidation';
 
@@ -68,7 +68,7 @@ const MessageEditor = () => {
       </div>
 
       {/* 메시지 리스트 */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-1">
+      <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {messages.length === 0 && (
           <div
             className="text-center py-10"
@@ -83,123 +83,142 @@ const MessageEditor = () => {
           </div>
         )}
 
-        {/* 첫 번째 메시지 추가 버튼 */}
-        <InlineAddButton
-          authors={authors}
-          onAdd={(authorId) => handleAddMessage(authorId, 0)}
-        />
-
         {messages.map((message, index) => (
-          <React.Fragment key={message.id}>
-            <MessageItem
-              message={message}
-              index={index}
-              totalCount={messages.length}
-              authors={authors}
-              hasTimeWarning={timeWarnings.includes(message.id)}
-              onUpdate={updateMessage}
-              onRemove={removeMessage}
-              onDuplicate={duplicateMessage}
-              onMoveUp={moveMessageUp}
-              onMoveDown={moveMessageDown}
-            />
-            {/* 메시지 사이 추가 버튼 */}
-            <InlineAddButton
-              authors={authors}
-              onAdd={(authorId) => handleAddMessage(authorId, index + 1)}
-            />
-          </React.Fragment>
+          <MessageItem
+            key={message.id}
+            message={message}
+            index={index}
+            totalCount={messages.length}
+            authors={authors}
+            hasTimeWarning={timeWarnings.includes(message.id)}
+            onUpdate={updateMessage}
+            onRemove={removeMessage}
+            onDuplicate={duplicateMessage}
+            onMoveUp={moveMessageUp}
+            onMoveDown={moveMessageDown}
+          />
         ))}
       </div>
+
+      {/* 하단 메시지 추가 버튼 */}
+      <BottomAddButton
+        authors={authors}
+        onAdd={(authorId) => handleAddMessage(authorId)}
+      />
     </div>
   );
 };
 
-// 인라인 메시지 추가 버튼
-const InlineAddButton = ({ authors, onAdd }) => {
+// 하단 메시지 추가 버튼 - Clay Style
+const BottomAddButton = ({ authors, onAdd }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    <div className="relative flex justify-center py-1 group">
-      <button
-        onClick={() => setShowDropdown(!showDropdown)}
-        className="opacity-30 group-hover:opacity-100 transition-opacity"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px',
-          padding: '4px 12px',
-          borderRadius: '12px',
-          fontSize: '11px',
-          fontWeight: 600,
-          background: 'linear-gradient(145deg, #F3E8FF 0%, #E9D5FF 100%)',
-          color: '#7C3AED',
-          boxShadow: '0px 2px 0px rgba(124, 58, 237, 0.2)',
-          border: 'none',
-          cursor: 'pointer',
-        }}
-      >
-        <Plus size={12} />
-        메시지 추가
-      </button>
-
-      {/* 발신자 선택 드롭다운 */}
-      {showDropdown && (
-        <div
-          className="absolute top-full mt-1 z-20"
+    <div
+      className="p-4"
+      style={{
+        borderTop: '2px solid rgba(168, 85, 247, 0.1)',
+        background: 'linear-gradient(180deg, transparent 0%, rgba(168, 85, 247, 0.03) 100%)',
+      }}
+    >
+      <div className="relative">
+        <button
+          onClick={() => setShowDropdown(!showDropdown)}
           style={{
-            background: '#FFFFFF',
-            borderRadius: '12px',
-            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.15)',
-            padding: '8px',
-            minWidth: '140px',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            padding: '14px 20px',
+            borderRadius: '16px',
+            fontSize: '14px',
+            fontWeight: 600,
+            background: 'linear-gradient(145deg, #F3E8FF 0%, #E9D5FF 100%)',
+            color: '#7C3AED',
+            boxShadow: '0px 4px 0px rgba(124, 58, 237, 0.2)',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
           }}
         >
-          {authors.map((author) => (
-            <button
-              key={author.id}
-              onClick={() => {
-                onAdd(author.id);
-                setShowDropdown(false);
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                width: '100%',
-                padding: '8px 10px',
-                borderRadius: '8px',
-                fontSize: '12px',
-                fontWeight: 500,
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                color: '#374151',
-              }}
-              className="hover:bg-gray-100"
-            >
-              <img
-                src={author.avatarUrl}
-                alt={author.name}
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: '50%',
-                }}
-              />
-              {author.name}
-            </button>
-          ))}
-        </div>
-      )}
+          <Plus size={18} />
+          메시지 추가
+        </button>
 
-      {/* 드롭다운 외부 클릭 시 닫기 */}
-      {showDropdown && (
-        <div
-          className="fixed inset-0 z-10"
-          onClick={() => setShowDropdown(false)}
-        />
-      )}
+        {/* 발신자 선택 드롭다운 */}
+        {showDropdown && (
+          <>
+            <div
+              className="fixed inset-0 z-10"
+              onClick={() => setShowDropdown(false)}
+            />
+            <div
+              className="absolute bottom-full mb-2 left-0 right-0 z-20"
+              style={{
+                background: 'linear-gradient(145deg, #FFFFFF 0%, #F9FAFB 100%)',
+                borderRadius: '16px',
+                boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.15)',
+                padding: '8px',
+                overflow: 'hidden',
+              }}
+            >
+              {authors.map((author) => (
+                <button
+                  key={author.id}
+                  onClick={() => {
+                    onAdd(author.id);
+                    setShowDropdown(false);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    width: '100%',
+                    padding: '10px 12px',
+                    borderRadius: '12px',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#374151',
+                    transition: 'background 0.15s',
+                  }}
+                  className="hover:bg-purple-50"
+                >
+                  <img
+                    src={author.avatarUrl}
+                    alt={author.name}
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: '50%',
+                      boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+                    }}
+                  />
+                  <span>{author.name}</span>
+                  {author.id === 'me' && (
+                    <span
+                      style={{
+                        marginLeft: 'auto',
+                        fontSize: '10px',
+                        padding: '2px 8px',
+                        borderRadius: '8px',
+                        background: '#EFF6FF',
+                        color: '#3B82F6',
+                        fontWeight: 600,
+                      }}
+                    >
+                      나
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

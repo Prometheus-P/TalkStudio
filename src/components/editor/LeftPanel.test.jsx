@@ -31,19 +31,19 @@ describe('LeftPanel', () => {
       expect(screen.getByText('스타일')).toBeInTheDocument();
     });
 
-    it('should show messages tab by default', () => {
+    it('should show profile tab by default', () => {
       render(<LeftPanel />);
-      expect(screen.getByTestId('message-editor')).toBeInTheDocument();
-      expect(screen.queryByTestId('profile-editor')).not.toBeInTheDocument();
+      expect(screen.getByTestId('profile-editor')).toBeInTheDocument();
+      expect(screen.queryByTestId('message-editor')).not.toBeInTheDocument();
       expect(screen.queryByTestId('theme-controls')).not.toBeInTheDocument();
     });
 
-    it('should switch to profile tab when clicked', () => {
+    it('should switch to messages tab when clicked', () => {
       render(<LeftPanel />);
-      fireEvent.click(screen.getByText('프로필'));
+      fireEvent.click(screen.getByText('메시지'));
 
-      expect(screen.getByTestId('profile-editor')).toBeInTheDocument();
-      expect(screen.queryByTestId('message-editor')).not.toBeInTheDocument();
+      expect(screen.getByTestId('message-editor')).toBeInTheDocument();
+      expect(screen.queryByTestId('profile-editor')).not.toBeInTheDocument();
       expect(screen.queryByTestId('theme-controls')).not.toBeInTheDocument();
     });
 
@@ -56,16 +56,16 @@ describe('LeftPanel', () => {
       expect(screen.queryByTestId('profile-editor')).not.toBeInTheDocument();
     });
 
-    it('should switch back to messages tab', () => {
+    it('should switch back to profile tab', () => {
       render(<LeftPanel />);
 
-      // Go to profile first
-      fireEvent.click(screen.getByText('프로필'));
-      expect(screen.getByTestId('profile-editor')).toBeInTheDocument();
-
-      // Switch back to messages
+      // Go to messages first
       fireEvent.click(screen.getByText('메시지'));
       expect(screen.getByTestId('message-editor')).toBeInTheDocument();
+
+      // Switch back to profile
+      fireEvent.click(screen.getByText('프로필'));
+      expect(screen.getByTestId('profile-editor')).toBeInTheDocument();
     });
   });
 

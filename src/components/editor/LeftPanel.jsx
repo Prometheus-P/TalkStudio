@@ -10,13 +10,13 @@ import ThemeControls from './ThemeControls';
 import UnifiedExportButton from './UnifiedExportButton';
 
 const tabs = [
-  { id: 'messages', label: '메시지', icon: MessageSquare, color: '#FF6B9D' },
   { id: 'profile', label: '프로필', icon: Users, color: '#4ADE80' },
+  { id: 'messages', label: '메시지', icon: MessageSquare, color: '#FF6B9D' },
   { id: 'theme', label: '스타일', icon: Palette, color: '#22D3EE' },
 ];
 
 const LeftPanel = () => {
-  const [activeTab, setActiveTab] = useState('messages');
+  const [activeTab, setActiveTab] = useState('profile');
 
   return (
     <div className="flex flex-col h-full">

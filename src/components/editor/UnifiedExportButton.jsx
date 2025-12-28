@@ -3,20 +3,14 @@
  * PNG, 시퀀스, 영상 내보내기를 하나의 드롭다운으로 통합
  * CLAYMORPHISM DESIGN STYLE
  */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import html2canvas from 'html2canvas';
 import { Download, Loader2, ChevronDown, Layers, Video, Mail } from 'lucide-react';
 import useChatStore from '../../store/useChatStore';
-import {
-  checkExportSupport,
-  IMAGE_FORMATS,
-  exportCanvas,
-  downloadDataUrl,
-} from '../../utils/exportUtils';
+import { exportCanvas, downloadDataUrl } from '../../utils/exportUtils';
 import { renderSequence } from '../../utils/sequenceRenderer';
 import { exportAndDownload } from '../../utils/zipExporter';
 import { encodeVideo, downloadVideo, isMediaRecorderSupported } from '../../utils/videoEncoder';
-import { calculateTotalDuration, formatDuration } from '../../utils/durationCalculator';
 
 const UnifiedExportButton = () => {
   const [showMenu, setShowMenu] = useState(false);

@@ -11,6 +11,7 @@ const ThemeControls = () => {
   const updateTheme = useChatStore((s) => s.updateTheme);
   const updateBubbleStyle = useChatStore((s) => s.updateBubbleStyle);
   const resetThemeToPreset = useChatStore((s) => s.resetThemeToPreset);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   return (
     <div className="p-4 space-y-3">
@@ -98,97 +99,134 @@ const ThemeControls = () => {
         )}
       </CollapsibleSection>
 
-      {/* 헤더 설정 */}
-      <CollapsibleSection title="헤더" color="#FB923C">
-        <ToggleInput
-          label="헤더 표시"
-          value={theme.showHeader}
-          onChange={(v) => updateTheme({ showHeader: v })}
-        />
-        <ToggleInput
-          label="상태바 표시"
-          value={theme.showStatusBar}
-          onChange={(v) => updateTheme({ showStatusBar: v })}
-        />
-        <ColorInput
-          label="헤더 배경색"
-          value={theme.headerBg}
-          onChange={(v) => updateTheme({ headerBg: v })}
-        />
-        <ColorInput
-          label="헤더 글자색"
-          value={theme.headerTitleColor}
-          onChange={(v) => updateTheme({ headerTitleColor: v })}
-        />
-      </CollapsibleSection>
+      {/* 고급 설정 토글 */}
+      <button
+        onClick={() => setShowAdvanced(!showAdvanced)}
+        style={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          padding: '12px 16px',
+          fontSize: '13px',
+          fontWeight: 600,
+          borderRadius: '16px',
+          border: 'none',
+          background: showAdvanced
+            ? 'linear-gradient(145deg, #A855F7 0%, #7C3AED 100%)'
+            : 'linear-gradient(145deg, #F3F4F6 0%, #E5E7EB 100%)',
+          boxShadow: showAdvanced
+            ? '0px 3px 0px rgba(124, 58, 237, 0.3)'
+            : '0px 3px 0px rgba(0, 0, 0, 0.1)',
+          color: showAdvanced ? '#FFFFFF' : '#6B7280',
+          cursor: 'pointer',
+        }}
+      >
+        {showAdvanced ? (
+          <ChevronDown size={14} />
+        ) : (
+          <ChevronRight size={14} />
+        )}
+        고급 설정 {showAdvanced ? '숨기기' : '보기'}
+      </button>
 
-      {/* 내 버블 설정 */}
-      <CollapsibleSection title="내 버블" color="#3B82F6">
-        <BubbleStyleEditor
-          style={theme.bubble.me}
-          onChange={(updates) => updateBubbleStyle('me', updates)}
-        />
-      </CollapsibleSection>
+      {/* 고급 설정 영역 */}
+      {showAdvanced && (
+        <>
+          {/* 헤더 설정 */}
+          <CollapsibleSection title="헤더" color="#FB923C">
+            <ToggleInput
+              label="헤더 표시"
+              value={theme.showHeader}
+              onChange={(v) => updateTheme({ showHeader: v })}
+            />
+            <ToggleInput
+              label="상태바 표시"
+              value={theme.showStatusBar}
+              onChange={(v) => updateTheme({ showStatusBar: v })}
+            />
+            <ColorInput
+              label="헤더 배경색"
+              value={theme.headerBg}
+              onChange={(v) => updateTheme({ headerBg: v })}
+            />
+            <ColorInput
+              label="헤더 글자색"
+              value={theme.headerTitleColor}
+              onChange={(v) => updateTheme({ headerTitleColor: v })}
+            />
+          </CollapsibleSection>
 
-      {/* 상대방 버블 설정 */}
-      <CollapsibleSection title="상대방 버블" color="#6B7280">
-        <BubbleStyleEditor
-          style={theme.bubble.other}
-          onChange={(updates) => updateBubbleStyle('other', updates)}
-        />
-      </CollapsibleSection>
+          {/* 내 버블 설정 */}
+          <CollapsibleSection title="내 버블" color="#3B82F6">
+            <BubbleStyleEditor
+              style={theme.bubble.me}
+              onChange={(updates) => updateBubbleStyle('me', updates)}
+            />
+          </CollapsibleSection>
 
-      {/* 메타 정보 설정 */}
-      <CollapsibleSection title="메타 정보" color="#4ADE80">
-        <ToggleInput
-          label="이름 표시"
-          value={theme.showName}
-          onChange={(v) => updateTheme({ showName: v })}
-        />
-        <ToggleInput
-          label="시간 표시"
-          value={theme.showTime}
-          onChange={(v) => updateTheme({ showTime: v })}
-        />
-        <ToggleInput
-          label="읽음 표시"
-          value={theme.showReadStatus}
-          onChange={(v) => updateTheme({ showReadStatus: v })}
-        />
-        <ToggleInput
-          label="아바타 표시"
-          value={theme.showAvatar}
-          onChange={(v) => updateTheme({ showAvatar: v })}
-        />
-        <NumberInput
-          label="아바타 크기"
-          value={theme.avatarSize}
-          onChange={(v) => updateTheme({ avatarSize: v })}
-          min={20}
-          max={60}
-          suffix="px"
-        />
-      </CollapsibleSection>
+          {/* 상대방 버블 설정 */}
+          <CollapsibleSection title="상대방 버블" color="#6B7280">
+            <BubbleStyleEditor
+              style={theme.bubble.other}
+              onChange={(updates) => updateBubbleStyle('other', updates)}
+            />
+          </CollapsibleSection>
 
-      {/* 타이포그래피 */}
-      <CollapsibleSection title="타이포그래피" color="#FF6B9D">
-        <NumberInput
-          label="글자 크기"
-          value={theme.fontSize}
-          onChange={(v) => updateTheme({ fontSize: v })}
-          min={12}
-          max={20}
-          suffix="px"
-        />
-        <NumberInput
-          label="줄 높이"
-          value={theme.lineHeight}
-          onChange={(v) => updateTheme({ lineHeight: v })}
-          min={1}
-          max={2}
-          step={0.1}
-        />
-      </CollapsibleSection>
+          {/* 메타 정보 설정 */}
+          <CollapsibleSection title="메타 정보" color="#4ADE80">
+            <ToggleInput
+              label="이름 표시"
+              value={theme.showName}
+              onChange={(v) => updateTheme({ showName: v })}
+            />
+            <ToggleInput
+              label="시간 표시"
+              value={theme.showTime}
+              onChange={(v) => updateTheme({ showTime: v })}
+            />
+            <ToggleInput
+              label="읽음 표시"
+              value={theme.showReadStatus}
+              onChange={(v) => updateTheme({ showReadStatus: v })}
+            />
+            <ToggleInput
+              label="아바타 표시"
+              value={theme.showAvatar}
+              onChange={(v) => updateTheme({ showAvatar: v })}
+            />
+            <NumberInput
+              label="아바타 크기"
+              value={theme.avatarSize}
+              onChange={(v) => updateTheme({ avatarSize: v })}
+              min={20}
+              max={60}
+              suffix="px"
+            />
+          </CollapsibleSection>
+
+          {/* 타이포그래피 */}
+          <CollapsibleSection title="타이포그래피" color="#FF6B9D">
+            <NumberInput
+              label="글자 크기"
+              value={theme.fontSize}
+              onChange={(v) => updateTheme({ fontSize: v })}
+              min={12}
+              max={20}
+              suffix="px"
+            />
+            <NumberInput
+              label="줄 높이"
+              value={theme.lineHeight}
+              onChange={(v) => updateTheme({ lineHeight: v })}
+              min={1}
+              max={2}
+              step={0.1}
+            />
+          </CollapsibleSection>
+        </>
+      )}
     </div>
   );
 };
