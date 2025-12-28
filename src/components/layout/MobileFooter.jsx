@@ -22,6 +22,7 @@ import html2canvas from 'html2canvas';
 import SaveButton from './SaveButton';
 import BottomSheet from '../common/BottomSheet';
 import MobileProjectSheet from './MobileProjectSheet';
+import MobileSettingsSheet from './MobileSettingsSheet';
 import useChatStore from '../../store/useChatStore';
 import { exportCanvas, downloadDataUrl } from '../../utils/exportUtils';
 import { renderSequence } from '../../utils/sequenceRenderer';
@@ -119,6 +120,7 @@ const MobileFooter = ({
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showSaveOptions, setShowSaveOptions] = useState(false);
   const [showProjectSheet, setShowProjectSheet] = useState(false);
+  const [showSettingsSheet, setShowSettingsSheet] = useState(false);
   const [saveStatus, setSaveStatus] = useState('idle');
   const [progress, setProgress] = useState(0);
 
@@ -477,9 +479,8 @@ const MobileFooter = ({
             label="설정"
             onClick={() => {
               setShowMoreMenu(false);
-              // TODO: 설정 페이지
+              setShowSettingsSheet(true);
             }}
-            badge={{ text: '준비중', bg: '#F3F4F6', color: '#6B7280' }}
           />
           <MenuItem
             icon={HelpCircle}
@@ -507,6 +508,12 @@ const MobileFooter = ({
       <MobileProjectSheet
         isOpen={showProjectSheet}
         onClose={() => setShowProjectSheet(false)}
+      />
+
+      {/* 설정 바텀시트 */}
+      <MobileSettingsSheet
+        isOpen={showSettingsSheet}
+        onClose={() => setShowSettingsSheet(false)}
       />
     </>
   );
