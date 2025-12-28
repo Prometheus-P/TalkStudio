@@ -1,0 +1,11 @@
+# TalkStudio - Robots.txt
+# https://talkstudio.vercel.app
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://talkstudio.vercel.app/sitemap.xml
+
+# Disallow API endpoints
+Disallow: /api/
