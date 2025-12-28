@@ -55,7 +55,7 @@ describe('Circuit Breaker', () => {
 
       try {
         await breaker.call(() => Promise.reject(new Error('fail')));
-      } catch (e) {
+      } catch {
         // Expected
       }
 
@@ -68,7 +68,7 @@ describe('Circuit Breaker', () => {
       for (let i = 0; i < 2; i++) {
         try {
           await breaker.call(() => Promise.reject(new Error('fail')));
-        } catch (e) {
+        } catch {
           // Expected
         }
       }
@@ -81,7 +81,7 @@ describe('Circuit Breaker', () => {
 
       try {
         await breaker.call(() => Promise.reject(new Error('fail')));
-      } catch (e) {
+      } catch {
         // Expected
       }
 
@@ -93,7 +93,7 @@ describe('Circuit Breaker', () => {
 
       try {
         await breaker.call(() => Promise.reject(new Error('fail')));
-      } catch (e) {
+      } catch {
         // Expected
       }
 
@@ -108,7 +108,7 @@ describe('Circuit Breaker', () => {
 
       try {
         await breaker.call(() => Promise.reject(new Error('fail')));
-      } catch (e) {
+      } catch {
         // Expected
       }
 
@@ -125,7 +125,7 @@ describe('Circuit Breaker', () => {
 
       try {
         await breaker.call(() => Promise.reject(new Error('fail')));
-      } catch (e) {
+      } catch {
         // Expected
       }
 
@@ -143,7 +143,7 @@ describe('Circuit Breaker', () => {
 
       try {
         await breaker.call(() => Promise.reject(new Error('fail')));
-      } catch (e) {
+      } catch {
         // Expected
       }
 
@@ -151,7 +151,7 @@ describe('Circuit Breaker', () => {
 
       try {
         await breaker.call(() => Promise.reject(new Error('fail again')));
-      } catch (e) {
+      } catch {
         // Expected
       }
 
@@ -190,7 +190,7 @@ describe('Circuit Breaker', () => {
 
       try {
         await breaker.call(() => Promise.reject(new Error('test')));
-      } catch (e) {
+      } catch {
         // Expected
       }
 
