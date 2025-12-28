@@ -50,6 +50,27 @@ vi.mock('./MobileGuide', () => ({
   ),
 }));
 
+vi.mock('./MobileFooter', () => ({
+  default: ({ activeView, onViewChange }) => (
+    <nav data-testid="mobile-footer">
+      <button
+        onClick={() => onViewChange('preview')}
+        data-active={activeView === 'preview'}
+      >
+        미리보기
+      </button>
+      <button
+        onClick={() => onViewChange('editor')}
+        data-active={activeView === 'editor'}
+      >
+        편집하기
+      </button>
+      <button>저장</button>
+      <button>더보기</button>
+    </nav>
+  ),
+}));
+
 vi.mock('../../store/useChatStore', () => ({
   default: (selector) => {
     const state = {

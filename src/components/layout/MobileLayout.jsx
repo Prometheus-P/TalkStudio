@@ -3,11 +3,12 @@
  * 스와이프 제스처 및 개선된 UX
  */
 import React, { useState } from 'react';
-import { Eye, Edit, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import ChatPreview from '../preview/ChatPreview';
 import LeftPanel from '../editor/LeftPanel';
 import Sidebar from './Sidebar';
 import MobileGuide from './MobileGuide';
+import MobileFooter from './MobileFooter';
 import useChatStore from '../../store/useChatStore';
 import { useSwipe } from '../../hooks/useSwipe';
 
@@ -52,8 +53,8 @@ const MobileLayout = () => {
     threshold: 50,
   });
 
-  // 탭 클릭으로 뷰 전환
-  const handleTabClick = (view) => {
+  // 뷰 변경 핸들러
+  const handleViewChange = (view) => {
     if (view !== activeView) {
       setActiveView(view);
     }
@@ -134,30 +135,11 @@ const MobileLayout = () => {
         </div>
       </div>
 
-      {/* 하단 탭바 */}
-      <nav
-        className="fixed bottom-0 left-0 right-0 h-20 flex justify-around items-center"
-        style={{
-          background: 'linear-gradient(145deg, #FFFFFF 0%, #F9FAFB 100%)',
-          borderRadius: '24px 24px 0 0',
-          boxShadow: '0px -4px 20px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <TabButton
-          icon={Eye}
-          label="미리보기"
-          isActive={activeView === 'preview'}
-          onClick={() => handleTabClick('preview')}
-          color="#A855F7"
-        />
-        <TabButton
-          icon={Edit}
-          label="편집하기"
-          isActive={activeView === 'editor'}
-          onClick={() => handleTabClick('editor')}
-          color="#3B82F6"
-        />
-      </nav>
+      {/* 확장형 푸터 메뉴바 */}
+      <MobileFooter
+        activeView={activeView}
+        onViewChange={handleViewChange}
+      />
 
       {/* 스와이프 힌트 */}
       <div
@@ -171,47 +153,6 @@ const MobileLayout = () => {
         ← 스와이프로 전환 →
       </div>
     </div>
-  );
-};
-
-// 탭 버튼 컴포넌트
-const TabButton = ({ icon, label, isActive, onClick, color }) => {
-  const IconComponent = icon;
-  return (
-    <button
-      onClick={onClick}
-      className="flex flex-col items-center gap-1 transition-all duration-200"
-      style={{
-        transform: isActive ? 'scale(1.1)' : 'scale(1)',
-      }}
-    >
-      <div
-        className="p-3 rounded-2xl transition-all duration-200"
-        style={{
-          background: isActive
-            ? `linear-gradient(145deg, ${color} 0%, ${color}dd 100%)`
-            : 'transparent',
-          boxShadow: isActive
-            ? `0px 4px 0px ${color}50`
-            : 'none',
-        }}
-      >
-        <IconComponent
-          size={22}
-          style={{
-            color: isActive ? '#FFFFFF' : '#9CA3AF',
-          }}
-        />
-      </div>
-      <span
-        className="text-xs font-semibold"
-        style={{
-          color: isActive ? color : '#9CA3AF',
-        }}
-      >
-        {label}
-      </span>
-    </button>
   );
 };
 
