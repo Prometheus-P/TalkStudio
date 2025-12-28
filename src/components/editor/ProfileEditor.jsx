@@ -276,7 +276,7 @@ const ProfileCard = ({ author, label, icon: _Icon, isMe, canDelete, onUpdate, on
               : '0px 2px 0px rgba(0, 0, 0, 0.1)',
           }}
         >
-          <Icon size={14} style={{ color: isMe ? '#FFFFFF' : '#4B5563' }} />
+          <_Icon size={14} style={{ color: isMe ? '#FFFFFF' : '#4B5563' }} />
         </div>
         <span
           style={{
